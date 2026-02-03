@@ -1,0 +1,265 @@
+﻿@{
+    ViewBag.Title = "Quản lý Nhân viên";
+}
+
+<div class="container-fluid">
+    <div class="card mb-4">
+        <div class="card-body">
+            <form action="/Employee/Search" method="get" class="row g-3 align-items-center">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <input type="text" name="searchValue" class="form-control"
+                               placeholder="Nhập tên nhân viên cần tìm..." aria-label="Search">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-2 text-md-end">
+                    <a href="/Employee/Create" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Thêm mới
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh sách nhân viên</h3>
+            <div class="card-tools">
+                <span class="badge text-bg-info">Tìm thấy 85 kết quả</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tên nhân viên</th>
+                            <th>Số điện thoại</th>
+                            <th>Địa chỉ</th>
+                            <th>Email</th>
+                            <th>Ngày sinh</th>
+                            <th style="width: 120px" class="text-center">Trạng thái</th>
+                            <th style="width: 120px" class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nguyễn Văn An</td>
+                            <td>0912345678</td>
+                            <td>123 Đường Láng, Đống Đa</td>
+                            <td>nguyenvanan@company.com</td>
+                            <td>15/03/1990</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-success">Hoạt động</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/1" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/1" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Trần Thị Bình</td>
+                            <td>0923456789</td>
+                            <td>456 Nguyễn Trãi, Thanh Xuân</td>
+                            <td>tranthibinh@company.com</td>
+                            <td>22/07/1992</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-success">Hoạt động</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/2" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/2" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Lê Văn Cường</td>
+                            <td>0934567890</td>
+                            <td>789 Giải Phóng, Hai Bà Trưng</td>
+                            <td>levancuong@company.com</td>
+                            <td>10/11/1988</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-danger">Bị khóa</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/3" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/3" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Phạm Thị Dung</td>
+                            <td>0945678901</td>
+                            <td>321 Láng Hạ, Ba Đình</td>
+                            <td>phamthidung@company.com</td>
+                            <td>05/01/1995</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-success">Hoạt động</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/4" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/4" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Hoàng Văn Em</td>
+                            <td>0956789012</td>
+                            <td>654 Trần Duy Hưng, Cầu Giấy</td>
+                            <td>hoangvanem@company.com</td>
+                            <td>18/09/1991</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-success">Hoạt động</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/5" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/5" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Vũ Thị Giang</td>
+                            <td>0967890123</td>
+                            <td>987 Phạm Văn Đồng, Bắc Từ Liêm</td>
+                            <td>vuthigiang@company.com</td>
+                            <td>28/04/1993</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-danger">Bị khóa</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/6" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/6" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Đỗ Văn Hải</td>
+                            <td>0978901234</td>
+                            <td>147 Xuân Thủy, Cầu Giấy</td>
+                            <td>dovanhai@company.com</td>
+                            <td>12/12/1989</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-success">Hoạt động</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/7" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/7" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bùi Thị Hương</td>
+                            <td>0989012345</td>
+                            <td>258 Kim Mã, Ba Đình</td>
+                            <td>buithihuong@company.com</td>
+                            <td>30/06/1994</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-success">Hoạt động</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/8" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/8" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Đinh Văn Khoa</td>
+                            <td>0990123456</td>
+                            <td>369 Nguyễn Chí Thanh, Đống Đa</td>
+                            <td>dinhvankhoa@company.com</td>
+                            <td>25/02/1987</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-success">Hoạt động</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/9" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/9" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Mai Thị Lan</td>
+                            <td>0901234567</td>
+                            <td>741 Tôn Đức Thắng, Đống Đa</td>
+                            <td>maithilan@company.com</td>
+                            <td>08/08/1996</td>
+                            <td class="text-center">
+                                <span class="badge text-bg-success">Hoạt động</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="/Employee/Edit/10" class="btn btn-info btn-sm" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/Employee/Delete/10" class="btn btn-danger btn-sm" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer clearfix">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination pagination-sm m-0 justify-content-end">
+                    <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

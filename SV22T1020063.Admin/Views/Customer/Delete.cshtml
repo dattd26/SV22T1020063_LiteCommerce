@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Xác nhận xóa khách hàng";
+}
+
+<div class="row">
+    <div class="col-12 mx-auto">
+        <div class="card card-outline card-danger">
+            <div class="card-header">
+                <h3 class="card-title text-danger fw-bold">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Cảnh báo: Bạn có chắc chắn muốn xóa khách hàng này?
+                </h3>
+            </div>
+
+            <form action="/Customer/Delete" method="post">
+                <input type="hidden" name="CustomerId" value="123" />
+
+                <div class="card-body">
+                    <p class="text-muted">Lưu ý: Hành động xóa khách hàng có thể ảnh hưởng đến lịch sử đơn hàng liên quan. Vui lòng kiểm tra kỹ:</p>
+
+                    <div class="row bg-light p-3 rounded border">
+                        <div class="col-sm-4 fw-bold">Tên khách hàng:</div>
+                        <div class="col-sm-8 mb-2">Nguyễn Văn A</div>
+
+                        <div class="col-sm-4 fw-bold">Tên giao dịch:</div>
+                        <div class="col-sm-8 mb-2">An Phát Corp</div>
+
+                        <hr class="my-2">
+
+                        <div class="col-sm-4 fw-bold">Điện thoại:</div>
+                        <div class="col-sm-8 mb-2">0912 345 678</div>
+
+                        <div class="col-sm-4 fw-bold">Email:</div>
+                        <div class="col-sm-8 mb-2">vana@gmail.com</div>
+
+                        <hr class="my-2">
+
+                        <div class="col-sm-4 fw-bold">Địa chỉ:</div>
+                        <div class="col-sm-8 mb-2">45 Lương Thế Vinh, Trung Văn, Nam Từ Liêm</div>
+
+                        <div class="col-sm-4 fw-bold">Tỉnh/Thành:</div>
+                        <div class="col-sm-8 mb-2">Hà Nội</div>
+
+                        <div class="col-sm-4 fw-bold">Trạng thái:</div>
+                        <div class="col-sm-8">
+                            <span class="badge text-bg-success">Đang hoạt động</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Xác nhận xóa khách hàng
+                    </button>
+                    <a href="/Customer" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Bỏ qua
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

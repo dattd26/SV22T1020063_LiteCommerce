@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Xác nhận xóa loại hàng";
+}
+<div class="row">
+    <div class="col-12 mx-auto">
+        <div class="card card-outline card-danger">
+            <div class="card-header">
+                <h3 class="card-title text-danger fw-bold">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Cảnh báo: Bạn có chắc chắn muốn xóa loại hàng này?
+                </h3>
+            </div>
+            <form action="/Category/Delete" method="post">
+                <input type="hidden" name="CategoryId" value="1" />
+                <div class="card-body">
+                    <p class="text-muted">Hành động này không thể hoàn tác. Vui lòng kiểm tra kỹ thông tin bên dưới:</p>
+                    <div class="row bg-light p-3 rounded border">
+                        <div class="col-sm-4 fw-bold">Tên loại hàng:</div>
+                        <div class="col-sm-8 mb-2">Điện tử - Công nghệ</div>
+                        <hr class="my-2">
+                        <div class="col-sm-4 fw-bold">Mô tả:</div>
+                        <div class="col-sm-8 mb-2">Các sản phẩm điện tử, thiết bị công nghệ và phụ kiện liên quan</div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Xác nhận xóa
+                    </button>
+                    <a href="/Category" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Bỏ qua
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

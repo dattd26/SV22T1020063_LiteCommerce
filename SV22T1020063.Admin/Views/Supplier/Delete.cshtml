@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "Xác nhận xóa nhà cung cấp";
+}
+
+<div class="row">
+    <div class="col-12 mx-auto">
+        <div class="card card-outline card-danger">
+            <div class="card-header">
+                <h3 class="card-title text-danger fw-bold">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Cảnh báo: Bạn có chắc chắn muốn xóa nhà cung cấp này?
+                </h3>
+            </div>
+
+            <form action="/Supplier/Delete" method="post">
+                <input type="hidden" name="SupplierId" value="123" />
+
+                <div class="card-body">
+                    <p class="text-muted">Hành động này không thể hoàn tác. Vui lòng kiểm tra kỹ thông tin bên dưới:</p>
+
+                    <div class="row bg-light p-3 rounded border">
+                        <div class="col-sm-4 fw-bold">Tên nhà cung cấp:</div>
+                        <div class="col-sm-8 mb-2">Công ty TNHH Giải pháp Phần mềm ABC</div>
+
+                        <div class="col-sm-4 fw-bold">Tên giao dịch:</div>
+                        <div class="col-sm-8 mb-2">ABC Software</div>
+
+                        <hr class="my-2">
+
+                        <div class="col-sm-4 fw-bold">Điện thoại:</div>
+                        <div class="col-sm-8 mb-2">090 123 4567</div>
+
+                        <div class="col-sm-4 fw-bold">Email:</div>
+                        <div class="col-sm-8 mb-2">contact@abc.com</div>
+
+                        <hr class="my-2">
+
+                        <div class="col-sm-4 fw-bold">Địa chỉ:</div>
+                        <div class="col-sm-8 mb-2">123 Đường Láng, Láng Thượng, Đống Đa</div>
+
+                        <div class="col-sm-4 fw-bold">Tỉnh/Thành:</div>
+                        <div class="col-sm-8">Hà Nội</div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Xác nhận xóa
+                    </button>
+                    <a href="/Supplier" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Bỏ qua
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

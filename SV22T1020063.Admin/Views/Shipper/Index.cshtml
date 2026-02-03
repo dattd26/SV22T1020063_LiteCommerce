@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "Quản lý Người giao hàng";
+}
+
+<div class="container-fluid">
+    <div class="card mb-4">
+        <div class="card-body">
+            <form action="/Shipper/Search" method="get" class="row g-3 align-items-center">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <input type="text" name="searchValue" class="form-control"
+                               placeholder="Nhập tên người giao hàng hoặc số điện thoại..." aria-label="Search">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-2 text-md-end">
+                    <a href="/Shipper/Create" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Thêm mới
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Danh sách người giao hàng</h3>
+            <div class="card-tools">
+                <span class="badge text-bg-info">Tìm thấy 24 người giao hàng</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px" class="text-center">#</th>
+                            <th>Tên người giao hàng</th>
+                            <th>Số điện thoại</th>
+                            <th style="width: 120px" class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 1; i <= 10; i++)
+                        {
+                            <tr>
+                                <td class="text-center">@i</td>
+                                <td class="fw-bold">Nguyễn Văn Giao Hàng @i</td>
+                                <td>0905 123 45</td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="/Shipper/Edit/@i" class="btn btn-info btn-sm" title="Sửa">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="/Shipper/Delete/@i" class="btn btn-danger btn-sm" title="Xóa">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer clearfix">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination pagination-sm m-0 justify-content-end">
+                    <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
