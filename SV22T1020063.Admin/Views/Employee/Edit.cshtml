@@ -1,0 +1,145 @@
+﻿@{
+    ViewBag.Title = "Thông tin nhân viên";
+}
+
+<div class="row">
+    <div class="col-lg-8 mx-auto w-100">
+        <div class="card card-outline card-success shadow-sm">
+            <div class="card-header">
+                <h3 class="card-title fw-bold">@ViewBag.Title</h3>
+            </div>
+
+            <form action="/Employee/Save" method="post" enctype="multipart/form-data">
+                <div class="card-body">
+
+                    <!-- Họ tên -->
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label fw-bold ">Họ và tên</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control"
+                                   name="FullName"
+                                   placeholder="Ví dụ: Nguyễn Văn A"
+                                   required
+                                   autofocus>
+                        </div>
+                    </div>
+
+                    <!-- Ngày sinh -->
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label fw-bold">Ngày sinh</label>
+                        <div class="col-sm-4">
+                            <input type="date" class="form-control" name="BirthDate">
+                        </div>
+
+                        <label class="col-sm-2 col-form-label fw-bold">Trạng thái</label>
+                        <div class="col-sm-3">
+                            <select class="form-select" name="IsActive">
+                                <option value="true">Đang làm việc</option>
+                                <option value="false">Đã nghỉ việc</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Vai trò -->
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label fw-bold">Vai trò</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" name="Role">
+                                <option value="Staff">Nhân viên bán hàng</option>
+                                <option value="Warehouse">Quản lý kho</option>
+                                <option value="Admin">Quản trị hệ thống</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Ảnh -->
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label fw-bold">Ảnh nhân viên</label>
+                        <div class="col-sm-9">
+                            <input type="file"
+                                   class="form-control"
+                                   id="Photo"
+                                   name="uploadPhoto"
+                                   accept="image/*">
+
+                            <div class="mt-3">
+                                <img id="previewImage"
+                                     src=""
+                                     class="img-thumbnail"
+                                     style="max-height:150px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label fw-bold">Điện thoại</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                                <input type="tel"
+                                       class="form-control"
+                                       name="Phone"
+                                       placeholder="09x.xxx.xxxx">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label fw-bold">Email</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                <input type="email"
+                                       class="form-control"
+                                       name="Email"
+                                       placeholder="nv.a@company.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label fw-bold">Địa chỉ</label>
+                        <div class="col-sm-9">
+                            <input type="text"
+                                   class="form-control"
+                                   name="Address"
+                                   placeholder="Số nhà, đường, phường/xã...">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Lưu thông tin
+                    </button>
+                    <a href="/Employee" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("Photo").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById("previewImage");
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

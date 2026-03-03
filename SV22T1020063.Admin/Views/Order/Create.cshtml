@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Lập đơn hàng mới";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 order-md-2">
+            <div class="card card-outline card-info shadow-sm">
+                <div class="card-header">
+                    <h3 class="card-title fw-bold">Tra cứu sản phẩm</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/Order/SearchProduct" method="get" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Tên hoặc mã sản phẩm...">
+                            <button class="btn btn-info text-white" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="product-search-results" style="max-height: 600px; overflow-y: auto;">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <div class="card mb-2 border-start border-4 border-info">
+                                <div class="card-body p-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0 bg-light rounded" style="width: 50px; height: 50px; display:flex; align-items:center; justify-content:center;">
+                                            <i class="bi bi-box text-muted"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="mb-0 fw-bold">Sản phẩm mẫu #@i</h6>
+                                            <small class="text-danger fw-bold">1.200.000 ₫</small>
+                                            <small class="text-muted float-end">Kho: 50</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary ms-2" title="Thêm vào đơn">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 order-md-1">
+            <form action="/Order/Init" method="post">
+                <div class="card card-outline card-success shadow-sm mb-4">
+                    <div class="card-header d-flex align-items-center">
+                        <h3 class="card-title fw-bold text-success">Giỏ hàng</h3>
+                        <div class="ms-auto text-muted small">Có <b>2</b> mặt hàng</div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 50px" class="text-center">STT</th>
+                                        <th>Tên mặt hàng</th>
+                                        <th style="width: 120px" class="text-center">Số lượng</th>
+                                        <th class="text-end">Đơn giá</th>
+                                        <th class="text-end" style="width: 150px">Thành tiền</th>
+                                        <th style="width: 100px" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">1</td>
+                                        <td><strong>iPhone 15 Pro Max 256GB</strong></td>
+                                        <td class="text-center">1</td>
+                                        <td class="text-end">32.990.000</td>
+                                        <td class="text-end fw-bold">32.990.000</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a href="/Order/EditCartItem/0?productId=1" class="btn btn-sm btn-outline-primary btn-modal" title="Sửa">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="/Order/DeleteCartItem/0?productId=1" class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Xóa mặt hàng này khỏi giỏ hàng?')" title="Xóa">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="modal fade" id="modalEditItem" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content" id="modalContent">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <button type="button" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i> Xóa sạch giỏ hàng
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card card-outline card-primary shadow-sm">
+                    <div class="card-header">
+                        <h3 class="card-title fw-bold">Thông tin nhận hàng</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Khách hàng</label>
+                                <select class="form-select select2" name="CustomerID" required>
+                                    <option value="">-- Chọn khách hàng --</option>
+                                    <option value="1">Nguyễn Thị Lan Anh (0905.123.456)</option>
+                                    <option value="2">Công ty TNHH ABC</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Tỉnh/Thành giao hàng</label>
+                                <select class="form-select" name="DeliveryProvince" required>
+                                    <option value="">-- Chọn Tỉnh/Thành --</option>
+                                    <option value="Hà Nội">Hà Nội</option>
+                                    <option value="Thừa Thiên Huế">Thừa Thiên Huế</option>
+                                    <option value="Đà Nẵng">Đà Nẵng</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nhân viên lập đơn</label>
+                                <input type="text" class="form-control bg-light" value="Trần Văn B (Admin)" readonly>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Địa chỉ nhận hàng chi tiết</label>
+                                <textarea class="form-control" name="DeliveryAddress" rows="2" placeholder="Số nhà, tên đường, phường/xã..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end gap-2 bg-transparent border-top-0 pb-4">
+                        <a href="/Order" class="btn btn-outline-secondary px-4">Hủy bỏ</a>
+                        <button type="submit" class="btn btn-success px-5 fw-bold">
+                            <i class="bi bi-check2-circle me-1"></i> XÁC NHẬN LẬP ĐƠN HÀNG
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

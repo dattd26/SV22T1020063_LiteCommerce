@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "Thông tin mặt hàng";
+}
+
+<div class="row">
+    <div class="col-md-10 mx-auto w-100">
+        <div class="card card-outline card-primary shadow-sm">
+            <div class="card-header">
+                <h3 class="card-title fw-bold">@ViewBag.Title</h3>
+            </div>
+
+            <form action="/Product/Save" method="post" enctype="multipart/form-data">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="ProductName" class="form-label fw-bold">Tên mặt hàng</label>
+                                <input type="text" class="form-control" id="ProductName" name="ProductName"
+                                       placeholder="Nhập tên sản phẩm..." required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="CategoryID" class="form-label fw-bold">Loại hàng</label>
+                                    <select class="form-select" id="CategoryID" name="CategoryID">
+                                        <option value="">-- Chọn loại hàng --</option>
+                                        <option value="1">Điện thoại</option>
+                                        <option value="2">Phụ kiện</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="SupplierID" class="form-label fw-bold">Nhà cung cấp</label>
+                                    <select class="form-select" id="SupplierID" name="SupplierID">
+                                        <option value="">-- Chọn nhà cung cấp --</option>
+                                        <option value="1">Apple Inc</option>
+                                        <option value="2">Samsung VN</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="Unit" class="form-label fw-bold">Đơn vị tính</label>
+                                    <input type="text" class="form-control" id="Unit" name="Unit"
+                                           placeholder="Ví dụ: Chiếc, Cái, Bộ..." required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="Price" class="form-label fw-bold">Giá bán (VNĐ)</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control text-end" id="Price" name="Price"
+                                               placeholder="0" step="1000" required>
+                                        <span class="input-group-text">₫</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ProductDescription" class="form-label fw-bold">Mô tả sản phẩm</label>
+                                <textarea class="form-control" id="ProductDescription" name="ProductDescription"
+                                          rows="4" placeholder="Thông số kỹ thuật, đặc điểm nổi bật..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 border-start">
+                            <div class="mb-3 text-center">
+                                <label class="form-label fw-bold d-block">Ảnh minh họa</label>
+                                <div class="mb-2">
+                                    <img id="imgPreview" src="~/images/products/no-image.jpg"
+                                         class="img-thumbnail" style="width: 200px; height: 200px; object-fit: cover;" alt="Preview">
+                                        
+                                 </div>
+                                <input type="file" class="form-control form-control-sm" id="Photo" name="uploadPhoto"
+                                       accept="image/*" onchange="previewImage(this)">
+                                <small class="text-muted mt-1 d-block">Định dạng: JPG, PNG, WEBP (Max 2MB)</small>
+                            </div>
+
+                            <hr>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold d-block">Thiết lập kinh doanh</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="IsSelling" name="IsSelling" value="true" checked>
+                                    <label class="form-check-label" for="IsSelling">Mặt hàng này đang được bán</label>
+                                </div>
+                                <div class="small text-muted mt-1">
+                                    Tắt mục này nếu bạn muốn tạm ngừng kinh doanh mặt hàng nhưng không muốn xóa khỏi hệ thống.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer d-flex justify-content-end gap-2 bg-transparent">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Lưu mặt hàng
+                    </button>
+                    <a href="/Product" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Hàm hiển thị ảnh ngay lập tức khi chọn file
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imgPreview').setAttribute('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
