@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
     <None Include="Views\Account\ChangePassword.cshtml" />
     <None Include="Views\Account\Index.cshtml" />
     <None Include="Views\Account\Login.cshtml" />
@@ -67,14 +66,11 @@
   </ItemGroup>
 
   <ItemGroup>
-=======
->>>>>>> 47b8d31b5cba9f97d73b91bc1c666abcd974b432
     <ProjectReference Include="..\SV22T1020063.BusinessLayers\SV22T1020063.BusinessLayers.csproj" />
     <ProjectReference Include="..\SV22T1020063.DataLayers\SV22T1020063.DataLayers.csproj" />
     <ProjectReference Include="..\SV22T1020063.Models\SV22T1020063.Models.csproj" />
   </ItemGroup>
 
-<<<<<<< HEAD
   <ItemGroup>
     <Folder Include="AppCodes\" />
   </ItemGroup>
@@ -83,6 +79,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
-=======
->>>>>>> 47b8d31b5cba9f97d73b91bc1c666abcd974b432
 </Project>
