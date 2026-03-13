@@ -1,201 +1,74 @@
 ﻿@{
     ViewBag.Title = "Quản lý Loại hàng";
 }
+@section PageToolBar {
+    <a href="~/Category/Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>
+        Bổ sung
+    </a>
+}
 
-<div class="container-fluid">
-    <div class="card mb-4">
-        <div class="card-body">
-            <form action="/Category/Search" method="get" class="row g-3 align-items-center">
-                <div class="col-md-10">
-                    <div class="input-group">
-                        <input type="text" name="searchValue" class="form-control"
-                               placeholder="Nhập tên loại hàng cần tìm..." aria-label="Search">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-search"></i> Tìm kiếm
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-2 text-md-end">
-                    <a href="/Category/Create" class="btn btn-success">
-                        <i class="bi bi-plus-circle"></i> Thêm mới
-                    </a>
-                </div>
-            </form>
-        </div>
+<div class="card mb-3">
+    <div class="card-body">
+        <form id="formSearch">
+            <div class="input-group">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Tên loại hàng..." autofocus />
+                <button class="btn btn-info d-flex align-items-center">
+                    <i class="bi bi-search me-1"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mb-2 text-muted">
+    Danh sách này có <strong>8</strong> loại hàng
+</div>
+
+<div class="card">
+    <div class="card-body p-1">
+        <table class="table table-bordered table-hover mb-0">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Tên loại hàng</th>
+                    <th>Mô tả</th>
+                    <th class="text-center" style="width:100px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 1; i <= 8; i++)
+                {
+                    <tr>
+                        <td>Đồ uống</td>
+                        <td>Nước giải khát, nước khoáng, bia</td>
+                        <td class="text-center text-nowrap">
+                            <a href="~/Category/Edit/123" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="~/Category/Delete/123" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Danh sách loại hàng</h3>
-            <div class="card-tools">
-                <span class="badge text-bg-info">Tìm thấy 25 kết quả</span>
-            </div>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 30%">Tên loại hàng</th>
-                            <th>Mô tả</th>
-                            <th style="width: 120px" class="text-center">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Điện tử - Công nghệ</td>
-                            <td>Các sản phẩm điện tử, công nghệ như điện thoại, laptop, máy tính bảng, phụ kiện công nghệ</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/1" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/1" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Thời trang Nam</td>
-                            <td>Quần áo, giày dép, phụ kiện thời trang dành cho nam giới</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/2" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/2" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Thời trang Nữ</td>
-                            <td>Quần áo, giày dép, túi xách, phụ kiện thời trang dành cho nữ giới</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/3" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/3" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Mẹ và Bé</td>
-                            <td>Sản phẩm dành cho mẹ bầu, em bé, đồ chơi trẻ em, sữa bột, tã bỉm</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/4" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/4" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Nhà cửa - Đời sống</td>
-                            <td>Đồ gia dụng, nội thất, dụng cụ nhà bếp, trang trí nhà cửa</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/5" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/5" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Sách - Văn phòng phẩm</td>
-                            <td>Sách các loại, văn phòng phẩm, dụng cụ học tập</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/6" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/6" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Thể thao - Dã ngoại</td>
-                            <td>Dụng cụ thể thao, trang phục thể thao, thiết bị dã ngoại, camping</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/7" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/7" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Sức khỏe - Làm đẹp</td>
-                            <td>Mỹ phẩm, chăm sóc da, thực phẩm chức năng, dụng cụ làm đẹp</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/8" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/8" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Thực phẩm - Đồ uống</td>
-                            <td>Thực phẩm tươi sống, thực phẩm chế biến, đồ uống các loại</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/9" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/9" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Điện máy gia dụng</td>
-                            <td>Tủ lạnh, máy giặt, điều hòa, quạt, bếp từ, lò vi sóng và các thiết bị điện gia dụng khác</td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="/Category/Edit/10" class="btn btn-info btn-sm" title="Sửa">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="/Category/Delete/10" class="btn btn-danger btn-sm" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card-footer clearfix">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination pagination-sm m-0 justify-content-end">
-                    <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                </ul>
-            </nav>
-        </div>
+    <div class="card-footer">
+        <!-- Pagination -->
+        <ul class="pagination justify-content-center">
+            <li class="page-item active">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li>
+        </ul>
     </div>
 </div>

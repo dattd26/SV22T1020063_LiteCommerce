@@ -1,77 +1,91 @@
-﻿
-<div class="row">
-    <div class="col-md-8 mx-auto w-100">
-        <div class="card card-outline card-success">
+﻿@{
+}
+@section PageToolBar {
+    <button type="submit" form="formEdit" class="btn btn-primary">
+        <i class="bi bi-save"></i>
+        Lưu dữ liệu
+    </button>    
+    <a href="~/Customer" class="btn btn-secondary ms-1">
+        <i class="bi bi-arrow-left"></i>
+        Quay lại
+    </a>
+}
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card card-primary card-outline">
             <div class="card-header">
-                <h3 class="card-title">@ViewBag.Title</h3>
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-people me-2"></i>
+                    Thông tin khách hàng
+                </h5>
             </div>
 
-            <form action="/Customer/Save" method="post">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8 mb-3">
-                            <label for="CustomerName" class="form-label fw-bold">Tên khách hàng</label>
-                            <input type="text" class="form-control" id="CustomerName" name="CustomerName"
-                                   placeholder="Ví dụ: Nguyễn Văn A" required>
-                        </div>
+            <div class="card-body">
+                <form id="formEdit" method="post">
 
-                        <div class="col-md-4 mb-3">
-                            <label for="IsLocked" class="form-label fw-bold">Trạng thái</label>
-                            <select class="form-select" id="IsLocked" name="IsLocked">
-                                <option value="false">Đang hoạt động</option>
-                                <option value="true">Bị khóa tài khoản</option>
-                            </select>
+                    <div class="row align-items-end">
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label">Tên khách hàng</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Nhập tên khách hàng" autofocus />
                         </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="ContactName" class="form-label fw-bold">Tên giao dịch</label>
-                            <input type="text" class="form-control" id="ContactName" name="ContactName"
-                                   placeholder="Ví dụ: An Phat Corp">
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label">Tên giao dịch</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Nhập tên giao dịch" />
                         </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="Province" class="form-label fw-bold">Tỉnh/Thành</label>
-                            <select class="form-select" id="Province" name="Province">
-                                <option value="">-- Chọn Tỉnh/Thành --</option>
-                                <option value="Hà Nội">Hà Nội</option>
-                                <option value="Hồ Chí Minh">TP. Hồ Chí Minh</option>
-                                <option value="Đà Nẵng">Đà Nẵng</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="Phone" class="form-label fw-bold">Điện thoại</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                <input type="tel" class="form-control" id="Phone" name="Phone" placeholder="09x.xxx.xxxx">
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label d-block">Trạng thái</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="IsActive"
+                                       checked />
+                                <label class="form-check-label" for="IsActive">
+                                    Đang hoạt động
+                                </label>
                             </div>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="Email" class="form-label fw-bold">Email</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                <input type="email" class="form-control" id="Email" name="Email" placeholder="khachhang@example.com">
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 mb-3">
-                            <label for="Address" class="form-label fw-bold">Địa chỉ cư trú</label>
-                            <input type="text" class="form-control" id="Address" name="Address"
-                                   placeholder="Số nhà, tên đường, phường/xã...">
                         </div>
                     </div>
-                </div>
 
-                <div class="card-footer d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i> Lưu dữ liệu
-                    </button>
-                    <a href="/Customer" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Quay lại
-                    </a>
-                </div>
-            </form>
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label">Điện thoại</label>
+                            <input type="tel"
+                                   class="form-control"
+                                   placeholder="Nhập số điện thoại" />
+                        </div>
+
+                        <div class="col-md-7 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email"
+                                   class="form-control"
+                                   placeholder="Nhập email" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <textarea class="form-control"
+                                  rows="3"
+                                  placeholder="Nhập địa chỉ"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tỉnh / Thành</label>
+                        <select class="form-select">
+                            <option value="">-- Chọn tỉnh / thành --</option>
+                            <option>Hà Nội</option>
+                            <option>TP. Hồ Chí Minh</option>
+                            <option>Đà Nẵng</option>
+                            <option>Cần Thơ</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

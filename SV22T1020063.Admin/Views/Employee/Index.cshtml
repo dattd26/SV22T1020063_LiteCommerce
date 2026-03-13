@@ -1,102 +1,89 @@
 ﻿@{
     ViewBag.Title = "Quản lý Nhân viên";
 }
-
-<div class="container-fluid">
-    <div class="card mb-4">
-        <div class="card-body">
-            <form action="/Employee/Search" method="get" class="row g-3 align-items-center">
-                <div class="col-md-10">
-                    <div class="input-group">
-                        <input type="text" name="searchValue" class="form-control"
-                               placeholder="Tìm theo tên, điện thoại hoặc email..." aria-label="Search">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-search"></i> Tìm kiếm
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-2 text-md-end">
-                    <a href="/Employee/Create" class="btn btn-success">
-                        <i class="bi bi-plus-circle"></i> Thêm nhân viên
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <h3 class="card-title m-0">Danh sách nhân viên</h3>
-            <span class="badge text-bg-info">Tổng số: 85 nhân viên</span>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 80px" class="text-center">Ảnh</th>
-                            <th>Họ và tên</th>
-                            <th class="text-center">Ngày sinh</th>
-                            <th>Liên hệ</th>
-                            <th>Vai trò</th>
-                            <th style="width: 140px" class="text-center">Trạng thái</th>
-                            <th style="width: 110px" class="text-center">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < 10; i++)
-                        {
-                            <tr>
-                                <td class="text-center">
-                                    <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center text-white"
-                                         style="width: 45px; height: 45px;">
-                                        <i class="bi bi-person"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold">Nguyễn Văn An</div>
-                                    <small class="text-muted">ID: #E001</small>
-                                </td>
-                                <td class="text-center">15/03/1990</td>
-                                <td>
-                                    <div><i class="bi bi-telephone me-1"></i> 0912345678</div>
-                                    <div class="small text-primary"><i class="bi bi-envelope me-1"></i> an.nv@company.com</div>
-                                </td>
-                                <td><span class="badge border text-dark fw-normal">Quản trị viên, Thủ kho</span></td>
-                                <td class="text-center">
-                                    <span class="badge text-bg-success"><i class="bi bi-check-circle me-1"></i> Đang làm việc</span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-                                        <a href="/Employee/Edit/1" class="btn btn-info btn-sm" title="Sửa">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="/Employee/Delete/1" class="btn btn-danger btn-sm" title="Xóa">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                        <a href="/Employee/ChangePassword/2" class="btn btn-warning btn-sm" title="Đổi mật khẩu">
-                                            <i class="bi bi-key"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                        
-
-                       
-                    </tbody>
-                </table>
+@section PageToolBar {
+    <a href="~/Employee/Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>
+        Bổ sung
+    </a>
+}
+<div class="card mb-3">
+    <div class="card-body">
+        <form id="formSearch">
+            <div class="input-group">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Tên nhân viên..." autofocus />
+                <button class="btn btn-info d-flex align-items-center">
+                    <i class="bi bi-search me-1"></i>
+                </button>
             </div>
-        </div>
-        <div class="card-footer bg-white border-top">
-            <nav aria-label="Page navigation">
-                <ul class="pagination pagination-sm m-0 justify-content-end">
-                    <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Sau</a></li>
-                </ul>
-            </nav>
-        </div>
+        </form>
     </div>
 </div>
+
+<div class="mb-2 text-muted">
+    Danh sách này có <strong>15</strong> nhân viên
+</div>
+
+<div class="card">
+    <div class="card-body p-1">
+        <table class="table table-bordered table-hover mb-0">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Điện thoại</th>
+                    <th>Email</th>
+                    <th>Địa chỉ</th>
+                    <th class="text-center" style="width:140px;">Trạng thái</th>
+                    <th class="text-center" style="width:100px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 1; i <= 10; i++)
+                {
+                    <tr>
+                        <td>Nguyễn Văn A</td>
+                        <td>15/08/1990</td>
+                        <td>0912345678</td>
+                        <td>a.nguyen@gmail.com</td>
+                        <td>123 Lê Lợi</td>
+                        <td class="text-center">
+                            <span class="badge bg-success">Đang làm việc</span>
+                        </td>
+                        <td class="text-center text-nowrap">
+                            <a href="~/Employee/Edit/123" class="btn btn-sm btn-primary" title="Cập nhật">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="~/Employee/Delete/123" class="btn btn-sm btn-danger" title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            <a href="~/Employee/ChangePassword/123" class="btn btn-sm btn-warning ms-2" title="Đổi mật khẩu">
+                                <i class="bi bi-key"></i>
+                            </a>
+                            <a href="~/Employee/ChangeRole/123" class="btn btn-sm btn-info" title="Cấp quyền">
+                                <i class="bi bi-shield-check"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer">
+        <ul class="pagination justify-content-center">
+            <li class="page-item active">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li>
+        </ul>
+    </div>
+</div>
+

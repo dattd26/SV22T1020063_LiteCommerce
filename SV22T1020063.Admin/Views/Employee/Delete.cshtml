@@ -1,72 +1,61 @@
 ﻿@{
-    ViewBag.Title = "Xác nhận xóa nhân viên";
+    ViewBag.Title = "Xóa nhân viên";
+}
+@section PageToolBar {
+    <button type="submit" form="formDelete" class="btn btn-danger">
+        <i class="bi bi-trash"></i> Xóa
+    </button>
+    <a href="/Employee" class="btn btn-secondary ms-1">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
 }
 
-<div class="row">
-    <div class="col-md-8 mx-auto w-100">
-        <div class="card card-outline card-danger">
-            <div class="card-header">
-                <h3 class="card-title text-danger fw-bold">
-                    <i class="bi bi-person-x-fill me-2"></i>
-                    Cảnh báo: Bạn có chắc chắn muốn xóa nhân viên này?
-                </h3>
+<div class="card card-danger">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="bi bi-person-x"></i> Xác nhận xóa nhân viên
+        </h3>
+    </div>
+
+    <div class="card-body">
+        <form id="formDelete" method="post">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                Bạn có chắc chắn muốn xóa nhân viên này không?
             </div>
 
-            <form action="/Employee/Delete" method="post">
-                <input type="hidden" name="EmployeeID" value="1" />
-
-                <div class="card-body">
-                    <div class="alert alert-warning border-warning">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        <strong>Lưu ý:</strong> Dữ liệu liên quan đến doanh số, đơn hàng hoặc lịch sử xử lý của nhân viên này có thể bị ảnh hưởng. Hãy cân nhắc chuyển trạng thái sang <b>"Đã nghỉ việc"</b> thay vì xóa vĩnh viễn.
-                    </div>
-
-                    <div class="row bg-light p-4 rounded border">
-                        <div class="col-sm-3 text-center mb-3">
-                            <img src="~/images/employees/user1.jpg"
-                                 class="img-thumbnail rounded-circle"
-                                 style="width: 120px; height: 120px; object-fit: cover;"
-                                 alt="Avatar">
-                            <div class="mt-2">
-                                <span class="badge text-bg-success">Đang làm việc</span>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-9">
-                            <div class="row">
-                                <div class="col-sm-4 fw-bold">Họ và tên:</div>
-                                <div class="col-sm-8 mb-2">Nguyễn Văn An</div>
-
-                                <div class="col-sm-4 fw-bold">Ngày sinh:</div>
-                                <div class="col-sm-8 mb-2">15/03/1990</div>
-
-                                <div class="col-sm-4 fw-bold">Vai trò:</div>
-                                <div class="col-sm-8 mb-2 text-primary fw-bold">Quản trị viên, Thủ kho</div>
-
-                                <hr class="my-2">
-
-                                <div class="col-sm-4 fw-bold">Điện thoại:</div>
-                                <div class="col-sm-8 mb-2">0912 345 678</div>
-
-                                <div class="col-sm-4 fw-bold">Email:</div>
-                                <div class="col-sm-8 mb-2">an.nv@company.com</div>
-
-                                <div class="col-sm-4 fw-bold">Địa chỉ:</div>
-                                <div class="col-sm-8">123 Đường Láng, Đống Đa, Hà Nội</div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-md-2 text-start">
+                    <img src="~/images/employees/nophoto.png"
+                         class="img-thumbnail mb-2"
+                         style="width: 100%;"
+                         alt="Ảnh nhân viên" />
                 </div>
 
-                <div class="card-footer d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-danger px-4">
-                        <i class="bi bi-trash me-1"></i> Xác nhận xóa vĩnh viễn
-                    </button>
-                    <a href="/Employee" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle me-1"></i> Bỏ qua
-                    </a>
+                <div class="col-md-10">
+                    <dl class="row">
+                        <dt class="col-sm-3">Họ và tên:</dt>
+                        <dd class="col-sm-9">Nguyễn Văn A</dd>
+
+                        <dt class="col-sm-3">Ngày sinh:</dt>
+                        <dd class="col-sm-9">01/01/1990</dd>
+
+                        <dt class="col-sm-3">Điện thoại:</dt>
+                        <dd class="col-sm-9">0901234567</dd>
+
+                        <dt class="col-sm-3">Email:</dt>
+                        <dd class="col-sm-9">vana@example.com</dd>
+
+                        <dt class="col-sm-3">Địa chỉ:</dt>
+                        <dd class="col-sm-9">Huế</dd>
+
+                        <dt class="col-sm-3">Trạng thái:</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-success">Đang làm việc</span>
+                        </dd>
+                    </dl>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>

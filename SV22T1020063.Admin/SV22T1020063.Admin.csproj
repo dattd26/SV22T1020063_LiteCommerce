@@ -7,9 +7,76 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Views\Account\ChangePassword.cshtml" />
+    <None Include="Views\Account\Index.cshtml" />
+    <None Include="Views\Account\Login.cshtml" />
+    <None Include="Views\Category\Delete.cshtml" />
+    <None Include="Views\Category\Edit.cshtml" />
+    <None Include="Views\Category\Index.cshtml" />
+    <None Include="Views\Customer\ChangePassword.cshtml" />
+    <None Include="Views\Customer\Delete.cshtml" />
+    <None Include="Views\Customer\Edit.cshtml" />
+    <None Include="Views\Customer\Index.cshtml" />
+    <None Include="Views\Employee\ChangePassword.cshtml" />
+    <None Include="Views\Employee\Delete.cshtml" />
+    <None Include="Views\Employee\Edit.cshtml" />
+    <None Include="Views\Employee\Index.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Order\Create.cshtml" />
+    <None Include="Views\Order\Detail.cshtml" />
+    <None Include="Views\Order\EditCartItem.cshtml" />
+    <None Include="Views\Order\Index.cshtml" />
+    <None Include="Views\Product\Delete.cshtml" />
+    <None Include="Views\Product\Detail.cshtml" />
+    <None Include="Views\Product\Edit.cshtml" />
+    <None Include="Views\Product\Index.cshtml" />
+    <None Include="Views\Product\ListAttributes.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Footer.cshtml" />
+    <None Include="Views\Shared\_Header.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_LoginLayout.cshtml" />
+    <None Include="Views\Shared\_SideBar.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\Shipper\Edit.cshtml" />
+    <None Include="Views\Shipper\Index.cshtml" />
+    <None Include="Views\Supplier\Delete.cshtml" />
+    <None Include="Views\Supplier\Edit.cshtml" />
+    <None Include="Views\Supplier\Index.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\js\site.js" />
+    <None Include="wwwroot\lib\adminlte\css\adminlte.css.map" />
+    <None Include="wwwroot\lib\adminlte\css\adminlte.min.css.map" />
+    <None Include="wwwroot\lib\adminlte\css\adminlte.rtl.css.map" />
+    <None Include="wwwroot\lib\adminlte\css\adminlte.rtl.min.css.map" />
+    <None Include="wwwroot\lib\adminlte\js\adminlte.js" />
+    <None Include="wwwroot\lib\adminlte\js\adminlte.js.map" />
+    <None Include="wwwroot\lib\adminlte\js\adminlte.min.js" />
+    <None Include="wwwroot\lib\adminlte\js\adminlte.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\lib\bootstrap\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\fonts\bootstrap-icons.woff2" />
+    <None Include="wwwroot\lib\font-awesome\css\font-awesome.css.map" />
+    <None Include="wwwroot\lib\font-awesome\fonts\fontawesome-webfont.svg" />
+    <None Include="wwwroot\lib\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\lib\overlay-scrollbars\overlayscrollbars.browser.es6.min.js" />
+    <None Include="wwwroot\lib\popperjs\popper.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SV22T1020063.BusinessLayers\SV22T1020063.BusinessLayers.csproj" />
     <ProjectReference Include="..\SV22T1020063.DataLayers\SV22T1020063.DataLayers.csproj" />
     <ProjectReference Include="..\SV22T1020063.Models\SV22T1020063.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AppCodes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
 </Project>

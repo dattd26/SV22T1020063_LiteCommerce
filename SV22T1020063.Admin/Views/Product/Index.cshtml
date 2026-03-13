@@ -1,173 +1,129 @@
 ﻿@{
     ViewBag.Title = "Quản lý Mặt hàng";
 }
+@section PageToolBar {
+    <a href="~/Product/Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>
+        Bổ sung
+    </a>
+}
 
-<div class="container-fluid">
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <form action="/Product/Search" method="get">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Tìm kiếm</label>
-                        <input type="text" name="searchValue" class="form-control"
-                               placeholder="Tên mặt hàng..." value="@Context.Request.Query["searchValue"]">
-                    </div>
+<div class="card mb-3">
+    <div class="card-body">
+        <form id="formSearch">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label class="form-label">Loại hàng</label>
+                    <select class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option>Đồ uống</option>
+                        <option>Thực phẩm</option>
+                        <option>Gia dụng</option>
+                    </select>
+                </div>
 
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold">Loại hàng</label>
-                        <select class="form-select" name="categoryID">
-                            <option value="0">-- Tất cả loại --</option>
-                            <option value="1">Điện tử</option>
-                            <option value="2">Gia dụng</option>
-                        </select>
-                    </div>
+                <div class="col-md-2">
+                    <label class="form-label">Nhà cung cấp</label>
+                    <select class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option>Công ty ABC</option>
+                        <option>Công ty XYZ</option>
+                    </select>
+                </div>
 
-                    <div class="col-md-2">
-                        <label class="form-label fw-bold">Nhà cung cấp</label>
-                        <select class="form-select" name="supplierID">
-                            <option value="0">-- Tất cả NCC --</option>
-                            <option value="1">Công ty ABC</option>
-                            <option value="2">Tập đoàn XYZ</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Khoảng giá (VNĐ)</label>
-                        <div class="input-group">
-                            <input type="number" name="minPrice" class="form-control" placeholder="Từ">
-                            <span class="input-group-text">~</span>
-                            <input type="number" name="maxPrice" class="form-control" placeholder="Đến">
-                        </div>
-                    </div>
-
-                    <div class="col-12 d-flex justify-content-between align-items-end">
-                        <div class="text-muted small">
-                            <i class="bi bi-info-circle me-1"></i> Sử dụng các tiêu chí trên để lọc kết quả nhanh hơn.
-                        </div>
-                        <div class="btn-group">
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-filter"></i> Lọc dữ liệu
-                            </button>
-                            <a href="/Product" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-clockwise"></i> Làm mới
-                            </a>
-                        </div>
+                <div class="col-md-3">
+                    <label class="form-label">Khoảng giá</label>
+                    <div class="input-group">
+                        <input type="text"
+                               name="minPrice" 
+                               class="form-control money-input"
+                               placeholder="Từ" />
+                        <span class="input-group-text">-</span>
+                        <input type="text"
+                               name="maxPrice"
+                               class="form-control money-input"
+                               placeholder="Đến" />
                     </div>
                 </div>
-            </form>
-        </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Tên mặt hàng</label>
+                    <div class="input-group">
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Tên mặt hàng..." autofocus />
+                        <button class="btn btn-info d-flex align-items-center">
+                            <i class="bi bi-search me-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mb-2 text-muted">
+    Danh sách này có <strong>20</strong> mặt hàng
+</div>
+
+<div class="card">
+    <div class="card-body p-1">
+        <table class="table table-bordered table-hover mb-0 align-middle">
+            <thead class="table-secondary">
+                <tr>
+                    <th style="width:80px;">Ảnh</th>
+                    <th>Mặt hàng</th>
+                    <th style="width:120px;">Đơn vị</th>
+                    <th style="width:120px;">Giá</th>
+                    <th class="text-center" style="width:140px;">Trạng thái</th>
+                    <th class="text-center" style="width:100px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 1; i <= 10; i++)
+                {
+                    <tr>
+                        <td class="text-center">
+                            <img src="~/images/products/demo.png"
+                                 class="img-thumbnail"
+                                 alt="Ảnh mặt hàng" />
+                        </td>
+                        <td>
+                            <strong>Nước suối Aquafina</strong><br />
+                            <small class="text-muted">
+                                Nước uống tinh khiết đóng chai 500ml
+                            </small>
+                        </td>
+                        <td>Chai</td>
+                        <td class="text-end">5,000</td>
+                        <td class="text-center">
+                            <span class="badge bg-success">Đang bán</span>
+                        </td>
+                        <td class="text-center text-nowrap">
+                            <a href="~/Product/Edit/123" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="~/Product/Delete/123" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
-    <div class="card card-outline card-primary">
-        <div class="card-header d-flex align-items-center bg-transparent">
-            <h3 class="card-title m-0 fw-bold text-primary">Danh sách sản phẩm</h3>
-
-            <div class="ms-auto">
-                <a href="/Product/Create" class="btn btn-success btn-sm">
-                    <i class="bi bi-plus-lg me-1"></i> Thêm mặt hàng mới
-                </a>
-            </div>
-        </div>
-
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 70px" class="text-center">Ảnh</th>
-                            <th>Tên mặt hàng</th>
-                            <th>Danh mục / NCC</th>
-                            <th class="text-center">Đơn vị</th>
-                            <th class="text-end">Giá bán</th>
-                            <th class="text-center">Trạng thái</th>
-                            <th style="width: 100px" class="text-center">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            <tr>
-                                <td class="text-center">
-                                    <div class="bg-light border d-flex align-items-center justify-content-center rounded" style="width: 50px; height: 50px;">
-                                        <i class="bi bi-image text-muted"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold">iPhone 15 Pro Max 256GB</div>
-                                    <div class="small text-muted text-truncate" style="max-width: 250px;">
-                                        Chip A17 Pro, Camera 48MP, Khung Titanium...
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="badge bg-info-subtle text-info border border-info-subtle mb-1">Điện thoại</div>
-                                    <div class="small text-muted"><i class="bi bi-truck me-1"></i>Apple Inc.</div>
-                                </td>
-                                <td class="text-center">Chiếc</td>
-                                <td class="text-end fw-bold text-danger">32.990.000 ₫</td>
-                                <td class="text-center">
-                                    <span class="badge rounded-pill text-bg-success">Đang bán</span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-                                        <a href="/Product/Detail/1" class="btn btn-primary btn-sm" title="Xem chi tiết">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a href="/Product/Edit/1" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i></a>
-                                        <a href="/Product/Delete/1" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                    <div class="bg-light border d-flex align-items-center justify-content-center rounded" style="width: 50px; height: 50px;">
-                                        <i class="bi bi-image text-muted"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-secondary">Tủ lạnh Samsung Inverter 300L</div>
-                                    <div class="small text-muted">Mẫu cũ 2022, đã bỏ mẫu...</div>
-                                </td>
-                                <td>
-                                    <div class="badge bg-secondary-subtle text-secondary border border-secondary-subtle mb-1">Gia dụng</div>
-                                    <div class="small text-muted"><i class="bi bi-truck me-1"></i>Samsung VN</div>
-                                </td>
-                                <td class="text-center">Cái</td>
-                                <td class="text-end fw-bold text-secondary">12.500.000 ₫</td>
-                                <td class="text-center">
-                                    <span class="badge rounded-pill text-bg-secondary">Ngừng bán</span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-                                        <a href="/Product/Detail/1" class="btn btn-primary btn-sm" title="Xem chi tiết">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a href="/Product/Edit/1" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i></a>
-                                        <a href="/Product/Delete/1" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-
-                        
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="card-footer bg-white d-flex align-items-center justify-content-between">
-            <div class="text-muted small">
-                Hiển thị từ <b>1</b> đến <b>10</b> trong tổng số <b>85</b> mặt hàng
-            </div>
-            <nav>
-                <ul class="pagination pagination-sm m-0">
-                    <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
-                </ul>
-            </nav>
-        </div>
+    <div class="card-footer">
+        <ul class="pagination justify-content-center mb-0">
+            <li class="page-item active">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li>
+        </ul>
     </div>
 </div>
