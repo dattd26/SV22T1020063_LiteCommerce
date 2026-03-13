@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SV22T1020063.Admin;
 using System.Globalization;
@@ -32,6 +33,12 @@ builder.Services.AddSession(option =>
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
 });
+=======
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+>>>>>>> 47b8d31b5cba9f97d73b91bc1c666abcd974b432
 
 var app = builder.Build();
 
@@ -41,16 +48,25 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
+<<<<<<< HEAD
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
 //Configure Routing
+=======
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+>>>>>>> 47b8d31b5cba9f97d73b91bc1c666abcd974b432
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+<<<<<<< HEAD
 //Configure default format
 var cultureInfo = new CultureInfo("vi-VN");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
@@ -72,3 +88,6 @@ string connectionString = builder.Configuration.GetConnectionString("LiteCommerc
 SV22T1020063.BusinessLayers.Configuration.Initialize(connectionString);
 
 app.Run();
+=======
+app.Run();
+>>>>>>> 47b8d31b5cba9f97d73b91bc1c666abcd974b432

@@ -46,6 +46,10 @@ Bổ sung cho solution các projects:
 -
 ## Employee
 - Employee/Index
+<<<<<<< HEAD
+=======
+- 
+>>>>>>> 47b8d31b5cba9f97d73b91bc1c666abcd974b432
 - Employee/Create
 - Employee/Edit/{id}
 - Employee/Delete/{id}
@@ -60,7 +64,11 @@ Bổ sung cho solution các projects:
 
 ## Product
 - Product/Index
+<<<<<<< HEAD
 	- Hiển thị danh sách mặt hàng dưới dạng phân trangx
+=======
+	- Hiển thị danh sách mặt hàng dưới dạng phân trang
+>>>>>>> 47b8d31b5cba9f97d73b91bc1c666abcd974b432
 	- Tìm kiếm/lọc mặt hàng: Loại hàng (select), nhà cung cấp (select), khoảng giá,...
 - Product/Detail/{id}
 - Product/Create
