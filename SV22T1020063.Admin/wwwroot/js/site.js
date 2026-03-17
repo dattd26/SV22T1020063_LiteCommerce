@@ -26,6 +26,18 @@ function paginationSearch(event, form, page) {
     const targetId = form.dataset.target;
 
     const formData = new FormData(form);
+    form.querySelectorAll('.money-input').forEach(el => {
+        let val = el.value.replace(/\./g, '');
+
+        if (typeof AutoNumeric !== 'undefined') {
+            const an = AutoNumeric.getAutoNumericElement(el);
+            if (an) {
+                val = an.getNumericString();
+            }
+        }
+        formData.set(el.name, val);
+    });
+
     formData.append("page", page);
 
     let fetchUrl = url;

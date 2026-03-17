@@ -1,0 +1,66 @@
+@model PagedResult<Product>
+@{
+    Layout = null;
+}
+<div class="mb-2 text-muted">
+    Danh sách này có <strong>@Model.RowCount</strong> mặt hàng
+</div>
+
+<div class="card">
+    <div class="card-body p-1">
+        <table class="table table-bordered table-hover mb-0 align-middle">
+            <thead class="table-secondary">
+                <tr>
+                    <th style="width:80px;">Ảnh</th>
+                    <th>Mặt hàng</th>
+                    <th style="width:120px;">Đơn vị</th>
+                    <th style="width:120px;">Giá</th>
+                    <th class="text-center" style="width:140px;">Trạng thái</th>
+                    <th class="text-center" style="width:100px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DataItems)
+                {
+                    <tr>
+                        <td class="text-center">
+                            <img src="@(string.IsNullOrEmpty(item.Photo) ? Url.Content("~/images/products/demo.png") : Url.Content("~/images/products/" + item.Photo))"
+                                 class="img-thumbnail"
+                                 style="width: 60px; height: 60px; object-fit: cover;"
+                                 alt="Ảnh mặt hàng" />
+                        </td>
+                        <td>
+                            <strong>@item.ProductName</strong><br />
+                            <small class="text-muted">
+                                @item.ProductDescription
+                            </small>
+                        </td>
+                        <td>@item.Unit</td>
+                        <td class="text-end">@item.Price.ToString("N0")</td>
+                        <td class="text-center">
+                            @if (item.IsSelling)
+                            {
+                                <span class="badge bg-success">Đang bán</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Dừng bán</span>
+                            }
+                        </td>
+                        <td class="text-center text-nowrap">
+                            <a href="~/Product/Edit/@item.ProductID" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="~/Product/Delete/@item.ProductID" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @await Html.PartialAsync("_Pagination", Model)
+</div>
+

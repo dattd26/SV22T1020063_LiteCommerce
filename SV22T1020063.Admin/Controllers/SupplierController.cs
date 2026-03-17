@@ -6,17 +6,25 @@ namespace SV22T1020063.Admin.Controllers
 {
     public class SupplierController : Controller
     {
-        private const int PAGESIZE = 10;
-        public async Task<IActionResult> Index(int page = 1, string searchValue = "")
+        private const string SUPPLIER_SEARCH = "SupplierSearchInput";
+        public IActionResult Index()
         {
-            var input = new PaginationSearchInput()
+            var input = ApplicationContext.GetSessionData<PaginationSearchInput>(SUPPLIER_SEARCH);
+            if (input == null)
             {
-                Page = page,
-                PageSize = PAGESIZE,
-                SearchValue = searchValue
-            };
-            ViewBag.SearchValue = searchValue;
+                input = new PaginationSearchInput()
+                {
+                    Page = 1,
+                    PageSize = ApplicationContext.PageSize,
+                    SearchValue = string.Empty
+                };
+            }
+            return View(input);
+        }
+        public async Task<IActionResult> Search(PaginationSearchInput input) {
+            
             var result = await PartnerDataService.ListSuppliersAsync(input);
+            ApplicationContext.SetSessionData(SUPPLIER_SEARCH, input);
             return View(result);
         }
         public IActionResult Create()

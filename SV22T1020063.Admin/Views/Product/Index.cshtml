@@ -1,7 +1,8 @@
-@model PagedResult<Product>
+@model ProductSearchInput
 
 @{
     ViewBag.Title = "Quản lý Mặt hàng";
+    @* ViewBag.UserName = "Gemini"; *@
 }
 @section PageToolBar {
     <a href="~/Product/Create" class="btn btn-primary">
@@ -10,9 +11,13 @@
     </a>
 }
 
+
+@* // Trong View (Index.cshtml)
+<p>Chào @ViewBag.UserName</p>  // Kết quả: Chào Gemini
+<p>Chào @ViewBag.username</p> *@
 <div class="card mb-3">
     <div class="card-body">
-        <form id="formSearch">
+        <form id="formSearch" method="get" action="~/Product/Search" data-target="searchResult" onsubmit="paginationSearch(event, this, 1)">
             <div class="row g-2">
                 <div class="col-md-3">
                     <label class="form-label">Loại hàng</label>
@@ -20,7 +25,7 @@
                         <option value="0">-- Tất cả --</option>
                         @foreach (var item in ViewBag.Categories as List<Category>)
                         {
-                            if (item.CategoryID == ViewBag.CategoryID)
+                            if (item.CategoryID == Model.CategoryID)
                             {
                                 <option value="@item.CategoryID" selected>@item.CategoryName</option>
                             }
@@ -38,7 +43,7 @@
                         <option value="0">-- Tất cả --</option>
                         @foreach (var item in ViewBag.Suppliers as List<Supplier>)
                         {
-                            if (item.SupplierID == ViewBag.SupplierID)
+                            if (item.SupplierID == Model.SupplierID)
                             {
                                 <option value="@item.SupplierID" selected>@item.SupplierName</option>
                             }
@@ -54,16 +59,18 @@
                     <label class="form-label">Khoảng giá</label>
                     <div class="input-group">
                         <input type="text"
-                               name="minPrice" 
-                               class="form-control money-input"
-                               value="@ViewBag.MinPrice"
-                               placeholder="Từ" />
+                            name="MinPrice" 
+                            id="MinPrice"
+                            class="form-control money-input"
+                            value="@(Model.MinPrice > 0 ? Model.MinPrice.ToString("N0") : "")"
+                            placeholder="Từ" />
                         <span class="input-group-text">-</span>
                         <input type="text"
-                               name="maxPrice"
-                               class="form-control money-input"
-                               value="@ViewBag.MaxPrice"
-                               placeholder="Đến" />
+                            name="MaxPrice"
+                            id="MaxPrice"
+                            class="form-control money-input"
+                            value="@(Model.MaxPrice > 0 ? Model.MaxPrice.ToString("N0") : "")"
+                            placeholder="Đến" />
                     </div>
                 </div>
 
@@ -73,7 +80,7 @@
                         <input type="text"
                                name="searchValue"
                                class="form-control"
-                               value="@ViewBag.SearchValue"
+                               value="@Model.SearchValue"
                                placeholder="Tên mặt hàng..." autofocus />
                         <button class="btn btn-info d-flex align-items-center">
                             <i class="bi bi-search me-1"></i>
@@ -85,65 +92,13 @@
     </div>
 </div>
 
-<div class="mb-2 text-muted">
-    Danh sách này có <strong>@Model.RowCount</strong> mặt hàng
+<div id="searchResult">
 </div>
 
-<div class="card">
-    <div class="card-body p-1">
-        <table class="table table-bordered table-hover mb-0 align-middle">
-            <thead class="table-secondary">
-                <tr>
-                    <th style="width:80px;">Ảnh</th>
-                    <th>Mặt hàng</th>
-                    <th style="width:120px;">Đơn vị</th>
-                    <th style="width:120px;">Giá</th>
-                    <th class="text-center" style="width:140px;">Trạng thái</th>
-                    <th class="text-center" style="width:100px;">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.DataItems)
-                {
-                    <tr>
-                        <td class="text-center">
-                            <img src="@(string.IsNullOrEmpty(item.Photo) ? Url.Content("~/images/products/demo.png") : Url.Content("~/images/products/" + item.Photo))"
-                                 class="img-thumbnail"
-                                 style="width: 60px; height: 60px; object-fit: cover;"
-                                 alt="Ảnh mặt hàng" />
-                        </td>
-                        <td>
-                            <strong>@item.ProductName</strong><br />
-                            <small class="text-muted">
-                                @item.ProductDescription
-                            </small>
-                        </td>
-                        <td>@item.Unit</td>
-                        <td class="text-end">@item.Price.ToString("N0")</td>
-                        <td class="text-center">
-                            @if (item.IsSelling)
-                            {
-                                <span class="badge bg-success">Đang bán</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">Dừng bán</span>
-                            }
-                        </td>
-                        <td class="text-center text-nowrap">
-                            <a href="~/Product/Edit/@item.ProductID" class="btn btn-sm btn-primary">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="~/Product/Delete/@item.ProductID" class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    @await Html.PartialAsync("_Pagination", Model)
-</div>
-
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            paginationSearch(null, document.getElementById("formSearch"), @Model.Page);
+        });
+    </script>
+}

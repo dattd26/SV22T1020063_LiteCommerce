@@ -17,7 +17,7 @@ namespace SV22T1020063.Admin.Controllers
         public async Task<IActionResult> Search(OrderSearchInput input)
         {
             input.PageSize = PAGESIZE;
-            var result = await SaleDataService.ListOrdersAsync(input);
+            var result = await SalesDataService.ListOrdersAsync(input);
             return View(result);
         }
 

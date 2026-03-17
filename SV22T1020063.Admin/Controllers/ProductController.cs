@@ -7,44 +7,30 @@ namespace SV22T1020063.Admin.Controllers
 {
     public class ProductController : Controller
     {
-        private const int PAGESIZE = 10;
-        private const string PRODUCT_SEARCH = "ProductSearch";
-
-        public async Task<IActionResult> Index(int page = 1, string searchValue = "", int categoryID = 0, int supplierID = 0, decimal minPrice = 0, decimal maxPrice = 0)
+        private const string PRODUCT_SEARCH = "ProductSearchInput";
+        public async Task<IActionResult> Index()
         {
             var input = ApplicationContext.GetSessionData<ProductSearchInput>(PRODUCT_SEARCH);
-            if (input == null || (searchValue != "" || categoryID != 0 || supplierID != 0 || minPrice != 0 || maxPrice != 0 || page != 1))
+            if (input == null)
             {
-                input = new ProductSearchInput
+                input = new ProductSearchInput()
                 {
-                    Page = page,
-                    PageSize = PAGESIZE,
-                    SearchValue = searchValue ?? "",
-                    CategoryID = categoryID,
-                    SupplierID = supplierID,
-                    MinPrice = minPrice,
-                    MaxPrice = maxPrice
+                    Page = 1,
+                    PageSize = ApplicationContext.PageSize,
+                    SearchValue = string.Empty,
+                    CategoryID = 0,
+                    SupplierID = 0,
+                    MinPrice = 0,
+                    MaxPrice = 0
                 };
             }
-
-            // Lưu lại bộ lọc vào Session
+            ViewBag.Categories = (await CatalogDataService.ListCategoriesAsync(new PaginationSearchInput())).DataItems;
+            ViewBag.Suppliers = (await PartnerDataService.ListSuppliersAsync(new PaginationSearchInput())).DataItems;
+            return View(input);
+        }
+        public async Task<IActionResult> Search(ProductSearchInput input) {
+            var result = await CatalogDataService.ListProductsAsync(input);
             ApplicationContext.SetSessionData(PRODUCT_SEARCH, input);
-
-            // Gán giá trị cho ViewBag để hiển thị lại trên Form
-            ViewBag.SearchValue = input.SearchValue;
-            ViewBag.CategoryID = input.CategoryID;
-            ViewBag.SupplierID = input.SupplierID;
-            ViewBag.MinPrice = input.MinPrice > 0 ? input.MinPrice.ToString() : "";
-            ViewBag.MaxPrice = input.MaxPrice > 0 ? input.MaxPrice.ToString() : "";
-
-            // Lấy danh sách Loại hàng và Nhà cung cấp để hiển thị trên Filter
-            var catResult = await CategoryDataService.ListCategoryAsync(new PaginationSearchInput { PageSize = 0 });
-            ViewBag.Categories = catResult.DataItems;
-
-            var supResult = await PartnerDataService.ListSuppliersAsync(new PaginationSearchInput { PageSize = 0 });
-            ViewBag.Suppliers = supResult.DataItems;
-
-            var result = await ProductDataService.ListProductsAsync(input);
             return View(result);
         }
         public IActionResult Create()
