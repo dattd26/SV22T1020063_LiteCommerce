@@ -115,6 +115,9 @@ namespace SV22T1020063.Admin
             _configuration?.GetSection(name).Bind(value);
             return value;
         }
-        
+        /// <summary>
+        /// Số dòng hiển thị trên mỗi trang khi phân trang dữ liệu
+        /// </summary>
+        public static int PageSize => Convert.ToInt32(GetConfigValue("PageSize"));
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using SV22T1020063.BusinessLayers;
 using SV22T1020063.Models.Common;
 
@@ -7,18 +6,39 @@ namespace SV22T1020063.Admin.Controllers
 {
     public class CustomerController : Controller
     {
-        private const int PAGESIZE = 20;
-
-        public async Task<IActionResult> Index(int page = 1, string searchValue = "")
+        /// <summary>
+        /// 
+        /// </summary>
+        private const string CUSTOMER_SEARCH = "CustomerSearchInput";
+        /// <summary>
+        /// Nhập đầu tìm kiếm, Hiển thị kết quả tìm kiếm
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="searchValue"></param>
+        /// <returns></returns>
+        public IActionResult Index()
         {
-            var input = new PaginationSearchInput()
+            var input = ApplicationContext.GetSessionData<PaginationSearchInput>(CUSTOMER_SEARCH);
+            if (input == null)
             {
-                Page = page,
-                PageSize = PAGESIZE,
-                SearchValue = searchValue
-            };
-            ViewBag.SearchValue = searchValue;
+                input = new PaginationSearchInput()
+                {
+                    Page = 1,
+                    PageSize = ApplicationContext.PageSize,
+                    SearchValue = string.Empty
+                };
+            }
+            
+            return View(input);
+        }
+        /// <summary>
+        /// Tìm kiếm và trả về kết quả
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> Search(PaginationSearchInput input)
+        {
             var result = await PartnerDataService.ListCustomersAsync(input);
+            ApplicationContext.SetSessionData(CUSTOMER_SEARCH, input);
             return View(result);
         }
         public IActionResult Create()

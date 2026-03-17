@@ -7,18 +7,27 @@ namespace SV22T1020063.Admin.Controllers
 {
     public class EmployeeController : Controller
     {
-        private const int PAGESIZE = 10;
 
-        public async Task<IActionResult> Index(int page = 1, string searchValue = "")
+        private const string EMPLOYEE_SEARCH = "EmployeeSearchInput";
+        public IActionResult Index()
         {
-            var input = new PaginationSearchInput()
+            var input = ApplicationContext.GetSessionData<PaginationSearchInput>(EMPLOYEE_SEARCH);
+            if (input == null)
             {
-                Page = page,
-                PageSize = PAGESIZE,
-                SearchValue = searchValue
-            };
-            ViewBag.SearchValue = searchValue;
+                input = new PaginationSearchInput()
+                {
+                    Page = 1,
+                    PageSize = ApplicationContext.PageSize,
+                    SearchValue = string.Empty
+                };
+            }
+
+            return View(input);
+        }
+        public async Task<IActionResult> Search(PaginationSearchInput input)
+        {
             var result = await HRDataService.ListEmployeesAsync(input);
+            ApplicationContext.SetSessionData(EMPLOYEE_SEARCH, input);
             return View(result);
         }
         public IActionResult Create()
