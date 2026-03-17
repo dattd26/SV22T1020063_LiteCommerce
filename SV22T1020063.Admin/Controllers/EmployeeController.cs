@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SV22T1020063.BusinessLayers;
 using SV22T1020063.Models.Common;
 
@@ -18,7 +18,7 @@ namespace SV22T1020063.Admin.Controllers
                 SearchValue = searchValue
             };
             ViewBag.SearchValue = searchValue;
-            var result = await PartnerDataService.ListEmployeeAsync(input);
+            var result = await HRDataService.ListEmployeeAsync(input);
             return View(result);
         }
         public IActionResult Create()
