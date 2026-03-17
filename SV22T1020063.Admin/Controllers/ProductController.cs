@@ -41,7 +41,7 @@ namespace SV22T1020063.Admin.Controllers
             var catResult = await CategoryDataService.ListCategoryAsync(new PaginationSearchInput { PageSize = 0 });
             ViewBag.Categories = catResult.DataItems;
 
-            var supResult = await PartnerDataService.ListSupplierAsync(new PaginationSearchInput { PageSize = 0 });
+            var supResult = await PartnerDataService.ListSuppliersAsync(new PaginationSearchInput { PageSize = 0 });
             ViewBag.Suppliers = supResult.DataItems;
 
             var result = await ProductDataService.ListProductsAsync(input);

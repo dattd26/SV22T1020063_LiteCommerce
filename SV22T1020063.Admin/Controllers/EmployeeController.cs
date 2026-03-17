@@ -18,7 +18,7 @@ namespace SV22T1020063.Admin.Controllers
                 SearchValue = searchValue
             };
             ViewBag.SearchValue = searchValue;
-            var result = await HRDataService.ListEmployeeAsync(input);
+            var result = await HRDataService.ListEmployeesAsync(input);
             return View(result);
         }
         public IActionResult Create()

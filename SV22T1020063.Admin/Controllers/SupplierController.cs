@@ -16,7 +16,7 @@ namespace SV22T1020063.Admin.Controllers
                 SearchValue = searchValue
             };
             ViewBag.SearchValue = searchValue;
-            var result = await PartnerDataService.ListSupplierAsync(input);
+            var result = await PartnerDataService.ListSuppliersAsync(input);
             return View(result);
         }
         public IActionResult Create()
