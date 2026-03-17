@@ -1,12 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using SV22T1020063.BusinessLayers;
+using SV22T1020063.Models.Common;
 
 namespace SV22T1020063.Admin.Controllers
 {
     public class CategoryController : Controller
     {
-        public IActionResult Index()
+        private const int PAGESIZE = 10;
+
+        public async Task<IActionResult> Index(int page = 1, string searchValue = "")
         {
-            return View();
+            var input = new PaginationSearchInput()
+            {
+                Page = page,
+                PageSize = PAGESIZE,
+                SearchValue = searchValue
+            };
+            ViewBag.SearchValue = searchValue;
+            var result = await CategoryDataService.ListCategoryAsync(input);
+            return View(result);
         }
         public IActionResult Create()
         {

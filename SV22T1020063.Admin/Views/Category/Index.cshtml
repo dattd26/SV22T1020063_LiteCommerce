@@ -1,4 +1,8 @@
-﻿@{
+@using SV22T1020063.Models.Catalog
+@using SV22T1020063.Models.Common
+@model PagedResult<Category>
+
+@{
     ViewBag.Title = "Quản lý Loại hàng";
 }
 @section PageToolBar {
@@ -14,6 +18,8 @@
             <div class="input-group">
                 <input type="text"
                        class="form-control"
+                       name="searchValue"
+                       value="@ViewBag.SearchValue"
                        placeholder="Tên loại hàng..." autofocus />
                 <button class="btn btn-info d-flex align-items-center">
                     <i class="bi bi-search me-1"></i>
@@ -24,7 +30,7 @@
 </div>
 
 <div class="mb-2 text-muted">
-    Danh sách này có <strong>8</strong> loại hàng
+    Danh sách này có <strong>@Model.RowCount</strong> loại hàng
 </div>
 
 <div class="card">
@@ -38,16 +44,16 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 1; i <= 8; i++)
+                @foreach (var item in Model.DataItems)
                 {
                     <tr>
-                        <td>Đồ uống</td>
-                        <td>Nước giải khát, nước khoáng, bia</td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.Description</td>
                         <td class="text-center text-nowrap">
-                            <a href="~/Category/Edit/123" class="btn btn-sm btn-primary">
+                            <a href="~/Category/Edit/@item.CategoryID" class="btn btn-sm btn-primary">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="~/Category/Delete/123" class="btn btn-sm btn-danger">
+                            <a href="~/Category/Delete/@item.CategoryID" class="btn btn-sm btn-danger">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
@@ -57,18 +63,6 @@
         </table>
     </div>
 
-    <div class="card-footer">
-        <!-- Pagination -->
-        <ul class="pagination justify-content-center">
-            <li class="page-item active">
-                <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-        </ul>
-    </div>
+    @await Html.PartialAsync("_Pagination", Model)
 </div>
+
