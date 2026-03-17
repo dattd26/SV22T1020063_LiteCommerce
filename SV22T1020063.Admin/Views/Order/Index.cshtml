@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewBag.Title = "Quản lý Đơn hàng";
 }
 @section PageToolBar {
@@ -19,13 +19,13 @@
                 <div class="col-md-3">
                     <label class="form-label">Trạng thái đơn hàng</label>
                     <select name="Status" class="form-select">
-                        <option value="">-- Tất cả --</option>
-                        <option>Đang chờ duyệt</option>
-                        <option>Đã duyệt</option>
-                        <option>Đang giao</option>
-                        <option>Hoàn tất</option>
-                        <option>Bị hủy</option>
-                        <option>Bị từ chối</option>
+                        <option value="0">-- Tất cả --</option>
+                        <option value="1">Đơn hàng mới (chờ duyệt)</option>
+                        <option value="2">Đơn hàng đã duyệt</option>
+                        <option value="3">Đơn hàng đang giao</option>
+                        <option value="4">Đơn hàng đã hoàn tất</option>
+                        <option value="-1">Đơn hàng bị hủy</option>
+                        <option value="-2">Đơn hàng bị từ chối</option>
                     </select>
                 </div>
 

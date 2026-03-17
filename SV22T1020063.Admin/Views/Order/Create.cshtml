@@ -1,7 +1,7 @@
-﻿@{
+﻿@model PagedResult<Product>
+@{
     ViewBag.Title = "Lập đơn hàng";
 }
-
 <div class="row">
     <!-- Tìm kiếm & chọn mặt hàng -->
     <div class="col-4">
@@ -19,6 +19,7 @@
                     <div class="input-group">
                         <input class="form-control"
                                name="searchValue"
+                               value="@ViewBag.SearchValue"
                                placeholder="Nhập tên mặt hàng cần tìm" autofocus />
                         <button class="btn btn-primary">
                             <i class="bi bi-search"></i>
@@ -27,10 +28,10 @@
                 </form>
 
                 <!-- Danh sách mặt hàng -->
-                @for (int i = 1; i <= 3; i++)
+                @foreach (var item in Model.DataItems)
                 {
                     <form method="post" class="border rounded p-2 mb-2">
-                        <strong>Macbook Pro 15" M2 2023</strong>
+                        <strong>@item.ProductName</strong>
 
                         <div class="row mt-2">
                             <div class="col-4">
@@ -42,7 +43,7 @@
                                     <div class="col-7">
                                         <label class="form-label mb-0">Giá</label>
                                         <input class="form-control form-control-sm money-input"
-                                               value="45000000" />
+                                               value="@item.Price" />
                                     </div>
                                     <div class="col-5">
                                         <label class="form-label mb-0">SL</label>

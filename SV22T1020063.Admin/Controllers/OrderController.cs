@@ -1,18 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using System.Reflection.PortableExecutable;
+using Microsoft.AspNetCore.Mvc;
+using SV22T1020063.BusinessLayers;
+using SV22T1020063.Models.Sales;
+using SV22T1020063.Models.Catalog;
 
 namespace SV22T1020063.Admin.Controllers
 {
     public class OrderController : Controller
     {
+        private const int PAGESIZE = 10;
+
         // Tra cứu đơn hàng
         public IActionResult Index() => View();
 
         // Tìm kiếm (thường trả về danh sách kết quả qua AJAX)
-        public IActionResult Search() => View();
+        public async Task<IActionResult> Search(OrderSearchInput input)
+        {
+            input.PageSize = PAGESIZE;
+            var result = await SaleDataService.ListOrdersAsync(input);
+            return View(result);
+        }
 
         // Tạo đơn hàng mới (Giao diện giỏ hàng)
-        public IActionResult Create() => View();
-
+        public async Task<IActionResult> Create(int page = 1, string searchValue = "")
+        {
+            var result = await ProductDataService.ListProductsAsync(new ProductSearchInput { Page = page, PageSize = PAGESIZE, SearchValue = searchValue, CategoryID = 0, SupplierID = 0, MinPrice = 0, MaxPrice = 0 });
+            ViewBag.SearchValue = searchValue;
+            return View(result);
+        }
         // Xem chi tiết đơn hàng (và thực hiện các thao tác chuyển trạng thái)
         public IActionResult Detail(int id) => View();
 

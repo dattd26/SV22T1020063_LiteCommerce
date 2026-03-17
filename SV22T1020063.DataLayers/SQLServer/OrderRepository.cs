@@ -121,7 +121,11 @@ namespace SV22T1020063.DataLayers.SQLServer
 
         public async Task<PagedResult<OrderViewInfo>> ListAsync(OrderSearchInput input)
         {
-            PagedResult<OrderViewInfo> result = new PagedResult<OrderViewInfo>();
+            PagedResult<OrderViewInfo> result = new PagedResult<OrderViewInfo>()
+            {
+                Page = input.Page,
+                PageSize = input.PageSize
+            };
 
             List<OrderViewInfo> data = new List<OrderViewInfo>();
 
@@ -129,17 +133,53 @@ namespace SV22T1020063.DataLayers.SQLServer
             {
                 await conn.OpenAsync();
 
-                string sqlCount = "SELECT COUNT(*) FROM Orders";
+                // Xây dựng điều kiện lọc
+                string where = "WHERE (1 = 1)";
+                if (input.Status != 0)
+                    where += " AND Status = @Status";
+                if (input.DateFrom.HasValue)
+                    where += " AND OrderTime >= @DateFrom";
+                if (input.DateTo.HasValue)
+                    where += " AND OrderTime <= @DateTo";
+                if (!string.IsNullOrEmpty(input.SearchValue))
+                {
+                    where += @" AND (CustomerName LIKE @SearchValue 
+                                     OR DeliveryProvince LIKE @SearchValue
+                                     OR DeliveryAddress LIKE @SearchValue)";
+                }
+
+                // Câu lệnh SQL lấy tổng số dòng
+                string sqlCount = $@"SELECT COUNT(*) 
+                                    FROM Orders AS o
+                                    LEFT JOIN Customers AS c ON o.CustomerID = c.CustomerID
+                                    {where}";
+
                 SqlCommand cmdCount = new SqlCommand(sqlCount, conn);
+                if (input.Status != 0) cmdCount.Parameters.AddWithValue("@Status", (int)input.Status);
+                if (input.DateFrom.HasValue) cmdCount.Parameters.AddWithValue("@DateFrom", input.DateFrom.Value);
+                if (input.DateTo.HasValue) cmdCount.Parameters.AddWithValue("@DateTo", input.DateTo.Value);
+                if (!string.IsNullOrEmpty(input.SearchValue)) cmdCount.Parameters.AddWithValue("@SearchValue", $"%{input.SearchValue}%");
+
                 result.RowCount = Convert.ToInt32(await cmdCount.ExecuteScalarAsync());
 
-                string sql = @"SELECT *
-                               FROM Orders
-                               ORDER BY OrderTime DESC
-                               OFFSET @Offset ROWS
-                               FETCH NEXT @PageSize ROWS ONLY";
+                // Câu lệnh SQL lấy dữ liệu trang hiện tại
+                string sql = $@"SELECT o.*, c.CustomerName, c.ContactName AS CustomerContactName,
+                                       c.Email AS CustomerEmail, c.Phone AS CustomerPhone, c.Address AS CustomerAddress,
+                                       e.FullName AS EmployeeName, s.ShipperName, s.Phone AS ShipperPhone
+                                FROM Orders AS o
+                                LEFT JOIN Customers AS c ON o.CustomerID = c.CustomerID
+                                LEFT JOIN Employees AS e ON o.EmployeeID = e.EmployeeID
+                                LEFT JOIN Shippers AS s ON o.ShipperID = s.ShipperID
+                                {where}
+                                ORDER BY OrderTime DESC
+                                OFFSET @Offset ROWS
+                                FETCH NEXT @PageSize ROWS ONLY";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
+                if (input.Status != 0) cmd.Parameters.AddWithValue("@Status", (int)input.Status);
+                if (input.DateFrom.HasValue) cmd.Parameters.AddWithValue("@DateFrom", input.DateFrom.Value);
+                if (input.DateTo.HasValue) cmd.Parameters.AddWithValue("@DateTo", input.DateTo.Value);
+                if (!string.IsNullOrEmpty(input.SearchValue)) cmd.Parameters.AddWithValue("@SearchValue", $"%{input.SearchValue}%");
                 cmd.Parameters.AddWithValue("@Offset", (input.Page - 1) * input.PageSize);
                 cmd.Parameters.AddWithValue("@PageSize", input.PageSize);
 
@@ -153,15 +193,26 @@ namespace SV22T1020063.DataLayers.SQLServer
                         OrderTime = Convert.ToDateTime(reader["OrderTime"]),
                         DeliveryProvince = reader["DeliveryProvince"]?.ToString(),
                         DeliveryAddress = reader["DeliveryAddress"]?.ToString(),
-                        Status = (OrderStatusEnum)Convert.ToInt32(reader["Status"])
+                        EmployeeID = reader["EmployeeID"] as int?,
+                        AcceptTime = reader["AcceptTime"] as DateTime?,
+                        ShipperID = reader["ShipperID"] as int?,
+                        ShippedTime = reader["ShippedTime"] as DateTime?,
+                        FinishedTime = reader["FinishedTime"] as DateTime?,
+                        Status = (OrderStatusEnum)Convert.ToInt32(reader["Status"]),
+                        
+                        CustomerName = reader["CustomerName"]?.ToString() ?? "",
+                        CustomerContactName = reader["CustomerContactName"]?.ToString() ?? "",
+                        CustomerEmail = reader["CustomerEmail"]?.ToString() ?? "",
+                        CustomerPhone = reader["CustomerPhone"]?.ToString() ?? "",
+                        CustomerAddress = reader["CustomerAddress"]?.ToString() ?? "",
+                        EmployeeName = reader["EmployeeName"]?.ToString() ?? "",
+                        ShipperName = reader["ShipperName"]?.ToString() ?? "",
+                        ShipperPhone = reader["ShipperPhone"]?.ToString() ?? ""
                     });
                 }
             }
 
             result.DataItems = data;
-            result.Page = input.Page;
-            result.PageSize = input.PageSize;
-
             return result;
         }
 
