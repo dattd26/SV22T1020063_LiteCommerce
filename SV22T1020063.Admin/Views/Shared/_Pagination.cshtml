@@ -23,45 +23,66 @@
             <ul class="pagination pagination-sm mb-0 shadow-sm">
                 @if (Model.PageCount > 1)
                 {
-                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
-                        <a class="page-link px-3" href="@Url.Action(action, controller, new { page = 1, searchValue = searchValue })" title="Trang đầu">
-                            <i class="bi bi-chevron-bar-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-                        <a class="page-link px-3" href="@Url.Action(action, controller, new { page = Model.Page - 1, searchValue = searchValue })" title="Trang trước">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
+                    @* Tìm và thay thế các nút trong vòng lặp phân trang *@
 
-                    @foreach (var p in Model.GetDisplayPages())
+                    @if (Model.PageCount > 1)
                     {
-                        if (p.IsEllipsis)
-                        {
-                            <li class="page-item disabled">
-                                <span class="page-link">...</span>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="page-item @(p.IsCurrent ? "active shadow-sm" : "")">
-                                <a class="page-link px-3" href="@Url.Action(action, controller, new { page = p.Page, searchValue = searchValue })">@p.Page</a>
-                            </li>
-                        }
-                    }
+                        @* Nút Trang đầu *@
+                        <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                            <a class="page-link px-3" href="javascript:;"
+                               onclick="paginationSearch(event, document.getElementById('formSearch'), 1)" title="Trang đầu">
+                                <i class="bi bi-chevron-bar-left"></i>
+                            </a>
+                        </li>
 
-                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-                        <a class="page-link px-3" href="@Url.Action(action, controller, new { page = Model.Page + 1, searchValue = searchValue })" title="Trang sau">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="page-item @(Model.Page == Model.PageCount ? "disabled" : "")">
-                        <a class="page-link px-3" href="@Url.Action(action, controller, new { page = Model.PageCount, searchValue = searchValue })" title="Trang cuối">
-                            <i class="bi bi-chevron-bar-right"></i>
-                        </a>
-                    </li>
+                        @* Nút Trang trước *@
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a class="page-link px-3" href="javascript:;"
+                               onclick="paginationSearch(event, document.getElementById('formSearch'), @(Model.Page - 1))" title="Trang trước">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        @foreach (var p in Model.GetDisplayPages())
+                        {
+                            if (p.IsEllipsis)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+                            else
+                            {
+                                <li class="page-item @(p.IsCurrent ? "active shadow-sm" : "")">
+                                    <a class="page-link px-3" href="javascript:;"
+                                       onclick="paginationSearch(event, document.getElementById('formSearch'), @p.Page)">@p.Page</a>
+                                </li>
+                            }
+                        }
+
+                        @* Nút Trang sau *@
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                            <a class="page-link px-3" href="javascript:;"
+                               onclick="paginationSearch(event, document.getElementById('formSearch'), @(Model.Page + 1))" title="Trang sau">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+
+                        @* Nút Trang cuối *@
+                        <li class="page-item @(Model.Page == Model.PageCount ? "disabled" : "")">
+                            <a class="page-link px-3" href="javascript:;"
+                               onclick="paginationSearch(event, document.getElementById('formSearch'), @Model.PageCount)" title="Trang cuối">
+                                <i class="bi bi-chevron-bar-right"></i>
+                            </a>
+                        </li>
+                    }
                 }
             </ul>
         </nav>
     </div>
+    @section Scripts {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                paginationSearch(null, document.getElementById("formSearch"), @Model.Page);
+            });
+        </script>
+    }
 }
