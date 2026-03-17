@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Quản lý Nhà cung cấp";
 }
+@model PagedResult<Supplier>
 @section PageToolBar {
     <a href="~/Supplier/Create" class="btn btn-primary d-flex align-items-center ms-1">
         <i class="bi bi-plus-circle me-1"></i>
@@ -11,8 +12,7 @@
     <div class="card-body">
         <form id="formSearch">
             <div class="input-group">
-                <input type="text"
-                       class="form-control"
+                <input type="text" class="form-control" name="searchValue" value="@ViewBag.SearchValue"
                        placeholder="Tên nhà cung cấp..." autofocus />
                 <button class="btn btn-info d-flex align-items-center">
                     <i class="bi bi-search me-1"></i>
@@ -23,7 +23,7 @@
 </div>
 
 <div class="mb-2 text-muted">
-    Danh sách này có <strong>25</strong> nhà cung cấp
+    Danh sách này có <strong>@Model.RowCount</strong> nhà cung cấp
 </div>
 
 <div class="card">
@@ -41,43 +41,32 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 1; i <= 10; i++)
+                @foreach (var item in Model.DataItems)
                 {
                     <tr>
-                        <td>Công ty ABC</td>
-                        <td>ABC Trading</td>
-                        <td>0901234567</td>
-                        <td>contact@abc.com</td>
-                        <td>123 Lê Lợi</td>
-                        <td>TP. Hồ Chí Minh</td>
+                        <td>@item.SupplierName</td>
+                        <td>@item.ContactName</td>
+                        <td>@item.Phone</td>
+                        <td>@item.Email</td>
+                        <td>@item.Address</td>
+                        <td>@item.Province</td>
                         <td class="text-center">
-                            <a href="~/Supplier/Edit/123" class="btn btn-sm btn-primary me-1">
+                            <a href="~/Supplier/Edit/@item.SupplierID" class="btn btn-sm btn-primary me-1">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="~/Supplier/Delete/123" class="btn btn-sm btn-danger">
+                            <a href="~/Supplier/Delete/@item.SupplierID" class="btn btn-sm btn-danger">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
                     </tr>
+
+
+
+                
                 }
             </tbody>
         </table>
     </div>
-    <div class="card-footer">
-        <!-- Pagination -->
-        <ul class="pagination justify-content-center">
-            <li class="page-item active">
-                <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-        </ul>
-    </div>
+
+    @await Html.PartialAsync("_Pagination", Model)
 </div>
-
-
-

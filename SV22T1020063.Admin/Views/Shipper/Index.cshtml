@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Quản lý Người giao hàng";
 }
+@model PagedResult<Shipper>
 @section PageToolBar {
     <a href="~/Shipper/Create" class="btn btn-primary">
         <i class="bi bi-plus-circle me-1"></i>
@@ -11,8 +12,7 @@
     <div class="card-body">
         <form id="formSearch">
             <div class="input-group">
-                <input type="text"
-                       class="form-control"
+                <input type="text"         class="form-control"               name="searchValue"                     value="@ViewBag.SearchValue"
                        placeholder="Tên người giao hàng..." autofocus />
                 <button class="btn btn-info d-flex align-items-center">
                     <i class="bi bi-search me-1"></i>
@@ -23,7 +23,7 @@
 </div>
 
 <div class="mb-2 text-muted">
-    Danh sách này có <strong>10</strong> người giao hàng
+    Danh sách này có <strong>@Model.RowCount</strong> người giao hàng
 </div>
 
 <div class="card">
@@ -37,36 +37,25 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 1; i <= 10; i++)
+                @foreach (var item in Model.DataItems)
                 {
                     <tr>
-                        <td>Nguyễn Văn Giao</td>
-                        <td>0909876543</td>
+                        <td>@item.ShipperName</td>
+                        <td>@item.Phone</td>
                         <td class="text-center text-nowrap">
-                            <a href="~/Shipper/Edit/123" class="btn btn-sm btn-primary">
+                            <a href="~/Shipper/Edit/@item.ShipperID" class="btn btn-sm btn-primary">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="~/Shipper/Delete/123" class="btn btn-sm btn-danger">
+                            <a href="~/Shipper/Delete/@item.ShipperID" class="btn btn-sm btn-danger">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
                     </tr>
+                
                 }
             </tbody>
         </table>
     </div>
 
-    <div class="card-footer">
-        <ul class="pagination justify-content-center">
-            <li class="page-item active">
-                <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-        </ul>
-    </div>
+    @await Html.PartialAsync("_Pagination", Model)
 </div>

@@ -1,4 +1,4 @@
-﻿@using SV22T1020063.Models.Partner
+@using SV22T1020063.Models.Partner
 @using SV22T1020063.Models.Common
 @model PagedResult<Customer>
 
@@ -86,100 +86,8 @@
         </table>
     </div>
 
-    <div class="card-footer d-flex flex-column flex-md-row justify-content-between align-items-center bg-white py-3">
-        <div class="text-muted mb-3 mb-md-0">
-            @if (Model.RowCount > 0)
-            {
-                <span>Hiển thị từ <strong>@((Model.Page - 1) * Model.PageSize + 1)</strong> đến <strong>@(Math.Min(Model.Page * Model.PageSize, Model.RowCount))</strong> trong tổng số <strong>@Model.RowCount</strong> khách hàng</span>
-            }
-            else
-            {
-                <span>Không tìm thấy khách hàng nào phù hợp</span>
-            }
-        </div>
-
-        <nav aria-label="Page navigation">
-            <ul class="pagination pagination-sm mb-0 shadow-sm">
-                @if (Model.PageCount > 1)
-                {
-                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
-                        <a class="page-link px-3" href="@Url.Action("Index", "Customer", new { page = 1, searchValue = ViewBag.SearchValue })" title="Trang đầu">
-                            <i class="bi bi-chevron-bar-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-                        <a class="page-link px-3" href="@Url.Action("Index", "Customer", new { page = Model.Page - 1, searchValue = ViewBag.SearchValue })" title="Trang trước">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
-
-                    @foreach (var p in Model.GetDisplayPages())
-                    {
-                        if (p.IsEllipsis)
-                        {
-                            <li class="page-item disabled">
-                                <span class="page-link">...</span>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="page-item @(p.IsCurrent ? "active shadow-sm" : "")">
-                                <a class="page-link px-3" href="@Url.Action("Index", "Customer", new { page = p.Page, searchValue = ViewBag.SearchValue })">@p.Page</a>
-                            </li>
-                        }
-                    }
-
-                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-                        <a class="page-link px-3" href="@Url.Action("Index", "Customer", new { page = Model.Page + 1, searchValue = ViewBag.SearchValue })" title="Trang sau">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="page-item @(Model.Page == Model.PageCount ? "disabled" : "")">
-                        <a class="page-link px-3" href="@Url.Action("Index", "Customer", new { page = Model.PageCount, searchValue = ViewBag.SearchValue })" title="Trang cuối">
-                            <i class="bi bi-chevron-bar-right"></i>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </nav>
-    </div>
+    @await Html.PartialAsync("_Pagination", Model)
 </div>
 
-@section Styles {
-    <style>
-        .pagination .page-link {
-            color: #495057;
-            background-color: #fff;
-            border: 1px solid #dee2e6;
-            transition: all 0.2s ease-in-out;
-            margin: 0 2px;
-            border-radius: 4px !important;
-        }
+@* Không cần Styles section này nữa vì đã chuyển vào site.css *@
 
-        .pagination .page-item.active .page-link {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            color: #fff;
-            z-index: 3;
-            font-weight: bold;
-        }
-
-        .pagination .page-item:not(.active):not(.disabled) .page-link:hover {
-            background-color: #f8f9fa;
-            color: #0d6efd;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .pagination .page-item.disabled .page-link {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-            color: #6c757d;
-            opacity: 0.6;
-        }
-
-        .pagination .page-link:focus {
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-    </style>
-}

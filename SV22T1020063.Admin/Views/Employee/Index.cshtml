@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Quản lý Nhân viên";
 }
+@model PagedResult<Employee>
 @section PageToolBar {
     <a href="~/Employee/Create" class="btn btn-primary">
         <i class="bi bi-plus-circle me-1"></i>
@@ -11,8 +12,7 @@
     <div class="card-body">
         <form id="formSearch">
             <div class="input-group">
-                <input type="text"
-                       class="form-control"
+                <input type="text"         class="form-control"               name="searchValue"                      value="@ViewBag.SearchValue"
                        placeholder="Tên nhân viên..." autofocus />
                 <button class="btn btn-info d-flex align-items-center">
                     <i class="bi bi-search me-1"></i>
@@ -23,7 +23,7 @@
 </div>
 
 <div class="mb-2 text-muted">
-    Danh sách này có <strong>15</strong> nhân viên
+    Danh sách này có <strong>@Model.RowCount</strong> nhân viên
 </div>
 
 <div class="card">
@@ -41,49 +41,49 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 1; i <= 10; i++)
+                @foreach (var item in Model.DataItems)
                 {
                     <tr>
-                        <td>Nguyễn Văn A</td>
-                        <td>15/08/1990</td>
-                        <td>0912345678</td>
-                        <td>a.nguyen@gmail.com</td>
-                        <td>123 Lê Lợi</td>
-                        <td class="text-center">
-                            <span class="badge bg-success">Đang làm việc</span>
-                        </td>
-                        <td class="text-center text-nowrap">
-                            <a href="~/Employee/Edit/123" class="btn btn-sm btn-primary" title="Cập nhật">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="~/Employee/Delete/123" class="btn btn-sm btn-danger" title="Xóa">
+                        <td>@item.FullName</td>
+                        <td>@item.BirthDate</td>
+                        <td>@item.Phone</td>
+                        <td>@item.Email</td>
+                        <td>@item.Address</td>
+                        @if(item.IsWorking)
+                        {
+                            <td class="text-center">
+                                <span class="badge bg-success">Đang làm việc</span>
+                            </td>
+                        }
+                        else
+                       
+                        {
+                            <td class="text-center">
+                                <span class="badge bg-danger">Đã nghỉ việc</span>
+                            </td>
+                      
+                            }
+                                <td class="text-center text-nowrap">
+                                    <a href="~/Employee/Edit / @item.EmployeeID" class="btn btn-sm btn-primary" title="Cập nhật">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="~/Employee/Delete / @item.EmployeeID" class="btn btn-sm btn-danger" title="Xóa">
                                 <i class="bi bi-trash"></i>
                             </a>
-                            <a href="~/Employee/ChangePassword/123" class="btn btn-sm btn-warning ms-2" title="Đổi mật khẩu">
-                                <i class="bi bi-key"></i>
-                            </a>
-                            <a href="~/Employee/ChangeRole/123" class="btn btn-sm btn-info" title="Cấp quyền">
-                                <i class="bi bi-shield-check"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <div class="card-footer">
-        <ul class="pagination justify-content-center">
-            <li class="page-item active">
-                <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-        </ul>
-    </div>
+                            <a href="~/Employee/ChangePassword / @item.EmployeeID" class="btn btn-sm btn-warning ms-2"
+                            title="Đổi mật khẩu">
+                            <i class="bi bi-key"></i>
+                        </a>
+                        <a href="~/Employee/ChangeRole / @item.EmployeeID" class="btn btn-sm btn-info" title="Cấp quyền">
+                        <i class="bi bi-shield-check"></i>
+                    </a>
+                </td>
+            </tr>
+              
+        }
+    </tbody>
+</table>
 </div>
 
+    @await Html.PartialAsync("_Pagination", Model)
+</div>
