@@ -95,9 +95,22 @@ namespace SV22T1020063.DataLayers.SQLServer
             if (input.SupplierID != 0)
                 where += " AND SupplierID = @SupplierID";
 
+            if (input.MinPrice > 0)
+                where += " AND Price >= @MinPrice";
+
+            if (input.MaxPrice > 0)
+                where += " AND Price <= @MaxPrice";
+
             string countSql = $"SELECT COUNT(*) FROM Products {where}";
 
-            result.RowCount = await connection.ExecuteScalarAsync<int>(countSql, input);
+            result.RowCount = await connection.ExecuteScalarAsync<int>(countSql, new
+            {
+                searchValue,
+                input.CategoryID,
+                input.SupplierID,
+                input.MinPrice,
+                input.MaxPrice
+            });
 
             if (result.RowCount > 0)
             {
@@ -116,12 +129,14 @@ namespace SV22T1020063.DataLayers.SQLServer
                              ORDER BY ProductName
                              OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
                 }
-
+                Console.WriteLine(sql);
                 var data = await connection.QueryAsync<Product>(sql, new
                 {
                     searchValue,
                     input.CategoryID,
                     input.SupplierID,
+                    input.MinPrice,
+                    input.MaxPrice,
                     Offset = input.Offset,
                     input.PageSize
                 });
