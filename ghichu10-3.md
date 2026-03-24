@@ -49,3 +49,7 @@
 	- Kiểm tra thông tin đăng nhập có hợp lệ?
 	- Đổi mật khẩu
 	=> interface IUserAccountRepository 
+
+
+
+	khong update view thi redirec action
