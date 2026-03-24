@@ -107,10 +107,33 @@ namespace SV22T1020063.Admin.Controllers
             }
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            try
+            {
+                if (Request.Method == "POST")
+                {
+                    await HRDataService.DeleteEmployeeAsync(id);
+                    return RedirectToAction("Index");
+                }
+                
+                // GET
+                var model = await HRDataService.GetEmployeeAsync(id);
+                if (model == null)
+                {
+                    return RedirectToAction("Index");
+                }
+                ViewBag.CanDelete = !await HRDataService.IsUsedEmployeeAsync(id);
+
+               return View(model);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("Error", "Lỗi không xác định");
+                return RedirectToAction("Index");
+            }
         }
+
 
         public IActionResult ChangePassword(int id)
         {
