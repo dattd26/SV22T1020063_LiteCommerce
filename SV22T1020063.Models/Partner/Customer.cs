@@ -37,5 +37,15 @@
         /// Khách hàng hiện có bị khóa hay không?
         /// </summary>
         public bool IsLocked { get; set; }
+
+        /// <summary>
+        /// Trạng thái (dùng cho hiển thị)
+        /// </summary>
+        public string Status => IsLocked ? "Đã khóa" : "Đang hoạt động";
+
+        /// <summary>
+        /// Class CSS cho trạng thái (dùng cho hiển thị)
+        /// </summary>
+        public string StatusClass => IsLocked ? "badge bg-danger" : "badge bg-success";
     }
 }

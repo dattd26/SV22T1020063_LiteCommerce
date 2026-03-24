@@ -65,18 +65,9 @@
                         <dd class="col-sm-9">@Model.Address</dd>
 
                         <dt class="col-sm-3">Trạng thái:</dt>
-                        @if (@Model.IsWorking)
-                        {
-                            <dd class="col-sm-9">
-                                <span class="badge bg-success">Đang làm việc</span>
-                            </dd>
-                        }
-                        else
-                        {
-                            <dd class="col-sm-9">
-                                <span class="badge bg-danger">Đã nghỉ việc</span>
-                            </dd>
-                        }
+                        <dd class="col-sm-9">
+                            <span class="@Model.StatusClass">@Model.Status</span>
+                        </dd>
                     </dl>
                 </div>
             </div>

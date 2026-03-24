@@ -37,5 +37,15 @@
         /// Nhân viên đang làm việc hay không?
         /// </summary>
         public bool IsWorking { get; set; }
+
+        /// <summary>
+        /// Trạng thái (dùng cho hiển thị)
+        /// </summary>
+        public string Status => IsWorking ? "Đang làm việc" : "Đã nghỉ việc";
+
+        /// <summary>
+        /// Class CSS cho trạng thái (dùng cho hiển thị)
+        /// </summary>
+        public string StatusClass => IsWorking ? "badge bg-success" : "badge bg-danger";
     }
 }

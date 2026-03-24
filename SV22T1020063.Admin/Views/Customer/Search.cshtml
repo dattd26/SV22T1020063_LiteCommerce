@@ -36,14 +36,7 @@ amathetcss    For more information on enabling MVC for empty projects, visit htt
                         <td>@item.Address</td>
                         <td>@item.Province</td>
                         <td class="text-center">
-                            @if (!item.IsLocked)
-                            {
-                                <span class="badge bg-success">Hoạt động</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">Không hoạt động</span>
-                            }
+                            <span class="@item.StatusClass">@item.Status</span>
                         </td>
                         <td class="text-center text-nowrap">
                             <a href="~/Customer/Edit/@item.CustomerID" class="btn btn-sm btn-primary">

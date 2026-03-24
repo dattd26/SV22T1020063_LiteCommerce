@@ -57,18 +57,10 @@
                         <dd class="col-sm-8">@Model.ContactName</dd>
 
                         <dt class="col-sm-4">Trạng thái</dt>
-                        @if (@Model.IsLocked)
-                        {
-                            <dd class="col-sm-8">
-                                <span class="badge bg-danger">Đã khóa</span>
-                            </dd>
-                        }
-                        else
-                        {
-                            <dd class="col-sm-8">
-                                <span class="badge bg-success">Đang hoạt động</span>
-                            </dd>
-                        }
+                        <dd class="col-sm-8">
+                            <span class="@Model.StatusClass">@Model.Status</span>
+                        </dd>
+                        
                         <dt class="col-sm-4">Điện thoại</dt>
                         <dd class="col-sm-8">@Model.Phone</dd>
 

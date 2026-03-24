@@ -31,20 +31,9 @@
                         <td>@item.Phone</td>
                         <td>@item.Email</td>
                         <td>@item.Address</td>
-                        @if (item.IsWorking)
-                        {
-                            <td class="text-center">
-                                <span class="badge bg-success">Đang làm việc</span>
-                            </td>
-                        }
-                        else
-
-                        {
-                            <td class="text-center">
-                                <span class="badge bg-danger">Đã nghỉ việc</span>
-                            </td>
-
-                        }
+                        <td class="text-center">
+                            <span class="@item.StatusClass">@item.Status</span>
+                        </td>
                         <td class="text-center text-nowrap">
                             <a href="~/Employee/Edit/@item.EmployeeID" class="btn btn-sm btn-primary" title="Cập nhật">
                                 <i class="bi bi-pencil"></i>
