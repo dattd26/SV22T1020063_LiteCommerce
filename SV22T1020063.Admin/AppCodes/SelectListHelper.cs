@@ -95,5 +95,24 @@ namespace SV22T1020063.Admin
                 new SelectListItem() { Value = OrderStatusEnum.Cancelled.ToString(), Text = OrderStatusEnum.Cancelled.GetDescription() },
             };
         }
+
+        public static async Task<List<SelectListItem>> CustomersAsync()
+        {
+            var list = new List<SelectListItem>()
+            {
+                new SelectListItem() { Value = "0", Text = "-- Khách hàng --"}
+            };
+            var input = new PaginationSearchInput() { Page = 1, PageSize = 0, SearchValue = "" };
+            var result = await PartnerDataService.ListCustomersAsync(input);
+            foreach (var item in result.DataItems)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Value = item.CustomerID.ToString(),
+                    Text = item.CustomerName
+                });
+            }
+            return list;
+        }
     }
 }

@@ -1,202 +1,241 @@
-﻿@model PagedResult<Product>
+@model ProductSearchInput
 @{
     ViewBag.Title = "Lập đơn hàng";
 }
 <div class="row">
     <!-- Tìm kiếm & chọn mặt hàng -->
-    <div class="col-4">
-        <div class="card card-outline card-primary h-100">
+    <div class="col-md-4">
+        <div class="card card-outline card-primary shadow-sm h-100">
             <div class="card-header">
                 <h5 class="mb-0">
-                    <i class="bi bi-search"></i>
+                    <i class="bi bi-search text-primary"></i>
                     Lựa chọn hàng cần bán
                 </h5>
             </div>
 
             <div class="card-body">
                 <!-- Search -->
-                <form method="get" class="mb-3">
+                <form id="formSearch" action="@Url.Action("SearchProduct", "Order")" method="get" class="mb-3">
                     <div class="input-group">
                         <input class="form-control"
-                               name="searchValue"
-                               value="@ViewBag.SearchValue"
+                               name="SearchValue"
+                               value="@Model.SearchValue"
                                placeholder="Nhập tên mặt hàng cần tìm" autofocus />
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary" type="submit">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </form>
 
                 <!-- Danh sách mặt hàng -->
-                @foreach (var item in Model.DataItems)
-                {
-                    <form method="post" class="border rounded p-2 mb-2">
-                        <strong>@item.ProductName</strong>
+                <div id="search-result">
 
-                        <div class="row mt-2">
-                            <div class="col-4">
-                                <img src="~/images/products/demo.png"
-                                     class="img-fluid border" style="max-height:100px" />
-                            </div>
-                            <div class="col-8">
-                                <div class="row g-2">
-                                    <div class="col-7">
-                                        <label class="form-label mb-0">Giá</label>
-                                        <input class="form-control form-control-sm money-input"
-                                               value="@item.Price" />
-                                    </div>
-                                    <div class="col-5">
-                                        <label class="form-label mb-0">SL</label>
-                                        <input type="number"
-                                               min="1"
-                                               value="1"
-                                               class="form-control form-control-sm" />
-                                    </div>
-                                </div>
-
-                                <button class="btn btn-sm btn-primary mt-2 w-100">
-                                    <i class="bi bi-cart-plus"></i>
-                                    Thêm vào giỏ
-                                </button>
-                            </div>
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary spinner-border-sm" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
                         </div>
-                    </form>
-                }
-            </div>
-
-            <div class="card-footer">
-                <ul class="pagination justify-content-between mb-0">
-                    <li class="page-item">
-                        <a class="page-link">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Giỏ hàng và thông tin khách hàng -->
-    <div class="col-8">
+    <div class="col-md-8">
         <!-- Giỏ hàng -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card card-outline card-success">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="bi bi-cart"></i>
-                            Danh sách mặt hàng đã chọn
-                        </h5>
-                    </div>
+        <div class="card card-outline card-success shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-cart text-success"></i>
+                    Danh sách mặt hàng đã chọn
+                </h5>
+            </div>
 
-                    <div class="card-body">
-                        <table class="table table-bordered table-hover align-middle">
-                            <thead class="table-success">
-                                <tr>
-                                    <th class="text-center">#</th>
-                                    <th style="width:auto">Tên hàng</th>
-                                    <th class="text-center" style="width:100px">ĐVT</th>
-                                    <th class="text-center" style="width:100px">SL</th>
-                                    <th class="text-end" style="width:150px">Giá</th>
-                                    <th class="text-end" style="width:150px">Thành tiền</th>
-                                    <th style="width:80px"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (int i = 1; i <= 3; i++)
-                                {
-                                    <tr>
-                                        <td class="text-center">@i</td>
-                                        <td>Laptop HP Gaming VICTUS</td>
-                                        <td class="text-center">Bộ</td>
-                                        <td class="text-center">1</td>
-                                        <td class="text-end">23.990.000</td>
-                                        <td class="text-end">23.990.000</td>
-                                        <td class="text-end text-nowrap">
-                                            <a class="btn btn-sm btn-primary open-modal" href="~/Order/EditCartItem?productId=456">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a class="btn btn-sm btn-danger open-modal" href="~/Order/DeleteCartItem?productId=456">
-                                                <i class="bi bi-dash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="5" class="text-end">Tổng cộng:</th>
-                                    <th class="text-end">71,970,000</th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-                        <!-- remove model view style -->
-                        <div class="text-end mt-2"> 
-                            <a class="btn btn-sm btn-danger"
-                               href="~/Order/ClearCart">
-                                <i class="bi bi-trash"></i>
-                                Xóa giỏ hàng
-                            </a>
+            <div class="card-body p-0">
+                <div id="cart-container" class="table-responsive">
+                    <div class="p-4 text-center">
+                        <div class="spinner-border text-success spinner-border-sm" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Thông tin khách hàng và nơi giao hàng -->
-        <div class="row mt-3">
-            <div class="col-12">
-                <div class="card card-outline card-info">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="bi bi-person"></i>
-                            Thông tin khách hàng & nơi giao hàng
-                        </h5>
+        <div class="card card-outline card-info shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-person text-info"></i>
+                    Thông tin khách hàng & nơi giao hàng
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <form id="formOrder" method="post" action="~/Order/Init">
+                    <div class="row mb-3">
+                        <label class="col-md-3 col-form-label fw-bold">Khách hàng</label>
+                        <div class="col-md-9">
+                            <select class="form-select select2" name="CustomerID" asp-items="await SelectListHelper.CustomersAsync()">
+
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="card-body">
-                        <form method="post">
-                            <div class="row mb-3">
-                                <label class="col-md-2 col-form-label">Khách hàng</label>
-                                <div class="col-md-10">
-                                    <select class="form-select">
-                                        <option>-- Chọn khách hàng --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <label class="col-md-2 col-form-label">Tỉnh/thành</label>
-                                <div class="col-md-10">
-                                    <select class="form-select">
-                                        <option>-- Chọn Tỉnh/thành giao hàng --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <label class="col-md-2 col-form-label">Địa chỉ</label>
-                                <div class="col-md-10">
-                                    <textarea class="form-control"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="text-end">
-                                <button class="btn btn-primary">
-                                    <i class="bi bi-check-circle"></i>
-                                    Lập đơn hàng
-                                </button>
-                            </div>
-                        </form>
+                    <div class="row mb-3">
+                        <label class="col-md-3 col-form-label fw-bold">Tỉnh/thành giao hàng</label>
+                        <div class="col-md-9">
+                            <select class="form-select select2" name="DeliveryProvince">
+                                @foreach (var item in await SelectListHelper.ProvincesAsync())
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="row mb-3">
+                        <label class="col-md-3 col-form-label fw-bold">Địa chỉ nhận hàng</label>
+                        <div class="col-md-9">
+                            <textarea class="form-control" name="DeliveryAddress" rows="2" placeholder="Nhập địa chỉ nhận hàng"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="text-end border-top pt-3">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Xác nhận lập đơn hàng
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        /**
+         * Tìm kiếm mặt hàng (phân trang)
+         */
+        function doSearch(page) {
+            const form = document.getElementById("formSearch");
+            const container = document.getElementById("search-result");
+            if (!form || !container) return;
+
+            const url = form.getAttribute("action");
+            const formData = new FormData(form);
+            formData.append("Page", page);
+
+            const params = new URLSearchParams(formData).toString();
+            const fetchUrl = url + (url.indexOf("?") > -1 ? "&" : "?") + params;
+
+            fetch(fetchUrl)
+                .then(res => res.text())
+                .then(html => {
+                    container.innerHTML = html;
+                })
+                .catch(err => {
+                    console.error("Search error:", err);
+                    alert("Không thể tải danh sách mặt hàng.");
+                });
+        }
+
+        /**
+         * Hiển thị nội dung giỏ hàng
+         */
+        function showCart() {
+            const container = document.getElementById("cart-container");
+            if (!container) return;
+
+            fetch("/Order/GetCart")
+                .then(res => res.text())
+                .then(html => {
+                    container.innerHTML = html;
+                })
+                .catch(err => console.error("Cart load error:", err));
+        }
+
+        /**
+         * Khởi tạo các sự kiện khi trang đã sẵn sàng
+         */
+        document.addEventListener("DOMContentLoaded", function () {
+            // Tải dữ liệu ban đầu
+            doSearch(1);
+            showCart();
+
+            // Xử lý sự kiện submit Form tìm kiếm
+            const formSearch = document.getElementById("formSearch");
+            if (formSearch) {
+                formSearch.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    doSearch(1);
+                });
+            }
+
+            // Xử lý sự kiện Submit chung (Thêm vào giỏ và Lập đơn hàng)
+            document.addEventListener("submit", function (e) {
+                // 1. Thêm mặt hàng vào giỏ
+                if (e.target.classList.contains("form-add-to-cart")) {
+                    e.preventDefault();
+                    const form = e.target;
+                    const action = form.getAttribute("action");
+                    const formData = new FormData(form);
+
+                    fetch(action, {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(res => res.text())
+                    .then(result => {
+                        // Nếu kết quả trả về không phải là bảng giỏ hàng (mà là chuỗi thông báo lỗi)
+                        if (result !== "" && !result.includes("<table")) {
+                            alert(result);
+                        } else {
+                            document.getElementById("cart-container").innerHTML = result;
+                        }
+                    })
+                    .catch(err => alert("Lỗi khi thêm vào giỏ hàng"));
+                }
+                
+                // 2. Lập đơn hàng (Xác nhận cuối cùng)
+                if (e.target.id === "formOrder") {
+                    e.preventDefault();
+                    const form = e.target;
+                    const action = form.getAttribute("action");
+                    const formData = new FormData(form);
+
+                    fetch(action, {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            window.location.href = "/Order/Detail/" + result.orderID;
+                        } else {
+                            alert(result);
+                        }
+                    })
+                    .catch(() => alert("Đã có lỗi xảy ra khi lập đơn hàng. Vui lòng kiểm tra lại thông tin."));
+                }
+            });
+
+            // Xử lý sự kiện Click chung (Xóa món, Xóa giỏ)
+            document.addEventListener("click", function (e) {
+                const ajaxBtn = e.target.closest(".ajax-remove, .ajax-clear");
+                if (ajaxBtn) {
+                    e.preventDefault();
+                    const url = ajaxBtn.getAttribute("href");
+                    
+                    fetch(url)
+                        .then(res => res.text())
+                        .then(html => {
+                            document.getElementById("cart-container").innerHTML = html;
+                        })
+                        .catch(err => console.error("Update cart error:", err));
+                }
+            });
+        });
+    </script>
+}

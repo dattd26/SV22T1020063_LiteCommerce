@@ -1,8 +1,8 @@
-using System.Reflection.PortableExecutable;
 using Microsoft.AspNetCore.Mvc;
 using SV22T1020063.BusinessLayers;
 using SV22T1020063.Models.Sales;
 using SV22T1020063.Models.Catalog;
+using SV22T1020063.Admin.Models;
 
 namespace SV22T1020063.Admin.Controllers
 {
@@ -22,46 +22,127 @@ namespace SV22T1020063.Admin.Controllers
         }
 
         // Tạo đơn hàng mới (Giao diện giỏ hàng)
-        public async Task<IActionResult> Create(int page = 1, string searchValue = "")
+        public IActionResult Create()
         {
-            var result = await ProductDataService.ListProductsAsync(new ProductSearchInput { Page = page, PageSize = PAGESIZE, SearchValue = searchValue, CategoryID = 0, SupplierID = 0, MinPrice = 0, MaxPrice = 0 });
-            ViewBag.SearchValue = searchValue;
+            var input = ApplicationContext.GetSessionData<ProductSearchInput>("ProductSearchForSale");
+            if (input == null)
+            {
+                input = new ProductSearchInput() { Page = 1, PageSize = 8, SearchValue = "" };
+            }
+            return View(input);
+        }
+
+        public async Task<IActionResult> SearchProduct(ProductSearchInput input)
+        {
+            input.PageSize = 8;
+            var result = await ProductDataService.ListProductsAsync(input);
+            ApplicationContext.SetSessionData("ProductSearchForSale", input);
             return View(result);
+        }
+
+        private const string SHOPPING_CART = "ShoppingCart";
+
+        private List<CartItem> GetShoppingCart()
+        {
+            var cart = ApplicationContext.GetSessionData<List<CartItem>>(SHOPPING_CART);
+            if (cart == null)
+            {
+                cart = new List<CartItem>();
+                ApplicationContext.SetSessionData(SHOPPING_CART, cart);
+            }
+            return cart;
+        }
+
+        public IActionResult AddToCart(CartItem item)
+        {
+            if (item.Quantity <= 0 || item.SalePrice < 0)
+                return Json("Dữ liệu không hợp lệ");
+
+            var cart = GetShoppingCart();
+            var existsItem = cart.FirstOrDefault(m => m.ProductID == item.ProductID);
+            if (existsItem == null)
+            {
+                cart.Add(item);
+            }
+            else
+            {
+                existsItem.Quantity += item.Quantity;
+                existsItem.SalePrice = item.SalePrice;
+            }
+            ApplicationContext.SetSessionData(SHOPPING_CART, cart);
+            return View("GetCart", cart);
+        }
+
+        public IActionResult RemoveFromCart(int id = 0)
+        {
+            var cart = GetShoppingCart();
+            int index = cart.FindIndex(m => m.ProductID == id);
+            if (index >= 0)
+                cart.RemoveAt(index);
+
+            ApplicationContext.SetSessionData(SHOPPING_CART, cart);
+            return View("GetCart", cart);
+        }
+
+        public IActionResult ClearCart()
+        {
+            var cart = GetShoppingCart();
+            cart.Clear();
+            ApplicationContext.SetSessionData(SHOPPING_CART, cart);
+            return View("GetCart", cart);
+        }
+
+        public IActionResult GetCart()
+        {
+            var cart = GetShoppingCart();
+            return View(cart);
         }
         // Xem chi tiết đơn hàng (và thực hiện các thao tác chuyển trạng thái)
         public IActionResult Detail(int id) => View();
 
-        // Các thao tác với giỏ hàng khi đang tạo đơn mới
         /// <summary>
-        /// Cập nhật thông tin (số lượng, giá bán) của một mặt hàng trong giỏ hàng hoặc trong một đơn hàng
+        /// Khởi tạo đơn hàng (lưu vào database)
         /// </summary>
-        /// <param name="id">0:  Cập nhật cho Giỏ hàng, khác 0: Cập nhật cho đơn hàng</param>
-        /// <param name="productId">Mã hàng</param>
-        /// <returns></returns>
-        public IActionResult EditCartItem(int id = 0, int productId = 0)
+        [HttpPost]
+        public async Task<IActionResult> Init(int customerID, string deliveryProvince, string deliveryAddress)
         {
-            if (id == 0)
-            {
-                // Xử lý cho giỏ hàng
-            }
-            else
-            {
-                // Xử lý cho đơn hàng
-            }
-            return View();
-        }
-        /// <summary>
-        /// Xóa mặt hàng ra khỏi giỏ hàng hoặc đơn hàng
-        /// </summary>
-        /// <param name="id">0: Xóa mặt hàng khỏi giỏ, khác 0: Xóa mặt hàng khỏi đơn hàng có mã pid</param>
-        /// <param name="productId"></param>
-        /// <returns></returns>
-        public IActionResult DeleteCartItem(int id = 0, int productId = 0)
-        {
+            var cart = GetShoppingCart();
+            if (cart.Count == 0)
+                return Json("Giỏ hàng trống");
 
-            return PartialView();
+            if (customerID <= 0 || string.IsNullOrEmpty(deliveryProvince) || string.IsNullOrEmpty(deliveryAddress))
+                return Json("Vui lòng nhập đầy đủ thông tin khách hàng và nơi giao hàng");
+
+            // TODO: Lấy ID nhân viên đang đăng nhập. Tạm thời lấy ID = 1
+            int employeeID = 1;
+
+            Order order = new Order()
+            {
+                CustomerID = customerID,
+                DeliveryProvince = deliveryProvince,
+                DeliveryAddress = deliveryAddress,
+                EmployeeID = employeeID,
+                Status = OrderStatusEnum.New
+            };
+            int orderID = await SalesDataService.AddOrderAsync(order);
+
+            foreach (var item in cart)
+            {
+                OrderDetail detail = new OrderDetail()
+                {
+                    OrderID = orderID,
+                    ProductID = item.ProductID,
+                    Quantity = item.Quantity,
+                    SalePrice = item.SalePrice
+                };
+                await SalesDataService.AddDetailAsync(detail);
+            }
+
+            cart.Clear();
+            ApplicationContext.SetSessionData(SHOPPING_CART, cart);
+
+            return Json(new { success = true, orderID = orderID });
         }
-        public IActionResult ClearCart() => RedirectToAction("Create");
 
         // Các thao tác chuyển trạng thái đơn hàng
         /// <summary>
