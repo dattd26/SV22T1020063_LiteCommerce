@@ -98,7 +98,15 @@ namespace SV22T1020063.Admin.Controllers
             return View(cart);
         }
         // Xem chi tiết đơn hàng (và thực hiện các thao tác chuyển trạng thái)
-        public IActionResult Detail(int id) => View();
+        public async Task<IActionResult> Detail(int id)
+        {
+            var order = await SalesDataService.GetOrderAsync(id);
+            if (order == null)
+                return RedirectToAction("Index");
+
+            order.Details = await SalesDataService.ListDetailsAsync(id);
+            return View(order);
+        }
 
         /// <summary>
         /// Khởi tạo đơn hàng (lưu vào database)
@@ -148,23 +156,82 @@ namespace SV22T1020063.Admin.Controllers
         /// <summary>
         /// Duyệt đơn hàng
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public IActionResult Accept(int id) => RedirectToAction("Detail", new { id });
+        public async Task<IActionResult> Accept(int id)
+        {
+            if (Request.Method == "POST")
+            {
+                await SalesDataService.AcceptOrderAsync(id, 1); // Tạm thời ID nhân viên = 1
+                return RedirectToAction("Detail", new { id });
+            }
+            return View();
+        }
+
         /// <summary>
-        /// Chuyển đơn hàng cho người giao hàng
+        /// Từ chối đơn hàng
         /// </summary>
-        /// <param name="id">Mã đơn hàng cần xử lý</param>
-        /// <returns></returns>
-        public IActionResult Shipping(int id) => RedirectToAction("Detail", new { id });
+        public async Task<IActionResult> Reject(int id)
+        {
+            if (Request.Method == "POST")
+            {
+                await SalesDataService.RejectOrderAsync(id, 1); // Tạm thời ID nhân viên = 1
+                return RedirectToAction("Detail", new { id });
+            }
+            return View();
+        }
+
+        /// <summary>
+        /// Hủy đơn hàng
+        /// </summary>
+        public async Task<IActionResult> Cancel(int id)
+        {
+            if (Request.Method == "POST")
+            {
+                await SalesDataService.CancelOrderAsync(id);
+                return RedirectToAction("Detail", new { id });
+            }
+            return View();
+        }
+
         /// <summary>
         /// Ghi nhận đơn hàng kết thúc thành công
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public IActionResult Finish(int id) => RedirectToAction("Detail", new { id });
-        public IActionResult Reject(int id) => RedirectToAction("Detail", new { id });
-        public IActionResult Cancel(int id) => RedirectToAction("Detail", new { id });
-        public IActionResult Delete(int id) => RedirectToAction("Index");
+        public async Task<IActionResult> Finish(int id)
+        {
+            if (Request.Method == "POST")
+            {
+                await SalesDataService.CompleteOrderAsync(id);
+                return RedirectToAction("Detail", new { id });
+            }
+            return View();
+        }
+
+        /// <summary>
+        /// Chuyển đơn hàng cho người giao hàng
+        /// </summary>
+        public async Task<IActionResult> Shipping(int id, int shipperID = 0)
+        {
+            if (Request.Method == "POST")
+            {
+                if (shipperID <= 0)
+                    return View();
+
+                await SalesDataService.ShipOrderAsync(id, shipperID);
+                return RedirectToAction("Detail", new { id });
+            }
+            return View();
+        }
+
+        /// <summary>
+        /// Xóa đơn hàng
+        /// </summary>
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (Request.Method == "POST")
+            {
+                await SalesDataService.DeleteOrderAsync(id);
+                return RedirectToAction("Index");
+            }
+            return View(id);
+        }
     }
 }
