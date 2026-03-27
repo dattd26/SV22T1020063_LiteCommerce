@@ -6,7 +6,7 @@
 {
     @foreach (var item in Model.DataItems)
     {
-        <form class="form-add-to-cart border rounded p-2 mb-2 bg-light" action="~/Order/AddToCart" method="post">
+        <form class="form-add-to-cart border rounded p-2 mb-2 bg-light">
             <input type="hidden" name="ProductID" value="@item.ProductID" />
             <input type="hidden" name="ProductName" value="@item.ProductName" />
             <input type="hidden" name="Photo" value="@item.Photo" />
@@ -25,7 +25,7 @@
                             <label class="form-label mb-0 small text-muted">Giá</label>
                             <input class="form-control form-control-sm money-input text-end"
                                    id="SalePrice"
-                                   name="SalePrice"
+                                   name="price"
                                    value="@item.Price" />
                         </div>
                         <div class="col-5">

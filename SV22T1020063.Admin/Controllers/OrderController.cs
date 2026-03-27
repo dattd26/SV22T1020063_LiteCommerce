@@ -4,6 +4,7 @@ using SV22T1020063.Models.Sales;
 using SV22T1020063.Models.Catalog;
 using SV22T1020063.Models.Common;
 using SV22T1020063.Admin.Models;
+using SV22T1020063.Admin.AppCodes;
 
 namespace SV22T1020063.Admin.Controllers
 {
@@ -11,6 +12,7 @@ namespace SV22T1020063.Admin.Controllers
     {
         private const int PAGESIZE = 10;
 
+        private const string PRODUCT_SEARCH = "SearchProductSale";
         // Tra cứu đơn hàng
         public IActionResult Index() => View();
 
@@ -21,83 +23,96 @@ namespace SV22T1020063.Admin.Controllers
             var result = await SalesDataService.ListOrdersAsync(input);
             return View(result);
         }
-
+    
         // Tạo đơn hàng mới (Giao diện giỏ hàng)
         public IActionResult Create()
         {
-            var input = ApplicationContext.GetSessionData<ProductSearchInput>("ProductSearchForSale");
+            var input = ApplicationContext.GetSessionData<ProductSearchInput>(PRODUCT_SEARCH);
             if (input == null)
             {
-                input = new ProductSearchInput() { Page = 1, PageSize = 8, SearchValue = "" };
+                input = new ProductSearchInput() { Page = 1, PageSize = 5, SearchValue = "" };
             }
             return View(input);
         }
 
         public async Task<IActionResult> SearchProduct(ProductSearchInput input)
         {
-            input.PageSize = 8;
+            input.PageSize = 5;
             var result = await ProductDataService.ListProductsAsync(input);
-            ApplicationContext.SetSessionData("ProductSearchForSale", input);
+            ApplicationContext.SetSessionData(PRODUCT_SEARCH, input);
             return View(result);
         }
 
-        private const string SHOPPING_CART = "ShoppingCart";
 
-        private List<CartItem> GetShoppingCart()
+
+
+        public async Task<IActionResult> AddCartItem(int productID, int quantity, decimal price)
         {
-            var cart = ApplicationContext.GetSessionData<List<CartItem>>(SHOPPING_CART);
-            if (cart == null)
+            if (productID <= 0 || quantity <= 0 || price <= 0)
             {
-                cart = new List<CartItem>();
-                ApplicationContext.SetSessionData(SHOPPING_CART, cart);
+                return Json(new ApiResult(0, "Dữ liệu không hợp lệ"));
             }
-            return cart;
+            var product = await CatalogDataService.GetProductAsync(productID);
+            if (product == null)
+            {
+                return Json(new ApiResult(0, "Mặt hàng không tồn tại"));
+            }
+            if (!product.IsSelling)
+            {
+                return Json(new ApiResult(0, "Mặt hàng đã ngừng bán"));
+            }
+            ShoppingCartService.AddCartItem(new OrderDetailViewInfo()
+            {
+                ProductID = productID,
+                Quantity = quantity,
+                SalePrice = price,
+                ProductName = product.ProductName,
+                Photo = product.Photo == "" ? "noPhoto.png" : product.Photo,
+                Unit = product.Unit,
+            });
+            return Json(new ApiResult(1, "Thêm vào giỏ hàng thành công"));
         }
 
-        public IActionResult AddToCart(CartItem item)
+        public IActionResult EditCartItem(int id, int quantity, decimal salePrice)
         {
-            if (item.Quantity <= 0 || item.SalePrice < 0)
-                return Json("Dữ liệu không hợp lệ");
+            if (Request.Method == "POST")
+            {
+                ShoppingCartService.UpdateCartItem(id, quantity, salePrice);
+                return Json(new ApiResult(1, "Cập nhật giỏ hàng thành công"));
+            }
 
-            var cart = GetShoppingCart();
-            var existsItem = cart.FirstOrDefault(m => m.ProductID == item.ProductID);
-            if (existsItem == null)
-            {
-                cart.Add(item);
-            }
-            else
-            {
-                existsItem.Quantity += item.Quantity;
-                existsItem.SalePrice = item.SalePrice;
-            }
-            ApplicationContext.SetSessionData(SHOPPING_CART, cart);
-            return View("GetCart", cart);
+            var item = ShoppingCartService.GetCartItem(id);
+            if (item == null)
+                return Json(new ApiResult(0, "Không tìm thấy mặt hàng này trong giỏ hàng"));
+            return PartialView("EditCartItem", item);
         }
 
-        public IActionResult RemoveFromCart(int id = 0)
-        {
-            var cart = GetShoppingCart();
-            int index = cart.FindIndex(m => m.ProductID == id);
-            if (index >= 0)
-                cart.RemoveAt(index);
 
-            ApplicationContext.SetSessionData(SHOPPING_CART, cart);
-            return View("GetCart", cart);
+        public IActionResult DeleteCartItem(int id)
+        {
+            if (Request.Method == "POST")
+            {
+                ShoppingCartService.RemoveCartItem(id);
+                return Json(new ApiResult(1, "Xóa mặt hàng thành công"));
+            }
+
+            var item = ShoppingCartService.GetCartItem(id);
+            if (item == null)
+                return Json(new ApiResult(0, "Không tìm thấy mặt hàng này trong giỏ hàng"));
+            return PartialView("DeleteCartItem", item);
         }
 
         public IActionResult ClearCart()
         {
-            var cart = GetShoppingCart();
-            cart.Clear();
-            ApplicationContext.SetSessionData(SHOPPING_CART, cart);
-            return View("GetCart", cart);
+            ShoppingCartService.ClearCart();
+            return RedirectToAction("ShowCart");
         }
 
-        public IActionResult GetCart()
-        {
-            var cart = GetShoppingCart();
+        public IActionResult ShowCart() {
+            var cart = ShoppingCartService.GetShoppingCart();
             return View(cart);
         }
+
         // Xem chi tiết đơn hàng (và thực hiện các thao tác chuyển trạng thái)
         public async Task<IActionResult> Detail(int id)
         {
@@ -115,12 +130,12 @@ namespace SV22T1020063.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Init(int customerID, string deliveryProvince, string deliveryAddress)
         {
-            var cart = GetShoppingCart();
+            var cart = ShoppingCartService.GetShoppingCart();
             if (cart.Count == 0)
-                return Json("Giỏ hàng trống");
+                return Json(new ApiResult(0, "Giỏ hàng trống"));
 
             if (customerID <= 0 || string.IsNullOrEmpty(deliveryProvince) || string.IsNullOrEmpty(deliveryAddress))
-                return Json("Vui lòng nhập đầy đủ thông tin khách hàng và nơi giao hàng");
+                return Json(new ApiResult(0, "Vui lòng nhập đầy đủ thông tin khách hàng và nơi giao hàng"));
 
             // TODO: Lấy ID nhân viên đang đăng nhập. Tạm thời lấy ID = 1
             int employeeID = 1;
@@ -133,6 +148,7 @@ namespace SV22T1020063.Admin.Controllers
                 EmployeeID = employeeID,
                 Status = OrderStatusEnum.New
             };
+
             int orderID = await SalesDataService.AddOrderAsync(order);
 
             foreach (var item in cart)
@@ -147,10 +163,9 @@ namespace SV22T1020063.Admin.Controllers
                 await SalesDataService.AddDetailAsync(detail);
             }
 
-            cart.Clear();
-            ApplicationContext.SetSessionData(SHOPPING_CART, cart);
+            ShoppingCartService.ClearCart();
 
-            return Json(new { success = true, orderID = orderID });
+            return Json(new ApiResult(1, orderID.ToString()));
         }
 
         // Các thao tác chuyển trạng thái đơn hàng

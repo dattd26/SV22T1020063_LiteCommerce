@@ -115,6 +115,42 @@
 
 @section Scripts {
     <script>
+        async function addCartItem(productId, quantity, price) {
+            const url = '/Order/AddCartItem';
+
+            // Tạo dữ liệu gửi đi (khớp với tên tham số trong hàm C#)
+            const formData = new FormData();
+            formData.append('productID', productId);
+            formData.append('quantity', quantity);
+            formData.append('price', price);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Lỗi mạng hoặc server không phản hồi');
+                }
+
+                const result = await response.json();
+
+                if (result.status === 1 || result.Status === 1) { // Kiểm tra key trả về từ ApiResult
+                    alert(result.message || result.Message);
+                    
+                    // Gọi hàm hiển thị giỏ hàng khi thành công
+                    if (typeof showCart === 'function') {
+                        showCart();
+                    }
+                } else {
+                    alert('Thông báo: ' + (result.message || result.Message));
+                }
+            } catch (error) {
+                console.error('Đã xảy ra lỗi:', error);
+                alert('Không thể kết nối đến máy chủ');
+            }
+        }
         /**
          * Tìm kiếm mặt hàng (phân trang)
          */
@@ -148,14 +184,107 @@
             const container = document.getElementById("cart-container");
             if (!container) return;
 
-            fetch("/Order/GetCart")
+            fetch("/Order/ShowCart")
                 .then(res => res.text())
                 .then(html => {
                     container.innerHTML = html;
                 })
                 .catch(err => console.error("Cart load error:", err));
         }
+        async function editCartItem(productId, quantity, salePrice) {
+            const url = '/Order/EditCartItem';
 
+            // Tạo dữ liệu gửi đi (khớp với tên tham số trong hàm C#)
+            const formData = new FormData();
+            formData.append('id', productId);
+            formData.append('quantity', quantity);
+            formData.append('salePrice', salePrice);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Lỗi mạng hoặc server không phản hồi');
+                }
+
+                const result = await response.json();
+
+                if (result.code === 1) { 
+                    
+                    showCart();
+                } else {
+                    alert('Thông báo thất bại: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Đã xảy ra lỗi:', error);
+                alert('Không thể kết nối đến máy chủ');
+            }
+        }
+        async function removeCartItem(productId) {
+            const url = '/Order/DeleteCartItem';
+
+            // Tạo dữ liệu gửi đi (khớp với tên tham số trong hàm C#)
+            const formData = new FormData();
+            formData.append('id', productId);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Lỗi mạng hoặc server không phản hồi');
+                }
+
+                const result = await response.json();
+
+                if (result.code === 1) {
+
+                    showCart();
+                } else {
+                    alert('Thông báo thất bại: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Đã xảy ra lỗi:', error);
+                alert('Không thể kết nối đến máy chủ');
+            }
+        }
+        async function addCartItem(productId, quantity, price) {
+            const url = '/Order/AddCartItem';
+
+            // Tạo dữ liệu gửi đi (khớp với tên tham số trong hàm C#)
+            const formData = new FormData();
+            formData.append('productID', productId);
+            formData.append('quantity', quantity);
+            formData.append('price', price);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Lỗi mạng hoặc server không phản hồi');
+                }
+
+                const result = await response.json();
+
+                if (result.code === 1) { 
+                    
+                    showCart();
+                } else {
+                    alert('Thông báo thất bại: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Đã xảy ra lỗi:', error);
+                alert('Không thể kết nối đến máy chủ');
+            }
+        }
         /**
          * Khởi tạo các sự kiện khi trang đã sẵn sàng
          */
@@ -175,27 +304,12 @@
 
             // Xử lý sự kiện Submit chung (Thêm vào giỏ và Lập đơn hàng)
             document.addEventListener("submit", function (e) {
+                console.log(e.target);
                 // 1. Thêm mặt hàng vào giỏ
                 if (e.target.classList.contains("form-add-to-cart")) {
                     e.preventDefault();
                     const form = e.target;
-                    const action = form.getAttribute("action");
-                    const formData = new FormData(form);
-
-                    fetch(action, {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(res => res.text())
-                    .then(result => {
-                        // Nếu kết quả trả về không phải là bảng giỏ hàng (mà là chuỗi thông báo lỗi)
-                        if (result !== "" && !result.includes("<table")) {
-                            alert(result);
-                        } else {
-                            document.getElementById("cart-container").innerHTML = result;
-                        }
-                    })
-                    .catch(err => alert("Lỗi khi thêm vào giỏ hàng"));
+                    addCartItem(form.ProductID.value, form.Quantity.value, form.price.value);
                 }
                 
                 // 2. Lập đơn hàng (Xác nhận cuối cùng)
@@ -211,13 +325,22 @@
                     })
                     .then(res => res.json())
                     .then(result => {
-                        if (result.success) {
-                            window.location.href = "/Order/Detail/" + result.orderID;
+                        if (result.code === 1) {
+                            window.location.href = "/Order/Detail/" + result.message;
                         } else {
-                            alert(result);
+                            alert(result.message);
                         }
                     })
                     .catch(() => alert("Đã có lỗi xảy ra khi lập đơn hàng. Vui lòng kiểm tra lại thông tin."));
+                }
+
+                if (e.target.id === "formEditCartItem") {
+                    e.preventDefault();
+                    const form = e.target;
+                    const action = form.getAttribute("action");
+                    const formData = new FormData(form);
+
+                    editCartItem(form.ProductID.value, form.Quantity.value, form.SalePrice.value);
                 }
             });
 

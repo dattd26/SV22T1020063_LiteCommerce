@@ -68,11 +68,45 @@
                 });
             });
             document.querySelectorAll(".open-modal").forEach(element => {                
-                 element.addEventListener("click", function (e) {                    
-                    openModal(e, this);
+                element.addEventListener("click", function (e) {                    
+                    // nếu dùng ajax để render thì các open-modal sẽ không được gán sự kiện (đoạn này được thực thi khi trình duyệt tải trang => lúc đó open-modal được ajax render vẫn chưa xuất hiện)    
+                    openModal(e, this); 
                 });
             });
         });
+        // fix ajax open modal 
+        // document.addEventListener('click', function (event) {
+        //     // 1. Kiểm tra xem phần tử được click (hoặc cha của nó) có class .open-modal không
+        //     const toggleBtn = event.target.closest('.open-modal');
+            
+        //     if (toggleBtn) {
+        //         event.preventDefault(); // Ngăn trình duyệt mở link mặc định
+                
+        //         const url = toggleBtn.getAttribute('href');
+        //         const modalElement = document.getElementById('modal-container');
+        //         const modalContent = document.getElementById('modal-content');
+
+        //         // 2. Gọi AJAX bằng Fetch API (JS Thuần)
+        //         fetch(url)
+        //             .then(response => {
+        //                 if (!response.ok) throw new Error("Network response was not ok");
+        //                 return response.text();
+        //             })
+        //             .then(html => {
+        //                 // Đẩy HTML trả về vào nội dung modal
+        //                 modalContent.innerHTML = html;
+                        
+        //                 // 3. Hiển thị Modal bằng Bootstrap 5 JS API
+        //                 const bootstrapModal = new bootstrap.Modal(modalElement);
+        //                 bootstrapModal.show();
+        //             })
+        //             .catch(error => {
+        //                 console.error('Lỗi khi tải Modal:', error);
+        //                 alert("Không thể tải nội dung!");
+        //             });
+        //     }
+        // });
+
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

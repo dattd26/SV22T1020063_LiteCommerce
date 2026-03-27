@@ -1,4 +1,4 @@
-@model IEnumerable<CartItem>
+﻿@model IEnumerable<OrderDetailViewInfo>
 @{
     Layout = null;
     decimal total = 0;
@@ -12,6 +12,7 @@
             <th class="text-center" style="width:80px">SL</th>
             <th class="text-end" style="width:120px">Giá</th>
             <th class="text-end" style="width:120px">Thành tiền</th>
+            <th style="width:50px"></th>
             <th style="width:50px"></th>
         </tr>
     </thead>
@@ -34,10 +35,20 @@
                     <td class="text-end">@item.SalePrice.ToString("N0")</td>
                     <td class="text-end">@item.TotalPrice.ToString("N0")</td>
                     <td class="text-end text-nowrap">
-                        <a class="btn btn-sm btn-danger open-modal" 
-                           href="~/Order/DeleteCartItem/@item.ProductID"
+                        <a class="btn btn-sm btn-primary open-modal"
+                           href="~/Order/EditCartItem/@item.ProductID"
+                           title="Cập nhật"
                            onclick="openModal(event, this)"
-                           title="Xóa">
+                           >
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm btn-danger open-modal"
+                           href="~/Order/DeleteCartItem/@item.ProductID"
+                           title="Xóa"
+                           onclick="openModal(event, this)"
+                           >
                             <i class="bi bi-dash"></i>
                         </a>
                     </td>
