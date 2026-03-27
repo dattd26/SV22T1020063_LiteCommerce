@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SV22T1020063.BusinessLayers;
 using SV22T1020063.Models.Sales;
 using SV22T1020063.Models.Catalog;
+using SV22T1020063.Models.Common;
 using SV22T1020063.Admin.Models;
 
 namespace SV22T1020063.Admin.Controllers
@@ -163,7 +164,7 @@ namespace SV22T1020063.Admin.Controllers
                 await SalesDataService.AcceptOrderAsync(id, 1); // Tạm thời ID nhân viên = 1
                 return RedirectToAction("Detail", new { id });
             }
-            return View();
+            return View(id);
         }
 
         /// <summary>
@@ -176,7 +177,7 @@ namespace SV22T1020063.Admin.Controllers
                 await SalesDataService.RejectOrderAsync(id, 1); // Tạm thời ID nhân viên = 1
                 return RedirectToAction("Detail", new { id });
             }
-            return View();
+            return View(id);
         }
 
         /// <summary>
@@ -210,15 +211,42 @@ namespace SV22T1020063.Admin.Controllers
         /// </summary>
         public async Task<IActionResult> Shipping(int id, int shipperID = 0)
         {
+            Console.WriteLine(shipperID);
             if (Request.Method == "POST")
             {
-                if (shipperID <= 0)
-                    return View();
-
-                await SalesDataService.ShipOrderAsync(id, shipperID);
-                return RedirectToAction("Detail", new { id });
+                if (shipperID == 0)
+                {
+                    ModelState.AddModelError("shipperID", "Vui lòng chọn người giao hàng");
+                    return RedirectToAction("Detail", new { id });
+                }
+                else
+                {
+                    await SalesDataService.ShipOrderAsync(id, shipperID);
+                    return RedirectToAction("Detail", new { id });
+                }
             }
-            return View();
+            ViewBag.OrderID = id;
+            var input = new PaginationSearchInput()
+            {
+                Page = 1,
+                PageSize = 100,
+                SearchValue = ""
+            };
+            var result = await PartnerDataService.ListShippersAsync(input);
+            return View(result);
+        }
+
+        public async Task<IActionResult> SearchShipper(int id, string searchValue = "")
+        {
+            var input = new PaginationSearchInput()
+            {
+                Page = 1,
+                PageSize = 100,
+                SearchValue = searchValue ?? ""
+            };
+            var result = await PartnerDataService.ListShippersAsync(input);
+            ViewBag.OrderID = id;
+            return View(result);
         }
 
         /// <summary>

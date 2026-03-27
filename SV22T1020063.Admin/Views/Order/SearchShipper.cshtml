@@ -1,0 +1,102 @@
+@using SV22T1020063.Models.Common
+@using SV22T1020063.Models.Partner
+@model PagedResult<Shipper>
+@{
+    Layout = null;
+    int orderID = ViewBag.OrderID;
+}
+
+<form id="formShipping" action="~/Order/Shipping/@orderID" method="post">
+    <div class="table-responsive" style="max-height:350px; overflow-y:auto">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="sticky-top bg-white border-bottom shadow-sm">
+                <tr class="text-center">
+                    <th style="width:60px; background-color: #f8f9fa;">Chọn</th>
+                    <th class="text-start" style="background-color: #f8f9fa;">Đơn vị vận chuyển</th>
+                    <th style="background-color: #f8f9fa;">Số điện thoại liên lạc</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.DataItems.Count > 0)
+                {
+                    foreach (var item in Model.DataItems)
+                    {
+                        <tr onclick="document.getElementById('shipper_@item.ShipperID').checked = true;" 
+                            style="cursor:pointer" class="shipper-row">
+                            <td class="text-center py-3">
+                                <div class="form-check d-flex justify-content-center m-0">
+                                    <input class="form-check-input" type="radio" 
+                                           name="shipperID" id="shipper_@item.ShipperID" 
+                                           value="@item.ShipperID">
+                                </div>
+                            </td>
+                            <td class="ps-3">
+                                <div class="fw-bold text-dark">@item.ShipperName</div>
+                                <!-- <small class="text-muted">Mã: #@item.ShipperID</small> -->
+                            </td>
+                            <td class="text-center">
+                                <a href="tel:@item.Phone" class="text-decoration-none text-primary" onclick="event.stopPropagation();">
+                                    <i class="bi bi-telephone me-1"></i> @item.Phone
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center py-5">
+                            <div class="py-3">
+                                <i class="bi bi-search text-muted display-4"></i>
+                                <p class="text-muted mt-3 mb-0">Không tìm thấy đơn vị vận chuyển nào phù hợp.</p>
+                                <button type="button" class="btn btn-link btn-sm mt-1" 
+                                        onclick="$('input[name=searchValue]').val(''); $('#formSearchShipper').submit();">
+                                    Xóa bộ lọc và xem tất cả
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    @if (Model.PageCount > 1)
+    {
+        <div class="bg-light p-2 border-top d-flex justify-content-between align-items-center">
+            <small class="text-muted ps-2">Trang @Model.Page / @Model.PageCount (@Model.RowCount đơn vị)</small>
+            <ul class="pagination pagination-sm mb-0">
+                @foreach (var p in Model.GetDisplayPages())
+                {
+                    <li class="page-item @(p.IsCurrent ? "active" : "") @(p.IsEllipsis ? "disabled" : "")">
+                        <a class="page-link shadow-none" href="javascript:;" 
+                           onclick="paginationSearch(null, document.getElementById('formSearchShipper'), @p.Page)">
+                            @(p.IsEllipsis ? "..." : p.Page.ToString())
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</form>
+
+<style>
+    .shipper-row {
+        border-left: 3px solid transparent;
+        transition: background-color 0.15s ease-in-out;
+    }
+    .shipper-row:hover {
+        background-color: rgba(13, 110, 253, 0.05) !important;
+        border-left-color: #0d6efd;
+    }
+    .shipper-row input[type="radio"]:checked + label {
+        font-weight: bold;
+    }
+    .table-responsive::-webkit-scrollbar {
+        width: 6px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+</style>
