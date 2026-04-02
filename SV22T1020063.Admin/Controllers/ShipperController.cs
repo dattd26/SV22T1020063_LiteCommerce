@@ -24,8 +24,9 @@ namespace SV22T1020063.Admin.Controllers
             }
             return View(input);
         }
-        public async Task<IActionResult> Search(PaginationSearchInput input) {
-            
+        public async Task<IActionResult> Search(PaginationSearchInput input)
+        {
+
             var result = await PartnerDataService.ListShippersAsync(input);
             ApplicationContext.SetSessionData(SHIPPER_SEARCH, input);
             return View(result);
@@ -33,7 +34,8 @@ namespace SV22T1020063.Admin.Controllers
         public IActionResult Create()
         {
             ViewBag.Title = "Bổ sung người giao hàng";
-            var model = new Shipper() {
+            var model = new Shipper()
+            {
                 ShipperID = 0
             };
 
@@ -97,7 +99,7 @@ namespace SV22T1020063.Admin.Controllers
                     await PartnerDataService.DeleteShipperAsync(id);
                     return RedirectToAction("Index");
                 }
-                
+
                 // GET
                 var model = await PartnerDataService.GetShipperAsync(id);
                 if (model == null)
@@ -106,9 +108,9 @@ namespace SV22T1020063.Admin.Controllers
                 }
                 ViewBag.CanDelete = !await PartnerDataService.IsUsedShipperAsync(id);
 
-               return View(model);
+                return View(model);
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
                 ModelState.AddModelError("Error", "Lỗi không xác định");
                 return RedirectToAction("Index");

@@ -24,17 +24,17 @@ namespace SV22T1020063.BusinessLayers
         public static async Task<UserAccount?> AuthorizeAsync(AccountTypes accountType, string userName, string password)
         {
             if (accountType == AccountTypes.Employee)
-                return await employeeAccountDB.Authorize(userName, password);
+                return await employeeAccountDB.AuthenticateAsync(userName, password);
             else
-                return await customerAccountDB.Authorize(userName, password);
+                return await customerAccountDB.AuthenticateAsync(userName, password);
         }
 
         public static async Task<bool> ChangePasswordAsync(AccountTypes accountType, string userName, string password)
         {
             if (accountType == AccountTypes.Employee)
-                return await employeeAccountDB.ChangePassword(userName, password);
+                return await employeeAccountDB.ChangePasswordAsync(userName, password);
             else
-                return await customerAccountDB.ChangePassword(userName, password);
+                return await customerAccountDB.ChangePasswordAsync(userName, password);
         }
     }
 }

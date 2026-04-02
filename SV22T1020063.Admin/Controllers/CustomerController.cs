@@ -108,7 +108,7 @@ namespace SV22T1020063.Admin.Controllers
                 }
                 return RedirectToAction("Edit");
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
                 // Ghi lại log lỗi ex.Message, ex.StackTrace
                 ModelState.AddModelError("Error", "Hệ thống tạm thời đang bận, vui lòng thử lại sau");
@@ -135,7 +135,7 @@ namespace SV22T1020063.Admin.Controllers
                 }
                 ViewBag.CanDelete = !await PartnerDataService.IsUsedCustomerAsync(id);
 
-               return View(model);
+                return View(model);
             }
             catch (Exception ex)
             {

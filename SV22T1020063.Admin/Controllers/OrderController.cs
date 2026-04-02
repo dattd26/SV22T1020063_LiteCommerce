@@ -25,7 +25,7 @@ namespace SV22T1020063.Admin.Controllers
             var result = await SalesDataService.ListOrdersAsync(input);
             return View(result);
         }
-    
+
         // Tạo đơn hàng mới (Giao diện giỏ hàng)
         public IActionResult Create()
         {
@@ -69,7 +69,7 @@ namespace SV22T1020063.Admin.Controllers
                 Quantity = quantity,
                 SalePrice = price,
                 ProductName = product.ProductName,
-                Photo = product.Photo == "" ? "noPhoto.png" : product.Photo,
+                Photo = string.IsNullOrEmpty(product.Photo) ? "noPhoto.png" : product.Photo,
                 Unit = product.Unit,
             });
             return Json(new ApiResult(1, "Thêm vào giỏ hàng thành công"));
@@ -110,7 +110,8 @@ namespace SV22T1020063.Admin.Controllers
             return RedirectToAction("ShowCart");
         }
 
-        public IActionResult ShowCart() {
+        public IActionResult ShowCart()
+        {
             var cart = ShoppingCartService.GetShoppingCart();
             return View(cart);
         }
