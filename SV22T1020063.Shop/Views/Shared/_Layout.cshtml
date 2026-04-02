@@ -7,7 +7,7 @@
     <title>@ViewData["Title"] - SV22T1020063.Shop</title>
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/node_modules/flowbite/dist/flowbite.min.css" />
+    <link rel="stylesheet" href="~/lib/flowbite/flowbite.min.css" asp-append-version="true" />
 </head>
 
 <body class="bg-gray-50 text-gray-900 font-sans antialiased flex flex-col min-h-screen">
@@ -43,19 +43,7 @@
                         </div>
                     }
 
-
-
-
-
-
-
                     else
-
-
-
-
-
-
 
                     {
                         <a asp-area="" asp-controller="Account" asp-action="Login"
@@ -82,7 +70,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="~/lib/flowbite/flowbite.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
