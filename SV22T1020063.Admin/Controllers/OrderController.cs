@@ -5,9 +5,11 @@ using SV22T1020063.Models.Catalog;
 using SV22T1020063.Models.Common;
 using SV22T1020063.Admin.Models;
 using SV22T1020063.Admin.AppCodes;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SV22T1020063.Admin.Controllers
 {
+    [Authorize(Roles = $"{WebUserRoles.Administrator},{WebUserRoles.Sales}")]
     public class OrderController : Controller
     {
         private const int PAGESIZE = 10;

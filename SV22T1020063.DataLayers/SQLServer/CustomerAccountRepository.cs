@@ -20,7 +20,7 @@ namespace SV22T1020063.DataLayers.SQLServer
         /// <summary>
         /// Kiểm tra thông tin đăng nhập của khách hàng
         /// </summary>
-        public async Task<UserAccount?> Authorize(string userName, string password)
+        public async Task<UserAccount?> AuthenticateAsync(string userName, string password)
         {
             using var connection = new SqlConnection(_connectionString);
 
@@ -45,7 +45,7 @@ namespace SV22T1020063.DataLayers.SQLServer
         /// <summary>
         /// Đổi mật khẩu tài khoản khách hàng
         /// </summary>
-        public async Task<bool> ChangePassword(string userName, string password)
+        public async Task<bool> ChangePasswordAsync(string userName, string password)
         {
             using var connection = new SqlConnection(_connectionString);
 

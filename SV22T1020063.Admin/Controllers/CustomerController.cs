@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SV22T1020063.BusinessLayers;
 using SV22T1020063.Models.Common;
@@ -6,6 +7,7 @@ using SV22T1020063.Models.Partner;
 
 namespace SV22T1020063.Admin.Controllers
 {
+    [Authorize]
     public class CustomerController : Controller
     {
         /// <summary>
