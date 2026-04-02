@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using SV22T1020063.DataLayers.Interfaces;
 using SV22T1020063.Models.Common;
@@ -32,8 +32,8 @@ namespace SV22T1020063.DataLayers.SQLServer
         public async Task<int> AddAsync(Customer data)
         {
             using var connection = new SqlConnection(_connectionString);
-            string sql = @"INSERT INTO Customers(CustomerName, ContactName, Province, Address, Phone, Email, IsLocked)
-                           VALUES (@CustomerName, @ContactName, @Province, @Address, @Phone, @Email, @IsLocked);
+            string sql = @"INSERT INTO Customers(CustomerName, ContactName, Province, Address, Phone, Email, IsLocked, Password)
+                           VALUES (@CustomerName, @ContactName, @Province, @Address, @Phone, @Email, @IsLocked, @Password);
                            SELECT CAST(SCOPE_IDENTITY() as int);";
 
             return await connection.ExecuteScalarAsync<int>(sql, data);
@@ -62,7 +62,7 @@ namespace SV22T1020063.DataLayers.SQLServer
         {
             using var connection = new SqlConnection(_connectionString);
             string sql = @"SELECT CustomerID, CustomerName, ContactName, Province,
-                                  Address, Phone, Email, IsLocked
+                                   Address, Phone, Email, Password, IsLocked
                            FROM Customers
                            WHERE CustomerID = @CustomerID";
 
