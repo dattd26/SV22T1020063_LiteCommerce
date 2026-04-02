@@ -1,0 +1,103 @@
+@model Customer
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+
+<div class="max-w-4xl mx-auto py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-1/4">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 border-bottom border-gray-100">
+                    <p class="font-semibold text-gray-800">Tài khoản</p>
+                </div>
+                <nav class="flex flex-col">
+                    <a href="/Account/Profile" class="px-6 py-3 text-sm font-medium bg-blue-50 text-blue-700 border-l-4 border-blue-600">
+                        Thông tin cá nhân
+                    </a>
+                    <a href="/Account/ChangePassword" class="px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                        Đổi mật khẩu
+                    </a>
+                    <a href="/Order/Index" class="px-6 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                        Đơn hàng của tôi
+                    </a>
+                    <a href="/Account/Logout" class="px-6 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+                        Đăng xuất
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-grow bg-white rounded-lg shadow-sm border border-gray-100 p-6 md:p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Thông tin cá nhân</h2>
+
+            @if (ViewBag.Message != null)
+            {
+                <div id="alert-3" class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50" role="alert">
+                  <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                  </svg>
+                  <span class="sr-only">Thông báo</span>
+                  <div class="ms-3 text-sm font-medium">
+                    @ViewBag.Message
+                  </div>
+                  <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#alert-3" aria-label="Close">
+                    <span class="sr-only">Đóng</span>
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                  </button>
+                </div>
+            }
+
+            <form action="/Account/Profile" method="POST" class="space-y-6">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="CustomerID" />
+                <input type="hidden" asp-for="Password" />
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="CustomerName" class="block mb-2 text-sm font-medium text-gray-900">Họ và tên</label>
+                        <input type="text" asp-for="CustomerName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    </div>
+                    <div>
+                        <label for="ContactName" class="block mb-2 text-sm font-medium text-gray-900">Tên giao dịch</label>
+                        <input type="text" asp-for="ContactName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="Email" class="block mb-2 text-sm font-medium text-gray-900">Email</label>
+                    <input type="email" asp-for="Email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    <span asp-validation-for="Email" class="text-red-500 text-xs mt-1"></span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="Province" class="block mb-2 text-sm font-medium text-gray-900">Tỉnh/thành</label>
+                        <select asp-for="Province" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <option value="">-- Chọn tỉnh/thành --</option>
+                            @foreach (var p in ViewBag.Provinces)
+                            {
+                                <option value="@p.ProvinceName">@p.ProvinceName</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label for="Phone" class="block mb-2 text-sm font-medium text-gray-900">Số điện thoại</label>
+                        <input type="tel" asp-for="Phone" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="Address" class="block mb-2 text-sm font-medium text-gray-900">Địa chỉ</label>
+                    <textarea asp-for="Address" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
+                </div>
+
+                <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2.5 focus:outline-none transition-colors">Lưu thay đổi</button>
+            </form>
+        </div>
+    </div>
+</div>
