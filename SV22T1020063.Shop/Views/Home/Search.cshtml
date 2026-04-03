@@ -1,0 +1,108 @@
+@model SV22T1020063.Models.Common.PagedResult<SV22T1020063.Models.Catalog.Product>
+@{
+    Layout = null;
+}
+
+<div class="flex items-center justify-between mb-12">
+    <div>
+        <h2 class="text-2xl font-black tracking-tight text-slate-900">
+            @if (Model.RowCount > 0)
+            {
+                <span>Tất cả sản phẩm</span>
+            }
+            else
+            {
+                <span>Không tìm thấy sản phẩm</span>
+            }
+        </h2>
+        <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-widest">
+            Showing @((Model.Page - 1) * Model.PageSize + 1) - @(Math.Min(Model.Page * Model.PageSize, Model.RowCount)) of @Model.RowCount products
+        </p>
+    </div>
+    <div class="flex items-center">
+        <button class="inline-flex items-center text-xs font-bold uppercase tracking-widest text-slate-900 bg-gray-100 px-4 py-2 rounded-sm border border-transparent hover:border-gray-200">
+            Sort: Featured
+            <span class="material-symbols-outlined ml-2 text-lg">expand_more</span>
+        </button>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+    @foreach (var item in Model.DataItems)
+    {
+        <!-- Product Card -->
+        <div class="group relative">
+            <div class="aspect-[4/5] w-full relative shadow-md group-hover:shadow-xl transition-all duration-500">
+                <div class="h-full w-full overflow-hidden rounded-sm bg-gray-100">
+                    @if (string.IsNullOrEmpty(item.Photo))
+                    {
+                        <img src="https://via.placeholder.com/400x500?text=No+Image" 
+                             alt="@item.ProductName"
+                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    }
+                    else
+                    {
+                        <img src="/images/products/nophoto.png" 
+                             alt="@item.ProductName"
+                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    }
+                </div>
+                @if (item.Price > 1000) {
+                    <span class="absolute top-4 left-4 z-10 bg-indigo-600 text-white text-[10px] font-black uppercase px-2 py-1 tracking-widest rounded-sm">Featured</span>
+                }
+                <button class="absolute bottom-4 right-4 h-12 w-12 rounded-full bg-indigo-700 text-white shadow-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center justify-center hover:bg-indigo-800">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                </button>
+            </div>
+            <div class="mt-6">
+                <p class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mb-2 leading-none">
+                    @item.Unit
+                </p>
+                <h3 class="text-lg font-bold text-slate-900 leading-tight">@item.ProductName</h3>
+                <p class="mt-2 text-base font-black text-slate-900">@item.Price.ToString("C")</p>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Pagination -->
+@if (Model.PageCount > 1)
+{
+    <nav class="mt-24 flex items-center justify-center space-x-2">
+        @if (Model.HasPreviousPage)
+        {
+            <button onclick="doSearch(@(Model.Page - 1))"
+                    class="flex h-10 w-10 items-center justify-center rounded-sm bg-gray-50 text-slate-900 hover:bg-gray-100 transition-colors">
+                <span class="material-symbols-outlined text-xl">chevron_left</span>
+            </button>
+        }
+
+        @foreach (var p in Model.GetDisplayPages())
+        {
+            if (p.Page == 0)
+            {
+                <span class="text-slate-300">...</span>
+            }
+            else
+            {
+                if (p.Page == Model.Page)
+                {
+                    <button class="flex h-10 w-10 items-center justify-center rounded-sm bg-indigo-700 text-xs font-bold text-white">@p.Page</button>
+                }
+                else
+                {
+                    <button onclick="doSearch(@p.Page)"
+                            class="flex h-10 w-10 items-center justify-center rounded-sm bg-white text-xs font-bold text-slate-400 hover:bg-gray-50 transition-colors">@p.Page</button>
+                }
+            }
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <button onclick="doSearch(@(Model.Page + 1))"
+                    class="flex h-10 w-10 items-center justify-center rounded-sm bg-gray-50 text-slate-900 hover:bg-gray-100 transition-colors">
+                <span class="material-symbols-outlined text-xl">chevron_right</span>
+            </button>
+        }
+    </nav>
+}

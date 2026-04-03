@@ -1,8 +1,207 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
+<div class="relative overflow-hidden bg-[#f8f9fa] pt-24 pb-32">
+    <!-- Hero Section -->
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <!-- Hero Text Content -->
+            <div class="sm:text-center lg:text-left z-30">
+                <div
+                    class="inline-flex items-center rounded-sm bg-indigo-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-indigo-700 mb-8">
+                    New Season
+                </div>
+                <h1 class="text-5xl font-[900] tracking-tighter text-slate-900 sm:text-7xl lg:text-8xl leading-none">
+                    THE DIGITAL <br />
+                    <span class="text-indigo-700">ATELIER</span>
+                </h1>
+                <p class="mt-8 text-lg font-medium text-slate-500 max-w-sm sm:mx-auto lg:mx-0 leading-relaxed">
+                    Curated luxury essentials for the modern lifestyle. Experience a new rhythm of shopping.
+                </p>
+                <div class="mt-10 flex flex-col sm:flex-row sm:justify-center lg:justify-start gap-4">
+                    <a href="#"
+                        class="flex items-center justify-center rounded-sm bg-indigo-700 px-8 py-4 text-xs font-bold text-white hover:bg-indigo-800 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-indigo-200 uppercase tracking-widest">
+                        Explore Collection
+                    </a>
+                    <a href="#"
+                        class="flex items-center justify-center rounded-sm bg-white border border-gray-200 px-8 py-4 text-xs font-bold text-slate-700 hover:bg-gray-50 transition-all uppercase tracking-widest">
+                        View Lookbook
+                    </a>
+                </div>
+            </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+            <!-- Hero Image Content -->
+            <div class="relative mt-20 lg:mt-0 z-10 flex justify-center lg:justify-end pr-12 lg:pr-0">
+                <div class="relative w-full max-w-sm sm:max-w-md">
+                    <!-- Background Image (Sneaker) -->
+                    <div
+                        class="relative z-10 rounded-sm bg-gray-100 shadow-2xl transition-transform duration-700 hover:scale-105 rotate-6 translate-x-12 translate-y-12">
+                        <div class="overflow-hidden rounded-sm aspect-[4/5] w-full">
+                            <img src="/images/hero/luxury_sneaker_hero.png" alt="Sneaker"
+                                class="h-full w-full object-cover">
+                        </div>
+                    </div>
+                    <!-- Foreground Image (Watch) -->
+                    <div
+                        class="absolute -left-16 top-16 z-20 rounded-sm bg-white p-4 shadow-3xl transition-transform duration-700 hover:scale-110 -rotate-3 border-8 border-white hidden sm:block">
+                        <div class="overflow-hidden rounded-sm h-64 w-64">
+                            <img src="/images/hero/luxury_watch_hero.png" alt="Watch"
+                                class="h-full w-full object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@functions {
+    string GetCategoryIcon(string categoryName)
+    {
+        return categoryName.ToLower() switch
+        {
+            "may mặc" => "apparel",
+            "mỹ phẩm" => "face",
+            "điện tử" => "devices",
+            "hàng gia dụng" => "home",
+            "mẹ và em bé" => "child_care",
+            "xe máy" => "motorcycle",
+            "oto" => "directions_car",
+            "đồ chơi - phụ kiện" => "toys",
+            "bàn ghế - nội thất" => "chair",
+            _ => "category"
+        };
+    }
+}
+<!-- Main Content Section -->
+<div class="bg-white py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-16">
+
+            <!-- Sidebar (25%) -->
+            <aside class="w-full lg:w-1/4 space-y-12">
+                <div>
+                    <h2 class="text-sm font-black uppercase tracking-[0.2em] text-slate-900 mb-8">Categories</h2>
+                    <nav class="space-y-1">
+                        <a href="javascript:;" onclick="doSearch(1, 0)" 
+                           data-category-id="0"
+                           class="category-link active group relative flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 
+          hover:bg-indigo-50 hover:text-indigo-700 
+          transition-all duration-200 [&.active]:bg-indigo-50 [&.active]:text-indigo-700">
+                                <span class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r bg-indigo-600 opacity-0 group-[.active]:opacity-100 transition"></span>
+                                <span class="material-symbols-outlined text-xl text-slate-400 group-hover:text-indigo-600 group-[.active]:text-indigo-600 transition">list</span>
+                                <span class="text-sm font-medium tracking-wide">Tất cả sản phẩm</span>
+                        </a>
+
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <a href="javascript:;" onclick="doSearch(1, @category.CategoryID)" 
+                               data-category-id="@category.CategoryID"
+                               class="category-link group relative flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 
+          hover:bg-indigo-50 hover:text-indigo-700 
+          transition-all duration-200 [&.active]:bg-indigo-50 [&.active]:text-indigo-700">
+                                <!-- Active indicator (left bar) -->
+                                <span
+                                    class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r bg-indigo-600 opacity-0 group-hover:opacity-100 group-[.active]:opacity-100 transition"></span>
+
+                                <!-- Icon -->
+                                <span class="material-symbols-outlined text-xl text-slate-400 
+                 group-hover:text-indigo-600 group-[.active]:text-indigo-600 transition">
+                                    @GetCategoryIcon(category.CategoryName)
+                                </span>
+
+                                <!-- Text -->
+                                <span class="text-sm font-medium tracking-wide">
+                                    @category.CategoryName
+                                </span>
+
+                            </a>
+                        }
+                    </nav>
+                </div>
+
+                <div>
+                    <h2 class="text-sm font-black uppercase tracking-[0.2em] text-slate-900 mb-8">Price Range</h2>
+                    <input id="price-range" type="range" value="500" min="0" max="2500"
+                        class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <div class="flex justify-between mt-4">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">$0</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">$2,500+</span>
+                    </div>
+                </div>
+
+                <button
+                    class="w-full py-4 border-2 border-gray-100 rounded-sm text-xs font-bold uppercase tracking-widest text-slate-500 hover:bg-gray-50 hover:border-gray-200 transition-all">
+                    View All Guides
+                </button>
+            </aside>
+
+            <!-- Product Grid (75%) -->
+            <div class="w-full lg:w-3/4" id="searchResult">
+                <!-- Data will be loaded here via AJAX -->
+                <div class="flex flex-col items-center justify-center py-24 space-y-4">
+                    <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-widest">Loading Essentials...</p>
+                </div>
+            </div>
+
+            <form id="frmSearch" action="~/Home/Search" method="get" class="hidden">
+                <input type="hidden" name="Page" value="1" id="current-page" />
+                <input type="hidden" name="CategoryID" value="@(ViewBag.CategoryID ?? 0)" id="current-category" />
+                <input type="hidden" name="SearchValue" value="@(ViewBag.SearchValue ?? "")" id="current-search" />
+                <input type="hidden" name="MinPrice" value="0" id="current-min-price" />
+                <input type="hidden" name="MaxPrice" value="0" id="current-max-price" />
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function doSearch(page, categoryId) {
+            if (page !== undefined) $("#current-page").val(page);
+            if (categoryId !== undefined) {
+                $("#current-category").val(categoryId);
+                
+                // Update active state in UI
+                $(".category-link").removeClass("active");
+                $(`.category-link[data-category-id='${categoryId}']`).addClass("active");
+            }
+            
+            var form = $("#frmSearch");
+            var url = form.attr("action");
+            
+            $("#searchResult").fadeOut(200, function() {
+                $.ajax({
+                    url: url,
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function(data) {
+                        $("#searchResult").html(data).fadeIn(300);
+                        // Scroll to results on mobile
+                        if (window.innerWidth < 1024) {
+                            $('html, body').animate({
+                                scrollTop: $("#searchResult").offset().top - 100
+                            }, 500);
+                        }
+                    },
+                    error: function() {
+                        alert("Có lỗi xảy ra khi tải dữ liệu.");
+                        $("#searchResult").fadeIn(300);
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            // Initial search on load with seeded parameters
+            var initCategory = $("#current-category").val();
+            doSearch(1, initCategory);
+            
+            // Handle price range input
+            $("#price-range").on("change", function() {
+                $("#current-max-price").val($(this).val());
+                doSearch(1);
+            });
+        });
+    </script>
+}

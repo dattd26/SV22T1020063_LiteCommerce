@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SV22T1020063.Shop.Models;
 using System.Diagnostics;
+using SV22T1020063.BusinessLayers;
+using SV22T1020063.Models.Common;
+using SV22T1020063.Models.Catalog;
 
 namespace SV22T1020063.Shop.Controllers
 {
@@ -13,9 +16,36 @@ namespace SV22T1020063.Shop.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string searchValue = "", int categoryID = 0)
         {
+            ViewBag.Title = "Trang chủ";
+            ViewBag.SearchValue = searchValue;
+            ViewBag.CategoryID = categoryID;
+            
+            var categories = await CatalogDataService.ListCategoriesAsync(new PaginationSearchInput
+            {
+                Page = 1,
+                PageSize = 100, // Get all categories for sidebar
+                SearchValue = ""
+            });
+            ViewBag.Categories = categories.DataItems;
             return View();
+        }
+
+        public async Task<IActionResult> Search(ProductSearchInput input)
+        {
+            int pageSize = 12; // Standard grid size
+            var result = await CatalogDataService.ListProductsAsync(new ProductSearchInput
+            {
+                Page = input.Page,
+                PageSize = pageSize,
+                SearchValue = input.SearchValue ?? "",
+                CategoryID = input.CategoryID,
+                SupplierID = 0,
+                MinPrice = input.MinPrice,
+                MaxPrice = input.MaxPrice
+            });
+            return PartialView(result);
         }
 
         public IActionResult Privacy()
