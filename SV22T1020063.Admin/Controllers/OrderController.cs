@@ -40,7 +40,7 @@ namespace SV22T1020063.Admin.Controllers
         public async Task<IActionResult> SearchProduct(ProductSearchInput input)
         {
             input.PageSize = 5;
-            var result = await ProductDataService.ListProductsAsync(input);
+            var result = await CatalogDataService.ListProductsAsync(input);
             ApplicationContext.SetSessionData(PRODUCT_SEARCH, input);
             return View(result);
         }
@@ -124,6 +124,16 @@ namespace SV22T1020063.Admin.Controllers
                 return RedirectToAction("Index");
 
             order.Details = await SalesDataService.ListDetailsAsync(id);
+            foreach (var detail in order.Details)
+            {
+                var product = await CatalogDataService.GetProductAsync(detail.ProductID);
+                if (product != null)
+                {
+                    detail.ProductName = product.ProductName;
+                    detail.Photo = string.IsNullOrEmpty(product.Photo) ? "noPhoto.png" : product.Photo;
+                    detail.Unit = product.Unit;
+                }
+            }
             return View(order);
         }
 

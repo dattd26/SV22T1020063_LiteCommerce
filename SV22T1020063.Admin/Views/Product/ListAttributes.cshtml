@@ -1,5 +1,7 @@
-﻿@{
+@model IEnumerable<ProductAttribute>
+@{
     Layout = null;
+    int pid = Convert.ToInt32(ViewContext.RouteData.Values["id"]);
 }
 <div class="row justify-content-center">
     <div class="col-12">
@@ -7,13 +9,13 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col">
-                        <h6 id="attributes" class="card-title mb-0">
+                        <h1 id="attributes" class="card-title mb-0">
                             <i class="bi bi-list-check me-2"></i>
                             Thuộc tính mặt hàng
-                        </h6>
+                        </h1>
                     </div>
                     <div class="col text-end">
-                        <a class="btn btn-sm btn-primary" href="~/Product/CreateAttribute/123">
+                        <a class="btn btn-sm btn-primary" href="~/Product/CreateAttribute/@pid">
                             <i class="bi bi-plus"></i>
                             Thêm thuộc tính
                         </a>
@@ -32,17 +34,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (int i = 1; i <= 10; i++)
+                        @foreach (var item in Model)
                         {
                             <tr>
-                                <td>Màu sắc</td>
-                                <td>Đỏ</td>
-                                <td class="text-center">@i</td>
+                                <td>@item.AttributeName</td>
+                                <td>@item.AttributeValue</td>
+                                <td class="text-center">@item.DisplayOrder</td>
                                 <td class="text-center text-nowrap">
-                                    <a class="btn btn-sm btn-primary" href="~/Product/EditAttribute/123?attributeId=456">
+                                    <a class="btn btn-sm btn-primary" href="~/Product/EditAttribute/@pid/@item.AttributeID">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a class="btn btn-sm btn-danger" href="~/Product/DeleteAttribute/123?attributeId=456">
+                                    <a class="btn btn-sm btn-danger" href="~/Product/DeleteAttribute/@pid/@item.AttributeID"
+                                       onclick="return confirm('Xóa thuộc tính này của mặt hàng?')">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </td>

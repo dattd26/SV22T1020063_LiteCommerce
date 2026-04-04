@@ -199,7 +199,7 @@ namespace SV22T1020063.DataLayers.SQLServer
                         ShippedTime = reader["ShippedTime"] as DateTime?,
                         FinishedTime = reader["FinishedTime"] as DateTime?,
                         Status = (OrderStatusEnum)Convert.ToInt32(reader["Status"]),
-                        
+
                         CustomerName = reader["CustomerName"]?.ToString() ?? "",
                         CustomerContactName = reader["CustomerContactName"]?.ToString() ?? "",
                         CustomerEmail = reader["CustomerEmail"]?.ToString() ?? "",
