@@ -121,12 +121,28 @@
                 </div>
 
                 <div>
-                    <h2 class="text-sm font-black uppercase tracking-[0.2em] text-slate-900 mb-8">Price Range</h2>
-                    <input id="price-range" type="range" value="500" min="0" max="2500"
-                        class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
-                    <div class="flex justify-between mt-4">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">$0</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">$2,500+</span>
+                    <h2 class="text-sm font-black uppercase tracking-[0.2em] text-slate-900 mb-8">Khoảng giá (VNĐ)</h2>
+                    <div class="space-y-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Từ</label>
+                            <div class="relative">
+                                <input type="number" id="min-price-input" placeholder="0"
+                                    class="w-full pl-4 pr-12 py-3 bg-gray-50 border-none rounded-lg text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 transition-all">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">đ</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Đến</label>
+                            <div class="relative">
+                                <input type="number" id="max-price-input" placeholder="2.500.000"
+                                    class="w-full pl-4 pr-12 py-3 bg-gray-50 border-none rounded-lg text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 transition-all">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">đ</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="applyPriceFilter()"
+                            class="w-full py-3 bg-indigo-700 hover:bg-indigo-800 text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-all shadow-lg shadow-indigo-100 active:scale-95">
+                            Áp dụng
+                        </button>
                     </div>
                 </div>
 
@@ -192,16 +208,26 @@
             });
         }
 
+        function applyPriceFilter() {
+            var min = $("#min-price-input").val() || 0;
+            var max = $("#max-price-input").val() || 0;
+            
+            $("#current-min-price").val(min);
+            $("#current-max-price").val(max);
+            doSearch(1);
+        }
+
         $(document).ready(function() {
             // Initial search on load with seeded parameters
             var initCategory = $("#current-category").val();
-            doSearch(1, initCategory);
             
-            // Handle price range input
-            $("#price-range").on("change", function() {
-                $("#current-max-price").val($(this).val());
-                doSearch(1);
-            });
+            // Sync values from hidden inputs to visible inputs if they exist
+            var currentMin = $("#current-min-price").val();
+            var currentMax = $("#current-max-price").val();
+            if(currentMin > 0) $("#min-price-input").val(currentMin);
+            if(currentMax > 0) $("#max-price-input").val(currentMax);
+
+            doSearch(1, initCategory);
         });
     </script>
 }
