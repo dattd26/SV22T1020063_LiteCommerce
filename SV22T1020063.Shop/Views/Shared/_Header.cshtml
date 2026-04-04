@@ -9,11 +9,13 @@
 
         <!-- Navigation Links (Desktop) -->
         <nav class="hidden md:ml-8 md:flex md:space-x-8">
-            <a href="#" class="text-sm font-semibold text-slate-900 hover:text-indigo-600 transition-colors">Shop</a>
-            <a href="#" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">New
-                Arrivals</a>
-            <a href="#" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">Deals</a>
-            <a href="#" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">Journal</a>
+            <a asp-controller="Home" asp-action="Index" 
+               class="text-sm font-semibold @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "text-indigo-600" : "text-slate-900") hover:text-indigo-600 transition-colors">Trang chủ</a>
+            <a asp-controller="Product" asp-action="Index" 
+               class="text-sm font-medium @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "text-indigo-600" : "text-slate-500") hover:text-indigo-600 transition-colors">Sản phẩm</a>
+            <a href="#" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">Tin tức</a>
+            <a href="#" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">Liên hệ</a>
+            <a href="#" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">Đơn hàng</a>
         </nav>
 
         <!-- Search and Actions -->

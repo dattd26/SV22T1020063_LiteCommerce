@@ -29,9 +29,28 @@
 
     <partial name="_Footer" />
     
+    <!-- Back to Top Button -->
+    <button id="back-to-top" 
+            class="fixed bottom-8 right-8 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-2xl transition-all duration-300 opacity-0 translate-y-10 hover:bg-indigo-700 hover:scale-110 active:scale-95 invisible">
+        <span class="material-symbols-outlined text-2xl">arrow_upward</span>
+    </button>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/flowbite/flowbite.min.js"></script>
+    <script>
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 300) {
+                $('#back-to-top').removeClass('opacity-0 translate-y-10 invisible').addClass('opacity-100 translate-y-0 visible');
+            } else {
+                $('#back-to-top').addClass('opacity-0 translate-y-10 invisible').removeClass('opacity-100 translate-y-0 visible');
+            }
+        });
+
+        $('#back-to-top').click(function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

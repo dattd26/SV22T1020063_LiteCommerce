@@ -16,20 +16,23 @@ namespace SV22T1020063.Shop.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index(string searchValue = "", int categoryID = 0)
+        public async Task<IActionResult> Index()
         {
             ViewBag.Title = "Trang chủ";
-            ViewBag.SearchValue = searchValue;
-            ViewBag.CategoryID = categoryID;
             
-            var categories = await CatalogDataService.ListCategoriesAsync(new PaginationSearchInput
+            // Lấy 12 sản phẩm tiêu biểu để hiển thị ở trang chủ
+            var productResult = await CatalogDataService.ListProductsAsync(new ProductSearchInput
             {
                 Page = 1,
-                PageSize = 100, // Get all categories for sidebar
-                SearchValue = ""
+                PageSize = 8, // Hiển thị 8 sản phẩm tiêu biểu
+                SearchValue = "",
+                CategoryID = 0,
+                SupplierID = 0,
+                MinPrice = 0,
+                MaxPrice = 0
             });
-            ViewBag.Categories = categories.DataItems;
-            return View();
+
+            return View(productResult.DataItems);
         }
 
         public async Task<IActionResult> Search(ProductSearchInput input)
@@ -45,6 +48,16 @@ namespace SV22T1020063.Shop.Controllers
                 MinPrice = input.MinPrice,
                 MaxPrice = input.MaxPrice
             });
+
+            if (input.CategoryID > 0)
+            {
+                var category = await CatalogDataService.GetCategoryAsync(input.CategoryID);
+                if (category != null)
+                {
+                    ViewBag.CategoryName = category.CategoryName;
+                }
+            }
+
             return PartialView(result);
         }
 
