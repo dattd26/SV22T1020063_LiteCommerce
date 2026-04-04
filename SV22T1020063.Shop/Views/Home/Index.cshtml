@@ -1,8 +1,136 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model IEnumerable<SV22T1020063.Models.Catalog.Product>
+@{
+    ViewData["Title"] = "Trang chủ";
 }
+<div class="relative overflow-hidden bg-[#f8f9fa] pt-24 pb-32">
+    <!-- Hero Section -->
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <!-- Hero Text Content -->
+            <div class="sm:text-center lg:text-left z-30">
+                <div
+                    class="inline-flex items-center rounded-sm bg-indigo-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-indigo-700 mb-8">
+                    Khám phá hôm nay
+                </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+                <h1 class="text-5xl font-[900] tracking-tighter text-slate-900 sm:text-7xl lg:text-8xl leading-none">
+                    KHÔNG GIAN MUA SẮM <br />
+                    <span class="text-indigo-700">HIỆN ĐẠI</span>
+                </h1>
+
+                <p class="mt-8 text-lg font-medium text-slate-500 max-w-sm sm:mx-auto lg:mx-0 leading-relaxed">
+                    Khám phá các sản phẩm chất lượng từ thời trang, mỹ phẩm, điện tử đến gia dụng, mẹ & bé và nhiều hơn
+                    nữa.
+                    Mang đến trải nghiệm mua sắm tiện lợi, đa dạng và đáng tin cậy mỗi ngày.
+                </p>
+
+                <div class="mt-10 flex flex-col sm:flex-row sm:justify-center lg:justify-start gap-4">
+                    <button onclick="scrollToSection('featured-products')"
+                           class="flex items-center justify-center rounded-sm bg-indigo-700 px-8 py-4 text-xs font-bold text-white hover:bg-indigo-800 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-indigo-200 uppercase tracking-widest">
+                        Khám phá sản phẩm
+                    </button>
+                    <a asp-controller="Product" asp-action="Index"
+                           class="flex items-center justify-center rounded-sm bg-white border border-gray-200 px-8 py-4 text-xs font-bold text-slate-700 hover:bg-gray-50 transition-all uppercase tracking-widest">
+                        Xem danh mục
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Image Content -->
+            <div class="relative mt-20 lg:mt-0 z-10 flex justify-center lg:justify-end pr-12 lg:pr-0">
+                <div class="relative w-full max-w-sm sm:max-w-md">
+                    <!-- Background Image (Sneaker) -->
+                    <div
+                        class="relative z-10 rounded-sm bg-gray-100 shadow-2xl transition-transform duration-700 hover:scale-105 rotate-6 translate-x-12 translate-y-12">
+                        <div class="overflow-hidden rounded-sm aspect-[4/5] w-full">
+                            <img src="/images/hero/luxury_sneaker_hero.png" alt="Sneaker"
+                                 class="h-full w-full object-cover">
+                        </div>
+                    </div>
+                    <!-- Foreground Image (Watch) -->
+                    <div
+                        class="absolute -left-16 top-16 z-20 rounded-sm bg-white p-4 shadow-3xl transition-transform duration-700 hover:scale-110 -rotate-3 border-8 border-white hidden sm:block">
+                        <div class="overflow-hidden rounded-sm h-64 w-64">
+                            <img src="/images/hero/luxury_watch_hero.png" alt="Watch"
+                                 class="h-full w-full object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Featured Products Section -->
+<div class="bg-white py-24" id="featured-products">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-sm font-black uppercase tracking-[0.3em] text-indigo-600 mb-4">Lựa chọn cho bạn</h2>
+            <h3 class="text-3xl font-[900] tracking-tight text-slate-900 sm:text-4xl uppercase">Sản phẩm nổi bật</h3>
+            <div class="mt-4 h-1 w-12 bg-indigo-600 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+            @foreach (var item in Model)
+            {
+                <div class="group relative flex flex-col">
+                    <!-- Image Container -->
+                    <div class="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-gray-100 transition-all duration-500 group-hover:shadow-2xl">
+                        <img src="@(string.IsNullOrEmpty(item.Photo) ? "/images/products/no_image.png" : $"/images/products/{item.Photo}")"
+                             alt="@item.ProductName"
+                             class="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110">
+                        
+                        <!-- Hover Overlay -->
+                        <div class="absolute inset-0 bg-slate-900/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+                        
+                        <!-- Quick Add Button -->
+                        <div class="absolute bottom-4 left-4 right-4 translate-y-10 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                             <button class="w-full bg-white py-3 text-[10px] font-bold uppercase tracking-widest text-slate-900 shadow-xl hover:bg-indigo-600 hover:text-white transition-colors">
+                                Thêm vào giỏ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="mt-6 flex flex-col items-center text-center">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+                             @(item.CategoryID > 0 ? "Phân loại" : "Sản phẩm")
+                        </h3>
+                        <a href="#" class="text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors uppercase tracking-tight">
+                            @item.ProductName
+                        </a>
+                        <p class="mt-2 text-base font-black text-indigo-600">
+                            @item.Price.ToString("N0") <span class="text-[10px] ml-0.5">VNĐ</span>
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="mt-20 text-center">
+            <a asp-controller="Product" asp-action="Index"
+               class="inline-flex items-center gap-4 rounded-sm border-2 border-slate-900 px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] text-slate-900 hover:bg-slate-900 hover:text-white transition-all duration-300 active:scale-95 leading-none">
+                Xem tất cả sản phẩm
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function scrollToSection(id) {
+            const section = document.getElementById(id);
+            if (section) {
+                const headerOffset = 80;
+                const elementPosition = section.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
+        }
+    </script>
+}

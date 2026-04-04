@@ -1,64 +1,45 @@
-﻿@{
-}
-@section PageToolBar {
-    <button type="submit" form="formEdit" class="btn btn-primary">
-        <i class="bi bi-save"></i>
-        Lưu thuộc tính
-    </button>
-
-    <a href="~/Product/Edit/123#attributes" class="btn btn-secondary ms-1">
-        <i class="bi bi-arrow-left"></i>
-        Quay lại
-    </a>
+@model ProductAttribute
+@{
 }
 <div class="row justify-content-center">
-    <div class="col-12">
-        <div class="card card-outline card-success">
-            <div class="card-header">
-                <h5 class="mb-0">Thông tin thuộc tính mặt hàng</h5>
+    <div class="col-8">
+        <div class="card card-primary card-outline">
+            <div class="card-header p-2">
+                <h6 class="card-title mb-0">@ViewBag.Title</h6>
             </div>
-
             <div class="card-body">
-                <form id="formEdit" method="post">
+                <form action="~/Product/SaveAttribute" method="post">
+                    <input type="hidden" asp-for="AttributeID" />
+                    <input type="hidden" asp-for="ProductID" />
 
-                    <div class="row mb-3">
-                        <label class="col-sm-3 fw-semibold">
-                            Tên thuộc tính
-                        </label>
-                        <div class="col-sm-9">
-                            <input type="text"
-                                   name="AttributeName"
-                                   class="form-control"
-                                   placeholder="Ví dụ: Màu sắc, Kích thước"
-                                   required autofocus />
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tên thuộc tính</label>
+                        <input type="text" class="form-control" asp-for="AttributeName" autofocus />
+                        <span asp-validation-for="AttributeName" class="text-danger"></span>
                     </div>
 
-                    <div class="row mb-3">
-                        <label class="col-sm-3 fw-semibold">
-                            Giá trị thuộc tính
-                        </label>
-                        <div class="col-sm-9">
-                            <input type="text"
-                                   name="AttributeValue"
-                                   class="form-control"
-                                   placeholder="Ví dụ: Đỏ, XL, 500g"
-                                   required />
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giá trị thuộc tính</label>
+                        <input type="text" class="form-control" asp-for="AttributeValue" />
+                        <span asp-validation-for="AttributeValue" class="text-danger"></span>
                     </div>
 
-                    <div class="row mb-4">
-                        <label class="col-sm-3 fw-semibold">
-                            Thứ tự hiển thị
-                        </label>
-                        <div class="col-sm-3">
-                            <input type="number"
-                                   name="DisplayOrder"
-                                   class="form-control"
-                                   value="1"
-                                   min="1" />
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Thứ tự hiển thị</label>
+                        <input type="number" class="form-control" asp-for="DisplayOrder" min="1" />
+                        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
                     </div>
+
+                    <div class="mb-3 text-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Lưu dữ liệu
+                        </button>
+                        <a href="~/Product/Edit/@Model.ProductID" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Hủy và quay lại
+                        </a>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 </form>
             </div>
         </div>

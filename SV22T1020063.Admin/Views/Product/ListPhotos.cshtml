@@ -1,5 +1,7 @@
-﻿@{
+@model IEnumerable<ProductPhoto>
+@{
     Layout = null;
+    int pid = Convert.ToInt32(ViewContext.RouteData.Values["id"]);
 }
 <div class="row justify-content-center">
     <div class="col-12">
@@ -13,7 +15,7 @@
                         </h6>
                     </div>
                     <div class="col text-end">
-                        <a class="btn btn-sm btn-primary" href="~/Product/CreatePhoto/123">
+                        <a class="btn btn-sm btn-primary" href="~/Product/CreatePhoto/@pid">
                             <i class="bi bi-plus-circle me-1"></i>
                             Thêm ảnh
                         </a>
@@ -33,24 +35,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (int i = 1; i <= 5; i++)
+                        @foreach (var item in Model)
                         {
                             <tr>
                                 <td class="text-center">
-                                    <img src="~/images/products/demo.png"
+                                    <img src="~/images/products/@(string.IsNullOrEmpty(item.Photo) ? "nophoto.png" : item.Photo)"
                                     class="img-thumbnail"
                                     style="max-height:80px;" />
                                 </td>
-                                <td>Ảnh mặt trước sản phẩm</td>
-                                <td class="text-center">@i</td>
+                                <td>@item.Description</td>
+                                <td class="text-center">@item.DisplayOrder</td>
                                 <td class="text-center">
-                                    <span class="badge bg-success">Hiện</span>
+                                    @if(item.IsHidden) {
+                                        <span class="badge bg-secondary">Ẩn</span>
+                                    } else {
+                                        <span class="badge bg-success">Hiện</span>
+                                    }
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    <a class="btn btn-sm btn-primary" href="~/Product/EditPhoto/123?photoId=456">
+                                    <a class="btn btn-sm btn-primary" href="~/Product/EditPhoto/@pid/@item.PhotoID">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a class="btn btn-sm btn-danger" href="~/Product/DeletePhoto/123?photoId=456">
+                                    <a class="btn btn-sm btn-danger" href="~/Product/DeletePhoto/@pid/@item.PhotoID" 
+                                       onclick="return confirm('Xóa ảnh này của mặt hàng?')">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </td>

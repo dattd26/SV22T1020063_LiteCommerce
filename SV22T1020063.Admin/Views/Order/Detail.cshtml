@@ -6,8 +6,8 @@
 @section PageToolBar {
     <div class="btn-group">
         @if (Model.Status != SV22T1020063.Models.Sales.OrderStatusEnum.Completed &&
-           Model.Status != SV22T1020063.Models.Sales.OrderStatusEnum.Cancelled &&
-           Model.Status != SV22T1020063.Models.Sales.OrderStatusEnum.Rejected)
+                           Model.Status != SV22T1020063.Models.Sales.OrderStatusEnum.Cancelled &&
+                           Model.Status != SV22T1020063.Models.Sales.OrderStatusEnum.Rejected)
         {
             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
                 <i class="bi bi-gear me-1"></i> Xử lý đơn hàng
@@ -25,23 +25,26 @@
                 {
                     <li><a class="dropdown-item open-modal" href="~/Order/Finish/@Model.OrderID">Hoàn tất đơn hàng</a></li>
                 }
-                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
                 @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New ||
-               Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Accepted)
+                                               Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Accepted)
                 {
                     <li><a class="dropdown-item text-danger open-modal" href="~/Order/Cancel/@Model.OrderID">Hủy đơn hàng</a></li>
                 }
                 @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New)
                 {
-                    <li><a class="dropdown-item text-danger open-modal" href="~/Order/Reject/@Model.OrderID">Từ chối đơn hàng</a></li>
+                    <li><a class="dropdown-item text-danger open-modal" href="~/Order/Reject/@Model.OrderID">Từ chối đơn hàng</a>
+                    </li>
                 }
             </ul>
         }
     </div>
 
     @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New ||
-       Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Cancelled ||
-       Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Rejected)
+               Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Cancelled ||
+               Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Rejected)
     {
         <a href="~/Order/Delete/@Model.OrderID" class="btn btn-danger ms-1 open-modal">
             <i class="bi bi-trash"></i> Xóa
@@ -233,10 +236,12 @@
                         @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New)
                         {
                             <td class="text-end">
-                                <a href="~/Order/EditCartItem/@Model.OrderID?productId=@item.ProductID" class="btn btn-sm btn-primary open-modal">
+                                <a href="~/Order/EditCartItem/@Model.OrderID?productId=@item.ProductID"
+                                       class="btn btn-sm btn-primary open-modal">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="~/Order/DeleteCartItem/@Model.OrderID?productId=@item.ProductID" class="btn btn-sm btn-danger open-modal">
+                                <a href="~/Order/DeleteCartItem/@Model.OrderID?productId=@item.ProductID"
+                                       class="btn btn-sm btn-danger open-modal">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>

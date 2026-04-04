@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using SV22T1020063.Shop;
 using System.Globalization;
 
@@ -11,6 +12,9 @@ builder.Services.AddControllersWithViews()
                 {
                     option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
                 });
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "DataProtection-Keys")));
 
 // Configure Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
