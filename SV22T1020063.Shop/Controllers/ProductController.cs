@@ -47,5 +47,28 @@ namespace SV22T1020063.Shop.Controllers
             }
             return PartialView(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Suggestions(string searchValue)
+        {
+            var result = await CatalogDataService.ListProductsAsync(new ProductSearchInput
+            {
+                Page = 1,
+                PageSize = 7, // Top 7 suggestions
+                SearchValue = searchValue ?? "",
+                CategoryID = 0,
+                SupplierID = 0,
+                MinPrice = 0,
+                MaxPrice = 0
+            });
+
+            return Json(result.DataItems.Select(p => new
+            {
+                p.ProductID,
+                p.ProductName,
+                p.Price,
+                Photo = string.IsNullOrEmpty(p.Photo) ? "no_image.png" : p.Photo
+            }));
+        }
     }
 }
