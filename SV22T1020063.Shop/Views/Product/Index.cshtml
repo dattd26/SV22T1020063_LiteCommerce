@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Sản phẩm";
+}
+
+<div class="bg-white py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-16">
+
+            @await Html.PartialAsync("_CategorySidebar")
+
+            <!-- Product Grid (75%) -->
+            <div class="w-full lg:w-3/4" id="searchResult">
+                <!-- Data will be loaded here via AJAX -->
+                <div class="flex flex-col items-center justify-center py-24 space-y-4">
+                    <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-widest">Đang tải sản phẩm...</p>
+                </div>
+            </div>
+
+            <form id="frmSearch" action="~/Product/Search" method="get" class="hidden">
+                <input type="hidden" name="Page" value="1" id="current-page" />
+                <input type="hidden" name="CategoryID" value="@(ViewBag.CategoryID ?? 0)" id="current-category" />
+                <input type="hidden" name="SearchValue" value="@(ViewBag.SearchValue ?? "")" id="current-search" />
+                <input type="hidden" name="MinPrice" value="0" id="current-min-price" />
+                <input type="hidden" name="MaxPrice" value="0" id="current-max-price" />
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function doSearch(page, categoryId, categoryName) {
+            if (page !== undefined) $("#current-page").val(page);
+            if (categoryId !== undefined) {
+                $("#current-category").val(categoryId);
+                
+                // Update active state in UI
+                $(".category-link").removeClass("active");
+                $(`.category-link[data-category-id='${categoryId}']`).addClass("active");
+            }
+            
+            // Get price values
+            const minPrice = $("#min-price-input").val();
+            const maxPrice = $("#max-price-input").val();
+            $("#current-min-price").val(minPrice || 0);
+            $("#current-max-price").val(maxPrice || 0);
+
+            var form = $("#frmSearch");
+            var url = form.attr("action");
+            
+            $("#searchResult").fadeOut(200, function() {
+                $.ajax({
+                    url: url,
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function(data) {
+                        $("#searchResult").html(data).fadeIn(300);
+                        // Scroll to results on mobile
+                        if (window.innerWidth < 1024) {
+                            $('html, body').animate({
+                                scrollTop: $("#searchResult").offset().top - 100
+                            }, 500);
+                        }
+                    },
+                    error: function() {
+                        console.error("Search failed");
+                        $("#searchResult").fadeIn(300);
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            // Initial search on load
+            var initCategory = $("#current-category").val();
+            doSearch(1, initCategory);
+        });
+    </script>
+}
