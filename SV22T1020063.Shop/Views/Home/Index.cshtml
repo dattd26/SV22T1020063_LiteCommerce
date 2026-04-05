@@ -26,7 +26,7 @@
 
                 <div class="mt-10 flex flex-col sm:flex-row sm:justify-center lg:justify-start gap-4">
                     <button onclick="scrollToSection('featured-products')"
-                           class="flex items-center justify-center rounded-sm bg-indigo-700 px-8 py-4 text-xs font-bold text-white hover:bg-indigo-800 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-indigo-200 uppercase tracking-widest">
+                            class="flex items-center justify-center rounded-sm bg-indigo-700 px-8 py-4 text-xs font-bold text-white hover:bg-indigo-800 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-indigo-200 uppercase tracking-widest">
                         Khám phá sản phẩm
                     </button>
                     <a asp-controller="Product" asp-action="Index"
@@ -75,17 +75,22 @@
             {
                 <div class="group relative flex flex-col">
                     <!-- Image Container -->
-                    <div class="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-gray-100 transition-all duration-500 group-hover:shadow-2xl">
+                    <div
+                        class="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-gray-100 transition-all duration-500 group-hover:shadow-2xl">
                         <img src="@(string.IsNullOrEmpty(item.Photo) ? "/images/products/no_image.png" : $"/images/products/{item.Photo}")"
                              alt="@item.ProductName"
                              class="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110">
                         
                         <!-- Hover Overlay -->
-                        <div class="absolute inset-0 bg-slate-900/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+                        <div
+                            class="absolute inset-0 bg-slate-900/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                        </div>
                         
                         <!-- Quick Add Button -->
-                        <div class="absolute bottom-4 left-4 right-4 translate-y-10 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                             <button class="w-full bg-white py-3 text-[10px] font-bold uppercase tracking-widest text-slate-900 shadow-xl hover:bg-indigo-600 hover:text-white transition-colors">
+                        <div
+                            class="absolute bottom-4 left-4 right-4 translate-y-10 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                            <button
+                                class="w-full bg-white py-3 text-[10px] font-bold uppercase tracking-widest text-slate-900 shadow-xl hover:bg-indigo-600 hover:text-white transition-colors">
                                 Thêm vào giỏ
                             </button>
                         </div>
@@ -94,9 +99,10 @@
                     <!-- Info -->
                     <div class="mt-6 flex flex-col items-center text-center">
                         <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-                             @(item.CategoryID > 0 ? "Phân loại" : "Sản phẩm")
+                            @(item.CategoryID > 0 ? "Phân loại" : "Sản phẩm")
                         </h3>
-                        <a href="#" class="text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors uppercase tracking-tight">
+                        <a href="#"
+                               class="text-sm font-bold text-slate-800 hover:text-indigo-600 transition-colors uppercase tracking-tight">
                             @item.ProductName
                         </a>
                         <p class="mt-2 text-base font-black text-indigo-600">
@@ -109,7 +115,7 @@
 
         <div class="mt-20 text-center">
             <a asp-controller="Product" asp-action="Index"
-               class="inline-flex items-center gap-4 rounded-sm border-2 border-slate-900 px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] text-slate-900 hover:bg-slate-900 hover:text-white transition-all duration-300 active:scale-95 leading-none">
+                   class="inline-flex items-center gap-4 rounded-sm border-2 border-slate-900 px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] text-slate-900 hover:bg-slate-900 hover:text-white transition-all duration-300 active:scale-95 leading-none">
                 Xem tất cả sản phẩm
                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </a>
