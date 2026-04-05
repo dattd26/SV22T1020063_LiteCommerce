@@ -145,12 +145,12 @@
                     </script>
 
                     <!-- Cart -->
-                    <button class="relative flex items-center text-slate-700 hover:text-indigo-600 transition-colors">
+                    <button id="cart-toggle-btn" onclick="cartApp.toggleCart()" class="relative flex items-center text-slate-700 hover:text-indigo-600 transition-colors">
                         <span class="material-symbols-outlined text-2xl">
                             shopping_bag
                         </span>
-                        <span
-                            class="absolute -right-2 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white">
+                        <span id="cart-badge-count"
+                            class="absolute -right-2 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white transition-transform duration-300">
                             0
                         </span>
                     </button>

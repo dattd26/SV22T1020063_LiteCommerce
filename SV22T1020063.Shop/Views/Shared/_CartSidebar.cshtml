@@ -1,0 +1,120 @@
+@model List<SV22T1020063.Models.Sales.OrderDetailViewInfo>
+@{
+    var isEmpty = Model.Count == 0;
+    var subtotal = Model.Sum(x => x.Quantity * x.SalePrice);
+}
+
+<style>
+    #cart-sidebar .custom-scrollbar::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    #cart-sidebar .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #cart-sidebar .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e2e8f1;
+        border-radius: 10px;
+    }
+</style>
+
+<!-- Overlay / Backdrop -->
+<div id="cart-overlay"
+     class="fixed inset-0 bg-slate-900/20 z-[60] backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-500"
+     onclick="cartApp.closeCart()"></div>
+
+<!-- SideNavBar (The Shopping Bag Drawer) -->
+<aside
+    class="fixed right-0 top-0 h-screen w-[450px] z-[70] bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl flex flex-col shadow-2xl transition-transform duration-500 ease-in-out translate-x-full"
+    id="cart-sidebar">
+    <!-- Header -->
+    <header class="p-10 pb-6 flex flex-col gap-1">
+        <div class="flex justify-between items-center mb-6">
+            <span class="text-xl font-bold text-indigo-900 dark:text-indigo-100 tracking-tight">Giỏ hàng của bạn</span>
+            <button onclick="cartApp.closeCart()"
+                    class="material-symbols-outlined text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">close</button>
+        </div>
+        <h2 class="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">LỰA CHỌN MUA SẮM</h2>
+        <p class="text-sm font-medium text-slate-500">Danh sách sản phẩm đã chọn</p>
+    </header>
+
+    @if (isEmpty)
+    {
+        <!-- Empty State Composition -->
+        <div
+            class="flex-grow flex flex-col items-center justify-center text-center px-6 pb-20 overflow-y-auto custom-scrollbar">
+            <div class="w-full aspect-[4/5] mb-12 relative overflow-hidden group">
+                <img alt="Minimalist architectural line art"
+                     class="w-full h-full object-cover grayscale opacity-20 transition-transform duration-700 group-hover:scale-105"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAeYaNAnKbzLQdphM6_vQz6c5JImoJQQhtBYJChaVXRSqDNgGWnmk3suhkv-PF3HcWP7bS4wuese2eF7domQxxCYI_aWzBv2Ciqk9Zn7vhm6qoCJLgkAY_Rg_MzYPvhUeG2HdWsiXL1cQTWVQ3Vy-khyuFUygfpfxZH6_lNfeLgtfK1jKE4cEjSaX2RVo071Pg84W8YOi2S-rjeuNpcC5_Rzarlr8BBTzq2yuyu7tEOvEfAfNw14TomN2AtqfW-txOR7S7pQKSUnzt" />
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-300 text-7xl font-extralight">auto_awesome</span>
+                </div>
+            </div>
+            <h2 class="font-['Inter'] uppercase tracking-[0.2em] text-[11px] font-extrabold text-slate-400 mb-4">
+                GIỎ HÀNG CỦA BẠN ĐANG TRỐNG
+            </h2>
+            <p class="font-['Inter'] text-sm leading-relaxed text-slate-500 max-w-[280px] mb-10">
+                Hãy khám phá các sản phẩm từ Điện tử, May mặc đến Đồ gia dụng và bắt đầu mua sắm ngay.
+            </p>
+            <div class="relative group">
+                <a class="text-[12px] font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase inline-block transition-transform duration-300 group-hover:scale-105"
+                       href="/Product">
+                    MUA SẮM NGAY
+                </a>
+                <div
+                    class="absolute -bottom-1 left-0 w-0 h-[1px] bg-indigo-600 transition-all duration-500 group-hover:w-full">
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Order Summary List -->
+        <div class="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-10 space-y-4 pb-10">
+            @foreach (var item in Model)
+            {
+                <div
+                    class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-lg group transition-all duration-300 hover:bg-white dark:hover:bg-slate-800 hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-900/5 flex gap-6">
+                    <div class="w-24 h-32 bg-white dark:bg-slate-900 flex-shrink-0 overflow-hidden">
+                        <img src="/images/products/@item.Photo" alt="@item.ProductName" class="w-full h-full object-cover"
+                             onerror="this.src='/images/products/noPhoto.png'" />
+                    </div>
+                    <div class="flex flex-col justify-between flex-1">
+                        <div>
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-bold text-slate-800 dark:text-slate-100 leading-tight">@item.ProductName</h3>
+                                <button onclick="cartApp.removeFromCart(@item.ProductID)"
+                                        class="material-symbols-outlined text-slate-300 hover:text-red-500 transition-colors cursor-pointer ml-2">delete</button>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 font-medium">Số lượng: @item.Quantity</p>
+                        </div>
+                        <p class="text-lg font-bold text-slate-800 dark:text-slate-100">@item.SalePrice.ToString("N0") VNĐ</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Sticky Footer -->
+        <footer
+            class="p-10 pt-6 pb-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md space-y-6 border-t border-slate-100 dark:border-slate-800">
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500 font-medium">Tạm tính</span>
+                    <span class="text-slate-800 dark:text-slate-100 font-bold text-lg">@subtotal.ToString("N0") VNĐ</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500 font-medium">Phí vận chuyển</span>
+                    <span class="text-slate-800 dark:text-slate-100 font-bold">Miễn phí</span>
+                </div>
+            </div>
+            <div class="pt-2">
+                <a href="/Order/Checkout"
+                       class="block text-center w-full bg-gradient-to-br from-indigo-600 to-indigo-800 text-white py-5 rounded-lg font-bold tracking-tight shadow-[0_10px_20px_-5px_rgba(79,70,229,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(79,70,229,0.6)] hover:scale-[0.99] transition-all duration-300 active:scale-95">
+                    Thanh toán ngay
+                </a>
+            </div>
+        </footer>
+    }
+</aside>

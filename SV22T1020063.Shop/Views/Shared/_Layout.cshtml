@@ -35,6 +35,9 @@
         <span class="material-symbols-outlined text-2xl">arrow_upward</span>
     </button>
 
+    <!-- Cart Container -->
+    <div id="cart-container"></div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/flowbite/flowbite.min.js"></script>
@@ -49,6 +52,77 @@
 
         $('#back-to-top').click(function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        const cartApp = {
+            init: function() {
+                this.updateBadge();
+            },
+            toggleCart: function() {
+                const container = document.getElementById('cart-container');
+                fetch('/Cart/GetCartSidebar')
+                    .then(res => res.text())
+                    .then(html => {
+                        container.innerHTML = html;
+                        this.openCart();
+                    });
+            },
+            openCart: function() {
+                setTimeout(() => {
+                    const overlay = document.getElementById('cart-overlay');
+                    const sidebar = document.getElementById('cart-sidebar');
+                    if (overlay && sidebar) {
+                        overlay.classList.remove('opacity-0', 'pointer-events-none');
+                        sidebar.classList.remove('translate-x-full');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                }, 50);
+            },
+            closeCart: function() {
+                const overlay = document.getElementById('cart-overlay');
+                const sidebar = document.getElementById('cart-sidebar');
+                if (overlay && sidebar) {
+                    overlay.classList.add('opacity-0', 'pointer-events-none');
+                    sidebar.classList.add('translate-x-full');
+                    document.body.classList.remove('overflow-hidden');
+                }
+            },
+            addToCart: function(productId, quantity = 1, price = 0) {
+                $.post('/Cart/AddToCart', { productId, quantity, salePrice: price }, (res) => {
+                    if (res.success) {
+                        this.updateBadge(res.itemsCount);
+                        this.toggleCart();
+                    } else {
+                        alert(res.message);
+                    }
+                });
+            },
+            removeFromCart: function(productId) {
+                $.post('/Cart/RemoveFromCart', { productId }, (res) => {
+                    if (res.success) {
+                        this.updateBadge(res.itemsCount);
+                        this.toggleCart();
+                    }
+                });
+            },
+            updateBadge: function(count) {
+                const badge = document.getElementById('cart-badge-count');
+                if (!badge) return;
+                
+                if (count !== undefined) {
+                    badge.innerText = count;
+                    badge.classList.add('scale-125');
+                    setTimeout(() => badge.classList.remove('scale-125'), 300);
+                } else {
+                    $.get('/Cart/GetCartInfo', (res) => {
+                        badge.innerText = res.itemsCount || 0;
+                    });
+                }
+            }
+        };
+
+        $(document).ready(() => {
+            cartApp.init();
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
