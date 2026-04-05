@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SV22T1020063.BusinessLayers;
 using SV22T1020063.Models.Catalog;
 using SV22T1020063.Models.Common;
+using SV22T1020063.Shop.Models;
 
 namespace SV22T1020063.Shop.Controllers
 {
@@ -67,8 +68,43 @@ namespace SV22T1020063.Shop.Controllers
                 p.ProductID,
                 p.ProductName,
                 p.Price,
-                Photo = string.IsNullOrEmpty(p.Photo) ? "no_image.png" : p.Photo
+                Photo = string.IsNullOrEmpty(p.Photo) ? "demo.png" : p.Photo
             }));
+        }
+
+        public async Task<IActionResult> Detail(int id)
+        {
+            var product = await CatalogDataService.GetProductAsync(id);
+            if (product == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var viewModel = new ProductDetailViewModel
+            {
+                Product = product,
+                Attributes = await CatalogDataService.ListAttributesAsync(id),
+                Photos = await CatalogDataService.ListPhotosAsync(id),
+            };
+
+            if (product.CategoryID > 0)
+            {
+                var category = await CatalogDataService.GetCategoryAsync(product.CategoryID ?? 0);
+                ViewBag.CategoryName = category?.CategoryName ?? "Sản phẩm";
+            }
+
+            // Get 4 similar products from same category
+            var similarResult = await CatalogDataService.ListProductsAsync(new ProductSearchInput
+            {
+                Page = 1,
+                PageSize = 4,
+                CategoryID = product.CategoryID ?? 0,
+                SearchValue = ""
+            });
+            viewModel.SimilarProducts = similarResult.DataItems.Where(p => p.ProductID != id).ToList();
+
+            ViewBag.Title = product.ProductName;
+            return View(viewModel);
         }
     }
 }

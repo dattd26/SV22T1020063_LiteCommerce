@@ -95,13 +95,31 @@ namespace SV22T1020063.Admin.Controllers
                 if (uploadPhoto != null)
                 {
                     string fileName = $"{Guid.NewGuid()}{Path.GetExtension(uploadPhoto.FileName)}";
-                    string filePath = Path.Combine(ApplicationContext.WWWRootPath, "images/products", fileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+
+                    // Đường dẫn lưu tại Admin
+                    string adminPath = Path.Combine(ApplicationContext.WWWRootPath, "images/products", fileName);
+
+                    // Đường dẫn lưu tại Shop (đi ngược ra thư mục gốc rồi vào thư mục Shop)
+                    string shopPath = Path.Combine(ApplicationContext.ApplicationRootPath, "..", "SV22T1020063.Shop", "wwwroot", "images", "products", fileName);
+
+                    // Đảm bảo thư mục tồn tại
+                    string shopDir = Path.GetDirectoryName(shopPath);
+                    if (!Directory.Exists(shopDir)) Directory.CreateDirectory(shopDir);
+
+                    // Lưu file vào cả 2 nơi (hoặc ít nhất là nơi Shop cần)
+                    using (var stream = new FileStream(adminPath, FileMode.Create))
                     {
                         await uploadPhoto.CopyToAsync(stream);
                     }
+
+                    using (var stream = new FileStream(shopPath, FileMode.Create))
+                    {
+                        await uploadPhoto.CopyToAsync(stream);
+                    }
+
                     data.Photo = fileName;
                 }
+
 
                 if (data.ProductID == 0)
                 {
