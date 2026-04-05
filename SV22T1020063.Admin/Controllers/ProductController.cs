@@ -163,29 +163,29 @@ namespace SV22T1020063.Admin.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> ListAttributes(int pid)
+        public async Task<IActionResult> ListAttributes(int id)
         {
-            var model = await CatalogDataService.ListAttributesAsync(pid);
+            var model = await CatalogDataService.ListAttributesAsync(id);
             return View(model);
         }
 
-        public IActionResult CreateAttribute(int pid)
+        public IActionResult CreateAttribute(int id)
         {
             ViewBag.Title = "Bổ sung thuộc tính";
             var model = new ProductAttribute()
             {
                 AttributeID = 0,
-                ProductID = pid
+                ProductID = id
             };
             return View("EditAttribute", model);
         }
 
-        public async Task<IActionResult> EditAttribute(int pid, int attributeId)
+        public async Task<IActionResult> EditAttribute(int id, int attributeId)
         {
             ViewBag.Title = "Thay đổi thuộc tính";
             var model = await CatalogDataService.GetAttributeAsync(attributeId);
             if (model == null)
-                return RedirectToAction("Edit", new { id = pid });
+                return RedirectToAction("Edit", new { id = id });
             return View(model);
         }
 
@@ -221,36 +221,36 @@ namespace SV22T1020063.Admin.Controllers
             }
         }
 
-        public async Task<IActionResult> DeleteAttribute(int pid, int attributeId)
+        public async Task<IActionResult> DeleteAttribute(int id, int attributeId)
         {
             await CatalogDataService.DeleteAttributeAsync(attributeId);
-            return RedirectToAction("Edit", new { id = pid });
+            return RedirectToAction("Edit", new { id = id });
         }
 
-        public async Task<IActionResult> ListPhotos(int pid)
+        public async Task<IActionResult> ListPhotos(int id)
         {
-            var model = await CatalogDataService.ListPhotosAsync(pid);
+            var model = await CatalogDataService.ListPhotosAsync(id);
             return View(model);
         }
 
-        public IActionResult CreatePhoto(int pid)
+        public IActionResult CreatePhoto(int id)
         {
             ViewBag.Title = "Bổ sung ảnh";
             var model = new ProductPhoto()
             {
                 PhotoID = 0,
-                ProductID = pid,
+                ProductID = id,
                 Photo = "nophoto.png"
             };
             return View("EditPhoto", model);
         }
 
-        public async Task<IActionResult> EditPhoto(int pid, int photoId)
+        public async Task<IActionResult> EditPhoto(int id, int photoId)
         {
             ViewBag.Title = "Thay đổi ảnh";
             var model = await CatalogDataService.GetPhotoAsync(photoId);
             if (model == null)
-                return RedirectToAction("Edit", new { id = pid });
+                return RedirectToAction("Edit", new { id });
             return View(model);
         }
 
@@ -274,11 +274,28 @@ namespace SV22T1020063.Admin.Controllers
                 if (uploadPhoto != null)
                 {
                     string fileName = $"{Guid.NewGuid()}{Path.GetExtension(uploadPhoto.FileName)}";
-                    string filePath = Path.Combine(ApplicationContext.WWWRootPath, "images/products", fileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+
+                    // Đường dẫn lưu tại Admin
+                    string adminPath = Path.Combine(ApplicationContext.WWWRootPath, "images/products", fileName);
+
+                    // Đường dẫn lưu tại Shop (đi ngược ra thư mục gốc rồi vào thư mục Shop)
+                    string shopPath = Path.Combine(ApplicationContext.ApplicationRootPath, "..", "SV22T1020063.Shop", "wwwroot", "images", "products", fileName);
+
+                    // Đảm bảo thư mục tồn tại
+                    string shopDir = Path.GetDirectoryName(shopPath);
+                    if (!Directory.Exists(shopDir)) Directory.CreateDirectory(shopDir);
+
+                    // Lưu file vào cả 2 nơi (hoặc ít nhất là nơi Shop cần)
+                    using (var stream = new FileStream(adminPath, FileMode.Create))
                     {
                         await uploadPhoto.CopyToAsync(stream);
                     }
+
+                    using (var stream = new FileStream(shopPath, FileMode.Create))
+                    {
+                        await uploadPhoto.CopyToAsync(stream);
+                    }
+
                     data.Photo = fileName;
                 }
 
@@ -296,10 +313,10 @@ namespace SV22T1020063.Admin.Controllers
             }
         }
 
-        public async Task<IActionResult> DeletePhoto(int pid, int photoId)
+        public async Task<IActionResult> DeletePhoto(int id, int photoId)
         {
             await CatalogDataService.DeletePhotoAsync(photoId);
-            return RedirectToAction("Edit", new { id = pid });
+            return RedirectToAction("Edit", new { id });
         }
     }
 }

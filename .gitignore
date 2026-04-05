@@ -363,3 +363,12 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+LiteCommerceDB_Update2026.sql
+SV22T1020063.Admin/SV22T1020063.Admin_SystemOverview.md
+SV22T1020063.Admin/wwwroot/images/**
+SV22T1020063.Shop/wwwroot/images/**
+SV22T1020063.Shop/SV22T1020063.Shop.md
+SV22T1020063.Shop/stitch_shop_product_detail/code.html
+SV22T1020063.Shop/stitch_shop_product_detail/DESIGN.md
+SV22T1020063.Shop/stitch_shop_product_detail/screen.png
+S

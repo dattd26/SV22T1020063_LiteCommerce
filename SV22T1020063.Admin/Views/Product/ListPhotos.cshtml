@@ -40,24 +40,26 @@
                             <tr>
                                 <td class="text-center">
                                     <img src="~/images/products/@(string.IsNullOrEmpty(item.Photo) ? "nophoto.png" : item.Photo)"
-                                    class="img-thumbnail"
-                                    style="max-height:80px;" />
+                                         class="img-thumbnail" style="max-height:80px;" />
                                 </td>
                                 <td>@item.Description</td>
                                 <td class="text-center">@item.DisplayOrder</td>
                                 <td class="text-center">
-                                    @if(item.IsHidden) {
+                                    @if (item.IsHidden)
+                                    {
                                         <span class="badge bg-secondary">Ẩn</span>
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         <span class="badge bg-success">Hiện</span>
                                     }
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    <a class="btn btn-sm btn-primary" href="~/Product/EditPhoto/@pid/@item.PhotoID">
+                                    <a class="btn btn-sm btn-primary" href="~/Product/EditPhoto/@pid?photoId=@item.PhotoID">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a class="btn btn-sm btn-danger" href="~/Product/DeletePhoto/@pid/@item.PhotoID" 
-                                       onclick="return confirm('Xóa ảnh này của mặt hàng?')">
+                                    <a class="btn btn-sm btn-danger" href="~/Product/DeletePhoto/@pid?photoId=@item.PhotoID"
+                                           onclick="return confirm('Xóa ảnh này của mặt hàng?')">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </td>

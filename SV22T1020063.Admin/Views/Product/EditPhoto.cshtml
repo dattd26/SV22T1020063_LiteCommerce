@@ -1,6 +1,5 @@
 @model ProductPhoto
 @{
-    int pid = Convert.ToInt32(ViewContext.RouteData.Values["id"]);
 }
 <div class="row justify-content-center">
     <div class="col-8">
@@ -54,11 +53,10 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-save"></i> Lưu dữ liệu
                         </button>
-                        <a href="~/Product/Edit/@pid" class="btn btn-secondary">
+                        <a href="~/Product/Edit/@Model.ProductID" class="btn btn-secondary">
                             <i class="bi bi-x-circle"></i> Hủy và quay lại
                         </a>
                     </div>
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 </form>
             </div>
         </div>
