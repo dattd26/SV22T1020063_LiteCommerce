@@ -3,6 +3,27 @@
     Layout = null;
 }
 
+@if (!string.IsNullOrEmpty(ViewBag.SearchValue))
+{
+    <div class="mb-10 flex items-center justify-between border-b border-gray-100 pb-5">
+        <div class="flex items-center gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                <span class="material-symbols-outlined text-2xl font-bold">search</span>
+            </div>
+            <div>
+                <h1 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Kết quả tìm kiếm</h1>
+                <p class="text-lg font-bold text-slate-900">
+                    Sản phẩm cho "<span class="text-indigo-600">@ViewBag.SearchValue</span>"
+                </p>
+            </div>
+        </div>
+        <a href="~/Product" class="group flex items-center gap-2 rounded-xl border border-gray-100 bg-white px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-600 transition-all hover:border-indigo-600 hover:text-indigo-600 active:scale-95 shadow-sm">
+            Xóa tìm kiếm
+            <span class="material-symbols-outlined text-[16px] transition-transform group-hover:rotate-90">close</span>
+        </a>
+    </div>
+}
+
 <div class="flex items-center justify-between mb-12">
     <div>
         <h2 class="text-2xl font-black tracking-tight text-slate-900">
@@ -13,7 +34,7 @@
             else
             {
                 <span>Không tìm thấy sản phẩm nào của @(string.IsNullOrEmpty(ViewBag.CategoryName) ? "toàn bộ cửa hàng" :
-                                                                                                                                                                                                                                            ViewBag.CategoryName)</span>
+                                                                                                                                                                                                                                             ViewBag.CategoryName)</span>
                 }
             </h2>
             <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-widest">

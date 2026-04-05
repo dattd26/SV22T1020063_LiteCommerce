@@ -46,6 +46,7 @@ namespace SV22T1020063.Shop.Controllers
                     ViewBag.CategoryName = category.CategoryName;
                 }
             }
+            ViewBag.SearchValue = input.SearchValue;
             return PartialView(result);
         }
 
