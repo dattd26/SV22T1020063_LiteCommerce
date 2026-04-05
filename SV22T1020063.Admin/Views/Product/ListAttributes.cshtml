@@ -41,11 +41,13 @@
                                 <td>@item.AttributeValue</td>
                                 <td class="text-center">@item.DisplayOrder</td>
                                 <td class="text-center text-nowrap">
-                                    <a class="btn btn-sm btn-primary" href="~/Product/EditAttribute/@pid/@item.AttributeID">
+                                    <a class="btn btn-sm btn-primary"
+                                           href="~/Product/EditAttribute/@pid?attributeId=@item.AttributeID">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a class="btn btn-sm btn-danger" href="~/Product/DeleteAttribute/@pid/@item.AttributeID"
-                                       onclick="return confirm('Xóa thuộc tính này của mặt hàng?')">
+                                    <a class="btn btn-sm btn-danger"
+                                           href="~/Product/DeleteAttribute/@pid?attributeId=@item.AttributeID"
+                                           onclick="return confirm('Xóa thuộc tính này của mặt hàng?')">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </td>
