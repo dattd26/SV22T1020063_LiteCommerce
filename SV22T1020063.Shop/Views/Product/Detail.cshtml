@@ -1,0 +1,229 @@
+@model SV22T1020063.Shop.Models.ProductDetailViewModel
+@{
+    ViewData["Title"] = Model.Product.ProductName;
+}
+
+<main class="max-w-screen-2xl mx-auto px-8 pt-12 pb-24">
+    <!-- Breadcrumbs -->
+    <nav class="mb-12 flex items-center gap-2 text-xs uppercase tracking-widest text-on-surface-variant font-semibold">
+        <a class="hover:text-primary transition-colors" href="~/">Trang chủ</a>
+        <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+        <a class="hover:text-primary transition-colors" href="~/Product?categoryID=@Model.Product.CategoryID">@ViewBag.CategoryName</a>
+        <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+        <span class="text-on-surface">@Model.Product.ProductName</span>
+    </nav>
+
+    <div class="flex flex-col lg:flex-row gap-16 items-start">
+        <!-- Left: Gallery Section (60%) -->
+        <div class="w-full lg:w-[60%] flex gap-6">
+            <!-- Vertical Thumbnails -->
+            <div class="hidden md:flex flex-col gap-4 w-20 no-scrollbar overflow-y-auto max-h-[600px]">
+                <!-- Main Photo Thumbnail -->
+                <div class="aspect-[4/5] bg-surface-container overflow-hidden cursor-pointer border-l-2 border-primary thumbnail-item active" 
+                     onclick="switchMainImage('@Url.Content("~/images/products/" + (string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo))', this)">
+                    <img class="w-full h-full object-cover" src="~/images/products/@(string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo)" alt="@Model.Product.ProductName">
+                </div>
+                <!-- Additional Photos -->
+                @foreach (var photo in Model.Photos.Where(p => !p.IsHidden).OrderBy(p => p.DisplayOrder))
+                {
+                    <div class="aspect-[4/5] bg-surface-container overflow-hidden cursor-pointer hover:opacity-80 transition-opacity thumbnail-item"
+                         onclick="switchMainImage('@Url.Content("~/images/products/" + photo.Photo)', this)">
+                        <img class="w-full h-full object-cover" src="~/images/products/@photo.Photo" alt="@photo.Description">
+                    </div>
+                }
+            </div>
+            
+            <!-- Main Image -->
+            <div class="flex-1 bg-surface-container-lowest editorial-shadow overflow-hidden group">
+                <div class="aspect-[4/5] overflow-hidden">
+                    <img id="main-product-image" 
+                         class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" 
+                         src="~/images/products/@(string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo)" 
+                         alt="@Model.Product.ProductName">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Product Info Sticky (40%) -->
+        <div class="w-full lg:w-[40%] lg:sticky lg:top-32">
+            <div class="space-y-8">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-[0.2em] text-primary mb-3">BST Sản phẩm mới</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-on-surface mb-4 leading-tight">@Model.Product.ProductName</h1>
+                    <p class="text-3xl md:text-4xl font-medium tracking-tight text-on-surface">@Model.Product.Price.ToString("N0") ₫</p>
+                </div>
+                
+                @if (!string.IsNullOrEmpty(Model.Product.ProductDescription))
+                {
+                    <p class="text-on-surface-variant text-lg leading-relaxed">
+                        @Model.Product.ProductDescription
+                    </p>
+                }
+
+                @if (Model.Product.IsSelling)
+                {
+                    <!-- Add to Cart Cluster -->
+                    <div class="flex gap-4">
+                        <div class="w-32 flex items-center justify-between px-4 bg-surface-container-low rounded-lg">
+                            <button class="p-2 hover:text-primary" onclick="updateQty(-1)"><span class="material-symbols-outlined text-sm">remove</span></button>
+                            <span id="quantity-display" class="font-bold text-sm">1</span>
+                            <button class="p-2 hover:text-primary" onclick="updateQty(1)"><span class="material-symbols-outlined text-sm">add</span></button>
+                        </div>
+                        <button class="flex-1 py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold tracking-tight rounded-lg shadow-lg hover:shadow-indigo-500/20 transition-all active:scale-[0.98]">
+                            Thêm vào giỏ hàng
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-4 bg-error-container text-on-error-container rounded-lg font-bold text-center">
+                        Sản phẩm hiện đang ngừng kinh doanh
+                    </div>
+                }
+
+                <!-- Trust Icons -->
+                <div class="pt-8 grid grid-cols-3 gap-4 border-t border-outline-variant/10">
+                    <div class="text-center space-y-2">
+                        <span class="material-symbols-outlined text-on-surface-variant">local_shipping</span>
+                        <p class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Giao hàng nhanh</p>
+                    </div>
+                    <div class="text-center space-y-2">
+                        <span class="material-symbols-outlined text-on-surface-variant">verified_user</span>
+                        <p class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Bảo hành 12 tháng</p>
+                    </div>
+                    <div class="text-center space-y-2">
+                        <span class="material-symbols-outlined text-on-surface-variant">lock</span>
+                        <p class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Thanh toán bảo mật</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details/Specs Section -->
+    <section class="mt-32">
+        <div class="border-b border-outline-variant/20 flex gap-12">
+            <button class="pb-6 text-sm font-bold uppercase tracking-[0.2em] border-b-2 border-primary text-primary active-tab" onclick="switchTab(this, 'description')">Mô tả</button>
+            <button class="pb-6 text-sm font-bold uppercase tracking-[0.2em] border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab(this, 'specs')">Thông số kỹ thuật</button>
+            <button class="pb-6 text-sm font-bold uppercase tracking-[0.2em] border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab(this, 'reviews')">Đánh giá (124)</button>
+        </div>
+
+        <div id="tab-content" class="py-16">
+            <!-- Description -->
+            <div id="description-content" class="tab-pane">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+                    <div class="space-y-6">
+                        <h2 class="text-3xl font-extrabold tracking-tight">Về @Model.Product.ProductName</h2>
+                        <p class="text-on-surface-variant leading-relaxed text-lg">
+                            @Model.Product.ProductDescription
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                <span class="text-sm font-medium">Chất liệu cao cấp, bền bỉ</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                <span class="text-sm font-medium">Thiết kế hiện đại, tinh tế</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-surface-container-low aspect-video rounded-xl overflow-hidden shadow-inner flex items-center justify-center p-8">
+                        <img class="w-full h-full object-cover rounded-lg shadow-2xl" src="~/images/products/@(string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo)" alt="Feature image">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Specs -->
+            <div id="specs-content" class="tab-pane hidden">
+                <div class="max-w-3xl">
+                    <table class="w-full border-collapse">
+                        <tbody>
+                            <tr class="border-b border-outline-variant/10">
+                                <td class="py-4 text-sm font-bold uppercase tracking-widest text-on-surface-variant w-1/3">Đơn vị tính</td>
+                                <td class="py-4 text-sm font-medium text-on-surface">@Model.Product.Unit</td>
+                            </tr>
+                            @foreach (var attr in Model.Attributes.OrderBy(a => a.DisplayOrder))
+                            {
+                                <tr class="border-b border-outline-variant/10">
+                                    <td class="py-4 text-sm font-bold uppercase tracking-widest text-on-surface-variant w-1/3">@attr.AttributeName</td>
+                                    <td class="py-4 text-sm font-medium text-on-surface">@attr.AttributeValue</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reviews placeholder -->
+            <div id="reviews-content" class="tab-pane hidden">
+                <div class="text-center py-12">
+                    <p class="text-on-surface-variant">Hiện chưa có đánh giá nào cho sản phẩm này.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommended Section -->
+    @if (Model.SimilarProducts.Any())
+    {
+        <section class="mt-32">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">Đề xuất cho bạn</p>
+                    <h2 class="text-4xl font-extrabold tracking-tighter">Sản phẩm liên quan</h2>
+                </div>
+                <a href="~/Product?categoryID=@Model.Product.CategoryID" class="text-sm font-bold uppercase tracking-widest border-b border-on-surface pb-1 hover:text-primary hover:border-primary transition-all">Xem tất cả</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                @foreach (var prod in Model.SimilarProducts)
+                {
+                    <div class="group cursor-pointer" onclick="location.href='@Url.Action("Detail", "Product", new { id = prod.ProductID })'">
+                        <div class="aspect-[4/5] bg-surface-container-low overflow-hidden mb-6">
+                            <img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" 
+                                 src="~/images/products/@(string.IsNullOrEmpty(prod.Photo) ? "nophoto.png" : prod.Photo)" 
+                                 alt="@prod.ProductName">
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-base font-bold tracking-tight">@prod.ProductName</h3>
+                            <p class="text-sm font-medium text-on-surface">@prod.Price.ToString("N0") ₫</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+</main>
+
+@section Scripts {
+    <script>
+        function switchMainImage(src, thumbElement) {
+            document.getElementById('main-product-image').src = src;
+            document.querySelectorAll('.thumbnail-item').forEach(el => el.classList.remove('border-primary', 'active'));
+            document.querySelectorAll('.thumbnail-item').forEach(el => el.classList.add('hover:opacity-80'));
+            
+            thumbElement.classList.add('border-primary', 'active');
+            thumbElement.classList.remove('hover:opacity-80');
+        }
+
+        let currentQty = 1;
+        function updateQty(delta) {
+            currentQty = Math.max(1, currentQty + delta);
+            document.getElementById('quantity-display').innerText = currentQty;
+        }
+
+        function switchTab(btn, tabId) {
+            // Update buttons
+            btn.parentElement.querySelectorAll('button').forEach(el => {
+                el.classList.remove('border-primary', 'text-primary');
+                el.classList.add('border-transparent', 'text-on-surface-variant');
+            });
+            btn.classList.add('border-primary', 'text-primary');
+            btn.classList.remove('border-transparent', 'text-on-surface-variant');
+
+            // Update content
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId + '-content').classList.remove('hidden');
+        }
+    </script>
+}
