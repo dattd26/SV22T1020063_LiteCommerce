@@ -35,7 +35,7 @@
             else
             {
                 <span>Không tìm thấy sản phẩm nào của @(string.IsNullOrEmpty(ViewBag.CategoryName) ? "toàn bộ cửa hàng" :
-                                                                                                                                                                                                                                                                 ViewBag.CategoryName)</span>
+                                                                                                                                                                                                                                                                                                                                                                                                             ViewBag.CategoryName)</span>
                 }
             </h2>
             <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-widest">
@@ -62,12 +62,14 @@
                     @if (string.IsNullOrEmpty(item.Photo))
                     {
                         <img src="https://via.placeholder.com/400x400?text=No+Image" alt="@item.ProductName"
-                             class="h-full w-full object-contain p-8 transition-transform duration-700 group-hover:scale-105 opacity-50">
+                             window.location.href='/Product/Detail/@item.ProductID' href="~/Product/Detail/@item.ProductID"
+                             class="h-full w-full object-contain p-8 transition-transform duration-700 group-hover:scale-105 opacity-50 cursor-pointer">
                     }
                     else
                     {
                         <img src="/images/products/@item.Photo" alt="@item.ProductName"
-                             class="h-full w-full object-contain p-5 transition-transform duration-700 group-hover:scale-105 mix-blend-multiply">
+                             onclick="window.location.href='/Product/Detail/@item.ProductID'"
+                             class="h-full w-full object-contain p-5 transition-transform duration-700 group-hover:scale-105 mix-blend-multiply cursor-pointer">
                     }
                     
                     <!-- Hover Actions (Simplified) -->
@@ -96,7 +98,7 @@
                         <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">TDD Shop</span>
                     </div>
                 
-                    <h3
+                    <h3 onclick="window.location.href='/Product/Detail/@item.ProductID'"
                         class="text-[13px] font-bold text-slate-900 leading-snug mb-3 line-clamp-2 hover:text-indigo-600 transition-colors cursor-pointer">
                         @item.ProductName
                     </h3>
