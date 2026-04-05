@@ -19,20 +19,38 @@ namespace SV22T1020063.Shop.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.Title = "Trang chủ";
-            
-            // Lấy 12 sản phẩm tiêu biểu để hiển thị ở trang chủ
-            var productResult = await CatalogDataService.ListProductsAsync(new ProductSearchInput
-            {
-                Page = 1,
-                PageSize = 8, // Hiển thị 8 sản phẩm tiêu biểu
-                SearchValue = "",
-                CategoryID = 0,
-                SupplierID = 0,
-                MinPrice = 0,
-                MaxPrice = 0
-            });
 
-            return View(productResult.DataItems);
+            // Chỉ định ID của các sản phẩm tiêu biểu bạn muốn hiển thị
+            List<int> featuredProductIds = new List<int> { 85, 88, 94, 300, 564, 654, 237, 78 };
+
+            List<Product> featuredProducts = new List<Product>();
+            foreach (var id in featuredProductIds)
+            {
+                var product = await CatalogDataService.GetProductAsync(id);
+                if (product != null)
+                {
+                    featuredProducts.Add(product);
+                }
+            }
+
+            // Nếu không tìm thấy sản phẩm nào theo ID chỉ định, 
+            // fallback về cách lấy danh sách mặc định
+            if (featuredProducts.Count == 0)
+            {
+                var productResult = await CatalogDataService.ListProductsAsync(new ProductSearchInput
+                {
+                    Page = 1,
+                    PageSize = 8,
+                    SearchValue = "",
+                    CategoryID = 0,
+                    SupplierID = 0,
+                    MinPrice = 0,
+                    MaxPrice = 0
+                });
+                featuredProducts = productResult.DataItems;
+            }
+
+            return View(featuredProducts);
         }
 
         public async Task<IActionResult> Search(ProductSearchInput input)

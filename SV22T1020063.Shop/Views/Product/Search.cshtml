@@ -17,7 +17,8 @@
                 </p>
             </div>
         </div>
-        <a href="~/Product" class="group flex items-center gap-2 rounded-xl border border-gray-100 bg-white px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-600 transition-all hover:border-indigo-600 hover:text-indigo-600 active:scale-95 shadow-sm">
+        <a href="~/Product"
+               class="group flex items-center gap-2 rounded-xl border border-gray-100 bg-white px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-600 transition-all hover:border-indigo-600 hover:text-indigo-600 active:scale-95 shadow-sm">
             Xóa tìm kiếm
             <span class="material-symbols-outlined text-[16px] transition-transform group-hover:rotate-90">close</span>
         </a>
@@ -34,7 +35,7 @@
             else
             {
                 <span>Không tìm thấy sản phẩm nào của @(string.IsNullOrEmpty(ViewBag.CategoryName) ? "toàn bộ cửa hàng" :
-                                                                                                                                                                                                                                             ViewBag.CategoryName)</span>
+                                                                                                                                                                                                                                                                 ViewBag.CategoryName)</span>
                 }
             </h2>
             <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-widest">
@@ -73,7 +74,7 @@
                     <div
                         class="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/5 to-transparent flex justify-center">
                         <button
-                            class="w-full bg-white/95 backdrop-blur-md text-slate-900 font-bold py-2 rounded-lg shadow-sm hover:bg-indigo   -600 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5 active:scale-95">
+                            class="w-full bg-white/95 backdrop-blur-md text-slate-900 font-bold py-2 rounded-lg shadow-sm hover:bg-indigo-600 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5 active:scale-95">
                             <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
                             <span class="text-[10px] uppercase tracking-widest">Thêm giỏ</span>
                         </button>
