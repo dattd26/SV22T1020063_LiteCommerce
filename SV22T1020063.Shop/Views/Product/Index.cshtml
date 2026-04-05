@@ -4,12 +4,12 @@
 
 <div class="bg-white py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col lg:flex-row gap-16">
+        <div class="flex flex-col md:flex-row gap-6 lg:gap-8">
 
             @await Html.PartialAsync("_CategorySidebar")
 
-            <!-- Product Grid (75%) -->
-            <div class="w-full lg:w-3/4" id="searchResult">
+            <!-- Product Grid -->
+            <div id="searchResult" class="flex-1 min-w-0 w-full">
                 <!-- Data will be loaded here via AJAX -->
                 <div class="flex flex-col items-center justify-center py-24 space-y-4">
                     <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
@@ -40,11 +40,14 @@
                 $(`.category-link[data-category-id='${categoryId}']`).addClass("active");
             }
             
-            // Get price values
+            // Get filter values
             const minPrice = $("#min-price-input").val();
             const maxPrice = $("#max-price-input").val();
+            const searchValue = $("#search-input").val();
+            
             $("#current-min-price").val(minPrice || 0);
             $("#current-max-price").val(maxPrice || 0);
+            $("#current-search").val(searchValue || "");
 
             var form = $("#frmSearch");
             var url = form.attr("action");
