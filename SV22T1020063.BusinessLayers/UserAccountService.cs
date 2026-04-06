@@ -20,7 +20,13 @@ namespace SV22T1020063.BusinessLayers
             employeeAccountDB = new EmployeeAccountRepository(Configuration.ConnectionString);
             customerAccountDB = new CustomerAccountRepository(Configuration.ConnectionString);
         }
-
+        /// <summary>
+        /// Xác thực đăng nhập
+        /// </summary>
+        /// <param name="accountType"></param>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static async Task<UserAccount?> AuthorizeAsync(AccountTypes accountType, string userName, string password)
         {
             if (accountType == AccountTypes.Employee)

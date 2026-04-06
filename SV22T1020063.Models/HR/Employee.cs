@@ -1,4 +1,4 @@
-﻿namespace SV22T1020063.Models.HR
+namespace SV22T1020063.Models.HR
 {
     /// <summary>
     /// Nhân viên
@@ -47,5 +47,9 @@
         /// Class CSS cho trạng thái (dùng cho hiển thị)
         /// </summary>
         public string StatusClass => IsWorking ? "badge bg-success" : "badge bg-danger";
+        /// <summary>
+        /// Danh sách tên các vai trò/quyền của nhân viên, được phân cách bởi dấu phẩy
+        /// </summary>
+        public string RoleNames { get; set; } = string.Empty;
     }
 }

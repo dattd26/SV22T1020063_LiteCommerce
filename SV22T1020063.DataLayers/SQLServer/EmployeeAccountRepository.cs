@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using SV22T1020063.DataLayers.Interfaces;
 using SV22T1020063.Models.Security;
@@ -30,7 +30,7 @@ namespace SV22T1020063.DataLayers.SQLServer
                                 FullName AS DisplayName,
                                 Email,
                                 ISNULL(Photo,'') AS Photo,
-                                'Employee' AS RoleNames
+                                ISNULL(RoleNames,'') AS RoleNames
                            FROM Employees
                            WHERE Email = @userName 
                              AND Password = @password

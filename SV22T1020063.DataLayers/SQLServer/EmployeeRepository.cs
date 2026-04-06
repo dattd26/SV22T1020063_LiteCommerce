@@ -31,8 +31,8 @@ namespace SV22T1020063.DataLayers.SQLServer
         {
             using var connection = new SqlConnection(_connectionString);
 
-            string sql = @"INSERT INTO Employees(FullName, BirthDate, Address, Phone, Email, Photo, IsWorking)
-                           VALUES(@FullName,@BirthDate,@Address,@Phone,@Email,@Photo,@IsWorking);
+            string sql = @"INSERT INTO Employees(FullName, BirthDate, Address, Phone, Email, Photo, IsWorking, RoleNames)
+                           VALUES(@FullName,@BirthDate,@Address,@Phone,@Email,@Photo,@IsWorking,@RoleNames);
                            SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             return await connection.ExecuteScalarAsync<int>(sql, data);
@@ -52,7 +52,8 @@ namespace SV22T1020063.DataLayers.SQLServer
                                Phone=@Phone,
                                Email=@Email,
                                Photo=@Photo,
-                               IsWorking=@IsWorking
+                               IsWorking=@IsWorking,
+                               RoleNames=@RoleNames
                            WHERE EmployeeID=@EmployeeID";
 
             return await connection.ExecuteAsync(sql, data) > 0;
@@ -79,7 +80,7 @@ namespace SV22T1020063.DataLayers.SQLServer
             using var connection = new SqlConnection(_connectionString);
 
             string sql = @"SELECT EmployeeID, FullName, BirthDate, Address,
-                                  Phone, Email, Photo, IsWorking
+                                  Phone, Email, Photo, IsWorking, RoleNames
                            FROM Employees
                            WHERE EmployeeID=@EmployeeID";
 
@@ -141,7 +142,7 @@ namespace SV22T1020063.DataLayers.SQLServer
                 if (input.PageSize == 0)
                 {
                     sql = @"SELECT EmployeeID, FullName, BirthDate, Address,
-                                   Phone, Email, Photo, IsWorking
+                                   Phone, Email, Photo, IsWorking, RoleNames
                             FROM Employees
                             WHERE FullName LIKE @searchValue
                                OR Phone LIKE @searchValue
@@ -151,7 +152,7 @@ namespace SV22T1020063.DataLayers.SQLServer
                 else
                 {
                     sql = @"SELECT EmployeeID, FullName, BirthDate, Address,
-                                   Phone, Email, Photo, IsWorking
+                                   Phone, Email, Photo, IsWorking, RoleNames
                             FROM Employees
                             WHERE FullName LIKE @searchValue
                                OR Phone LIKE @searchValue

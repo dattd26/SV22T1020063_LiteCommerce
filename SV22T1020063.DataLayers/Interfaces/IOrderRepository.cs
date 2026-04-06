@@ -9,6 +9,14 @@ namespace SV22T1020063.DataLayers.Interfaces
     public interface IOrderRepository
     {
         /// <summary>
+        /// Đếm số lượng đơn hàng của khách hàng
+        /// </summary>
+        Task<int> CountAsync(int customerID);
+        /// <summary>
+        /// Đếm số lượng đơn hàng đang giao của khách hàng
+        /// </summary>
+        Task<int> CountShippingAsync(int customerID);
+        /// <summary>
         /// Tìm kiếm và lấy danh sách đơn hàng dưới dạng phân trang
         /// </summary>
         /// <param name="input"></param>

@@ -14,6 +14,34 @@ namespace SV22T1020063.DataLayers.SQLServer
             _connectionString = connectionString;
         }
 
+        public async Task<int> CountAsync(int customerID)
+        {
+            int count = 0;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string sql = "SELECT COUNT(*) FROM Orders WHERE CustomerID = @CustomerID";
+                await conn.OpenAsync();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@CustomerID", customerID);
+                count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            }
+            return count;
+        }
+
+        public async Task<int> CountShippingAsync(int customerID)
+        {
+            int count = 0;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                string sql = "SELECT COUNT(*) FROM Orders WHERE CustomerID = @CustomerID AND Status = 3";
+                await conn.OpenAsync();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@CustomerID", customerID);
+                count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            }
+            return count;
+        }
+
         public async Task<int> AddAsync(Order data)
         {
             int orderID = 0;
