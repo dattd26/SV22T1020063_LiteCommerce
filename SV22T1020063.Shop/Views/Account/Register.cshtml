@@ -1,80 +1,167 @@
-@model Customer
+@model SV22T1020063.Models.Partner.Customer
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Đăng ký tài khoản";
 }
+<div
+    class="min-h-screen py-12 px-4 flex items-center justify-center bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-50 via-white to-purple-50">
+    <div class="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-black text-slate-800 tracking-tight">Tạo tài khoản thành viên</h1>
+            <p class="text-slate-500 mt-2 font-medium">Bắt đầu hành trình mua sắm tuyệt vời cùng chúng tôi.</p>
+        </div>
 
-<div class="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
-    <div class="bg-white rounded-lg shadow p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6 dark:text-white">Đăng ký thành viên</h2>
-        
-        <form action="/Account/Register" method="POST" class="space-y-4">
-            @Html.AntiForgeryToken()
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="CustomerName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Họ và tên</label>
-                    <input type="text" asp-for="CustomerName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Nguyễn Văn A" required>
-                    <span asp-validation-for="CustomerName" class="text-red-600 text-xs mt-1"></span>
-                </div>
-                <div>
-                    <label for="ContactName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên giao dịch</label>
-                    <input type="text" asp-for="ContactName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Tên thường dùng">
-                </div>
-            </div>
+        <div
+            class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-indigo-100/50 border border-white p-8 md:p-12 relative overflow-hidden">
+            <form action="/Account/Register" method="POST" class="space-y-10 relative z-10">
+                @Html.AntiForgeryToken()
 
-            <div>
-                <label for="Email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                <input type="email" asp-for="Email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="name@domain.com" required>
-                <span asp-validation-for="Email" class="text-red-600 text-xs mt-1"></span>
-            </div>
+                <!-- Section: Personal Info -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest">Thông tin cá nhân</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Họ và
+                                tên</label>
+                                <input type="text" asp-for="CustomerName"
+                                       class="w-full bg-slate-50 border-none rounded-2xl px-4 py-4 text-slate-800 font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-indigo-600/20 transition-all"
+                                       placeholder="Nguyễn Văn A" required>
+                                    <span asp-validation-for="CustomerName"
+                                          class="text-rose-500 text-[10px] font-bold block ml-1"></span>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Tên
+                                        giao dịch</label>
+                                        <input type="text" asp-for="ContactName"
+                                               class="w-full bg-slate-50 border-none rounded-2xl px-4 py-4 text-slate-800 font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-indigo-600/20 transition-all"
+                                               placeholder="Tên thường dùng">
+                                        </div>
+                                    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="Password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mật khẩu</label>
-                    <input type="password" asp-for="Password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="••••••••" required>
-                    <span asp-validation-for="Password" class="text-red-600 text-xs mt-1"></span>
-                </div>
-                <div>
-                    <label for="confirmPassword" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Xác nhận mật khẩu</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="••••••••" required>
-                    <span id="confirm-pass-error" class="text-red-600 text-xs mt-1">@Html.ValidationMessage("confirmPassword")</span>
-                </div>
-            </div>
+                                    <div class="space-y-2">
+                                        <label
+                                        class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Email</label>
+                                        <div class="relative group">
+                                            <div
+                                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-600 transition-colors">
+                                                <span class="material-symbols-outlined text-xl">mail</span>
+                                            </div>
+                                            <input type="email" asp-for="Email" style="padding-left: 50px;"
+                                                   class="w-full bg-slate-50 border-none rounded-2xl pr-4 py-4 text-slate-800 font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-indigo-600/20 transition-all"
+                                                   placeholder="name@domain.com" required>
+                                            </div>
+                                            <span asp-validation-for="Email" class="text-rose-500 text-[10px] font-bold block ml-1"></span>
+                                        </div>
+                                    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="Province" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tỉnh/thành</label>
-                    <select asp-for="Province" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="">-- Chọn tỉnh/thành --</option>
-                        @foreach (var p in ViewBag.Provinces)
-                        {
-                            <option value="@p.ProvinceName">@p.ProvinceName</option>
-                        }
-                    </select>
-                </div>
-                <div>
-                    <label for="Phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Số điện thoại</label>
-                    <input type="tel" asp-for="Phone" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="09xx xxx xxx">
-                </div>
-            </div>
+                                    <!-- Section: Security -->
+                                    <div class="space-y-6">
+                                        <div class="flex items-center gap-4 mb-6">
+                                            <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                                <span class="material-symbols-outlined">lock</span>
+                                            </div>
+                                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest">Bảo mật</h3>
+                                        </div>
 
-            <div>
-                <label for="Address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Địa chỉ chi tiết</label>
-                <textarea asp-for="Address" rows="2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Số nhà, đường..."></textarea>
-            </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="space-y-2">
+                                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Mật
+                                                    khẩu</label>
+                                                    <input type="password" asp-for="Password" id="Password"
+                                                           class="w-full bg-slate-50 border-none rounded-2xl px-4 py-4 text-slate-800 font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-indigo-600/20 transition-all"
+                                                           placeholder="••••••••" required>
+                                                        <span asp-validation-for="Password"
+                                                              class="text-rose-500 text-[10px] font-bold block ml-1"></span>
+                                                    </div>
+                                                    <div class="space-y-2">
+                                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Xác
+                                                            nhận mật khẩu</label>
+                                                            <input type="password" id="confirmPassword" name="confirmPassword"
+                                                                   class="w-full bg-slate-50 border-none rounded-2xl px-4 py-4 text-slate-800 font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-indigo-600/20 transition-all"
+                                                                   placeholder="••••••••" required>
+                                                            <span id="confirm-pass-error"
+                                                                  class="text-rose-500 text-[10px] font-bold block ml-1">@Html.ValidationMessage("confirmPassword")</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-            <div class="flex items-start mb-6 mt-4">
-                <div class="flex items-center h-5">
-                    <input id="terms" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
-                </div>
-                <label for="terms" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tôi đồng ý với các <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">Điều khoản sử dụng</a></label>
-            </div>
+                                                <!-- Section: Contact & Address -->
+                                                <div class="space-y-6">
+                                                    <div class="flex items-center gap-4 mb-6">
+                                                        <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                                            <span class="material-symbols-outlined">location_on</span>
+                                                        </div>
+                                                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest">Liên hệ & Địa chỉ</h3>
+                                                    </div>
 
-            <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center transition-colors">Đăng ký ngay</button>
-            
-            <p class="text-sm font-light text-gray-500 mt-4 text-center">
-                Đã có tài khoản? <a href="/Account/Login" class="font-medium text-blue-600 hover:underline">Đăng nhập</a>
-            </p>
-        </form>
-    </div>
-</div>
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <div class="space-y-2">
+                                                            <label
+                                                            class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Tỉnh/thành</label>
+                                                            <select asp-for="Province"
+                                                                    class="w-full bg-slate-50 border-none rounded-2xl px-4 py-4 text-slate-800 font-bold appearance-none focus:ring-2 focus:ring-indigo-600/20 transition-all cursor-pointer">
+                                                                <option value="">-- Chọn tỉnh/thành --</option>
+                                                                @foreach (var p in ViewBag.Provinces)
+                                                                {
+                                                                    <option value="@p.ProvinceName">@p.ProvinceName</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        <div class="space-y-2">
+                                                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Số điện
+                                                                thoại</label>
+                                                                <input type="tel" asp-for="Phone"
+                                                                       class="w-full bg-slate-50 border-none rounded-2xl px-4 py-4 text-slate-800 font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-indigo-600/20 transition-all"
+                                                                       placeholder="09xx xxx xxx">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="space-y-2">
+                                                                <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Địa chỉ chi
+                                                                    tiết</label>
+                                                                    <textarea asp-for="Address" rows="2"
+                                                                              class="w-full bg-slate-50 border-none rounded-2xl px-4 py-4 text-slate-800 font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-indigo-600/20 transition-all resize-none"
+                                                                              placeholder="Số nhà, tên đường..."></textarea>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="flex items-start gap-3 py-2">
+                                                                <label class="relative flex items-center cursor-pointer group mt-0.5">
+                                                                    <input id="terms" type="checkbox" class="peer sr-only" required>
+                                                                    <div
+                                                                        class="w-5 h-5 bg-slate-100 rounded-md border-none peer-checked:bg-indigo-600 transition-all duration-300 flex items-center justify-center">
+                                                                        <span
+                                                                        class="material-symbols-outlined text-white text-xs opacity-0 peer-checked:opacity-100 transition-opacity font-black">check</span>
+                                                                    </div>
+                                                                </label>
+                                                                <span class="text-xs font-bold text-slate-500 leading-relaxed">
+                                                                    Tôi xác nhận đã đọc và đồng ý với các
+                                                                    <a href="#" class="text-indigo-600 hover:text-indigo-700 underline decoration-indigo-200">Điều
+                                                                        khoản dịch vụ</a> và
+                                                                        <a href="#" class="text-indigo-600 hover:text-indigo-700 underline decoration-indigo-200">Chính
+                                                                            sách bảo mật</a>
+                                                                        </span>
+                                                                    </div>
+
+                                                                    <button type="submit"
+                                                                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-[0.2em] py-5 rounded-2xl shadow-xl shadow-indigo-100 transform active:scale-[0.98] transition-all duration-200">
+                                                                        Đăng ký tài khoản
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+
+                                                            <p class="text-center mt-10 text-sm font-bold text-slate-500">
+                                                                Đã là thành viên?
+                                                                <a href="/Account/Login"
+                                                                       class="text-indigo-600 hover:text-indigo-700 underline underline-offset-4 decoration-2 decoration-indigo-200 hover:decoration-indigo-600 transition-all">Đăng
+                                                                    nhập ngay</a>
+                                                                </p>
+                                                            </div>
+                                                        </div>
