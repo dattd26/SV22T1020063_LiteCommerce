@@ -1,12 +1,20 @@
-@model SV22T1020063.Models.Partner.Customer
+@model Customer
 @{
     ViewBag.Title = "Thanh toán | TDD Shop";
     var cart = SV22T1020063.Shop.AppCodes.ShoppingCartService.GetShoppingCart();
     var subtotal = cart.Sum(x => x.Quantity * x.SalePrice);
 }
 
-<div class="bg-slate-50 min-h-screen pt-24 pb-20">
+<div class="bg-slate-50 min-h-screen pt-32 pb-20">
     <div class="container mx-auto px-4 max-w-6xl">
+        @{
+            var breadcrumbs = new List<SV22T1020063.Models.Common.BreadcrumbItem>
+            {
+                new SV22T1020063.Models.Common.BreadcrumbItem { Text = "Giỏ hàng", Url = "/" },
+                new SV22T1020063.Models.Common.BreadcrumbItem { Text = "Thanh toán", IsActive = true }
+            };
+        }
+        <partial name="_Breadcrumbs" model="breadcrumbs" />
         <!-- Header -->
         <header class="mb-12 text-center">
             <h2 class="text-[10px] font-black tracking-[0.3em] text-indigo-600 uppercase mb-3 text-center">XÁC NHẬN ĐƠN
@@ -64,124 +72,134 @@
                                                                   class="w-full bg-slate-50 border-none rounded-xl px-5 py-4 text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none">@Model.Address</textarea>
                                                     </div>
 
-                                                    <div class="pt-4">
-                                                        <button type="submit"
-                                                                class="w-full bg-gradient-to-r from-indigo-600 to-indigo-800 text-white font-bold py-5 rounded-xl shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-3 group">
-                                                            <span>Xác nhận Đặt hàng</span>
+                                                    <div class="pt-10 flex flex-col items-center gap-6">
+                                                        <div class="w-full">
+                                                            <button type="submit"
+                                                                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest py-5 px-8 rounded-2xl transition-all duration-300 flex items-center justify-center gap-4 shadow-lg shadow-indigo-200 active:scale-95">
+                                                                <span class="text-lg">Xác nhận Đặt hàng</span>
+                                                                <span class="material-symbols-outlined text-2xl">arrow_forward</span>
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Secondary: Continue Shopping -->
+                                                        <a href="/Product"
+                                                               class="group flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-all duration-300">
                                                             <span
-                                                            class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </section>
-                                        </div>
+                                                            class="material-symbols-outlined text-lg transition-transform group-hover:-translate-x-1">shopping_bag</span>
+                                                            <span class="text-[11px] font-black uppercase tracking-[0.2em]">Quay lại chọn thêm
+                                                                hàng</span>
+                                                            </a>
+                                                        </div>
+                                                    </form>
+                                                </section>
+                                            </div>
 
-                                        <!-- Right: Order Summary -->
-                                        <div class="lg:col-span-5">
-                                            <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 sticky top-24">
-                                                <h3 class="text-xl font-bold text-slate-800 mb-8 pb-4 border-b border-slate-50">Tóm tắt Đơn hàng
-                                                </h3>
+                                            <!-- Right: Order Summary -->
+                                            <div class="lg:col-span-5">
+                                                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 sticky top-24">
+                                                    <h3 class="text-xl font-bold text-slate-800 mb-8 pb-4 border-b border-slate-50">Tóm tắt Đơn hàng
+                                                    </h3>
                     
-                                                <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar mb-8">
-                                                    @foreach (var item in cart)
-                                                    {
-                                                        <div class="flex gap-4">
-                                                            <div class="w-20 h-24 bg-slate-50 rounded-lg overflow-hidden flex-shrink-0">
-                                                                <img src="/images/products/@item.Photo"
-                                                                     onerror="this.src='/images/products/noPhoto.png'"
-                                                                     class="w-full h-full object-cover" />
-                                                            </div>
-                                                            <div class="flex-1 flex flex-col justify-center">
-                                                                <h4 class="font-bold text-slate-800 leading-tight">@item.ProductName</h4>
-                                                                <p class="text-xs text-slate-500 mt-1">@item.Quantity x @item.SalePrice.ToString("N0")
-                                                                    VNĐ</p>
+                                                    <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar mb-8">
+                                                        @foreach (var item in cart)
+                                                        {
+                                                            <div class="flex gap-4">
+                                                                <div class="w-20 h-24 bg-slate-50 rounded-lg overflow-hidden flex-shrink-0">
+                                                                    <img src="/images/products/@item.Photo"
+                                                                         onerror="this.src='/images/products/noPhoto.png'"
+                                                                         class="w-full h-full object-cover" />
                                                                 </div>
-                                                                <div class="text-sm font-bold text-slate-900 flex items-center">
-                                                                    @((item.Quantity * item.SalePrice).ToString("N0"))
+                                                                <div class="flex-1 flex flex-col justify-center">
+                                                                    <h4 class="font-bold text-slate-800 leading-tight">@item.ProductName</h4>
+                                                                    <p class="text-xs text-slate-500 mt-1">@item.Quantity x @item.SalePrice.ToString("N0")
+                                                                        VNĐ</p>
+                                                                    </div>
+                                                                    <div class="text-sm font-bold text-slate-900 flex items-center">
+                                                                        @((item.Quantity * item.SalePrice).ToString("N0"))
+                                                                    </div>
                                                                 </div>
+                                                            }
+                                                        </div>
+
+                                                        <div class="space-y-4 pt-6 border-t border-slate-50">
+                                                            <div class="flex justify-between text-slate-500 font-medium">
+                                                                <span>Tạm tính</span>
+                                                                <span>@subtotal.ToString("N0") VNĐ</span>
                                                             </div>
-                                                        }
-                                                    </div>
+                                                            <div class="flex justify-between text-slate-500 font-medium">
+                                                                <span>Phí vận chuyển</span>
+                                                                <span class="text-indigo-600 font-bold">Miễn phí</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-center pt-4 border-t border-slate-50">
+                                                                <span class="text-xl font-bold text-slate-900">Tổng cộng</span>
+                                                                <span class="text-2xl font-black text-indigo-600">@subtotal.ToString("N0") VNĐ</span>
+                                                            </div>
+                                                        </div>
 
-                                                    <div class="space-y-4 pt-6 border-t border-slate-50">
-                                                        <div class="flex justify-between text-slate-500 font-medium">
-                                                            <span>Tạm tính</span>
-                                                            <span>@subtotal.ToString("N0") VNĐ</span>
+                                                        <div class="mt-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3">
+                                                            <span class="material-symbols-outlined text-slate-400 text-sm">info</span>
+                                                            <p class="text-[11px] text-slate-500 leading-relaxed text-left">
+                                                                Bằng cách nhấn nút "Xác nhận Đặt hàng", bạn đồng ý với các Điều khoản Dịch vụ và Chính sách
+                                                                Bảo mật của chúng tôi.
+                                                            </p>
                                                         </div>
-                                                        <div class="flex justify-between text-slate-500 font-medium">
-                                                            <span>Phí vận chuyển</span>
-                                                            <span class="text-indigo-600 font-bold">Miễn phí</span>
-                                                        </div>
-                                                        <div class="flex justify-between items-center pt-4 border-t border-slate-50">
-                                                            <span class="text-xl font-bold text-slate-900">Tổng cộng</span>
-                                                            <span class="text-2xl font-black text-indigo-600">@subtotal.ToString("N0") VNĐ</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="mt-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3">
-                                                        <span class="material-symbols-outlined text-slate-400 text-sm">info</span>
-                                                        <p class="text-[11px] text-slate-500 leading-relaxed text-left">
-                                                            Bằng cách nhấn nút "Xác nhận Đặt hàng", bạn đồng ý với các Điều khoản Dịch vụ và Chính sách
-                                                            Bảo mật của chúng tôi.
-                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                @section Scripts {
-                                    <script>
-                                        $(document).ready(function () {
-                                            $("#frmCheckout").on("submit", function (e) {
-                                                e.preventDefault();
+                                    @section Scripts {
+                                        <script>
+                                            $(document).ready(function () {
+                                                $("#frmCheckout").on("submit", function (e) {
+                                                    e.preventDefault();
             
-                                                const btn = $(this).find("button[type='submit']");
-                                                const originalContent = btn.html();
+                                                    const btn = $(this).find("button[type='submit']");
+                                                    const originalContent = btn.html();
             
-                                                btn.prop("disabled", true).html('<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Đang xử lý...');
+                                                    btn.prop("disabled", true).html('<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Đang xử lý...');
 
-                                                $.ajax({
-                                                    url: "@Url.Action("Init", "Order")",
-                                                    type: "POST",
-                                                    data: $(this).serialize(),
-                                                    success: function (res) {
-                                                        if (res.success) {
-                                                            if (window.Swal) {
-                                                                Swal.fire({
-                                                                    title: 'Đặt hàng thành công!',
-                                                                    text: 'Cảm ơn bạn đã tin tưởng mua sắm. Mã đơn hàng của bạn là #' + res.orderId,
-                                                                    icon: 'success',
-                                                                    confirmButtonText: 'Quay lại Trang chủ',
-                                                                    confirmButtonColor: '#4f46e5'
-                                                                }).then(() => {
-                                                                    window.location.href = "/";
-                                                                });
+                                                    $.ajax({
+                                                        url: "@Url.Action("Init", "Order")",
+                                                        type: "POST",
+                                                        data: $(this).serialize(),
+                                                        success: function (res) {
+                                                            if (res.success) {
+                                                                if (window.Swal) {
+                                                                    Swal.fire({
+                                                                        title: 'Đặt hàng thành công!',
+                                                                        text: 'Cảm ơn bạn đã tin tưởng mua sắm. Chúng tôi sẽ liên hệ bạn sớm nhất có thể.',
+                                                                        icon: 'success',
+                                                                        confirmButtonText: 'Xem thông báo',
+                                                                        confirmButtonColor: '#4f46e5'
+                                                                    }).then(() => {
+                                                                        window.location.href = "@Url.Action("Success", "Order")";
+                                                                    });
+                                                                } else {
+                                                                    alert('Đặt hàng thành công! Chúng tôi sẽ liên hệ bạn sớm nhất có thể.');
+                                                                    window.location.href = "@Url.Action("Success", "Order")";
+                                                                }
                                                             } else {
-                                                                alert('Đặt hàng thành công! Mã đơn hàng: #' + res.orderId);
-                                                                window.location.href = "/";
+                                                                if (window.Swal) {
+                                                                    Swal.fire({
+                                                                        title: 'Lỗi!',
+                                                                        text: res.message,
+                                                                        icon: 'error',
+                                                                        confirmButtonText: 'Thử lại'
+                                                                    });
+                                                                } else {
+                                                                    alert('Lỗi: ' + res.message);
+                                                                }
+                                                                btn.prop("disabled", false).html(originalContent);
                                                             }
-                                                        } else {
-                                                            if (window.Swal) {
-                                                                Swal.fire({
-                                                                    title: 'Lỗi!',
-                                                                    text: res.message,
-                                                                    icon: 'error',
-                                                                    confirmButtonText: 'Thử lại'
-                                                                });
-                                                            } else {
-                                                                alert('Lỗi: ' + res.message);
-                                                            }
+                                                        },
+                                                        error: function () {
+                                                            alert('Không thể thực hiện yêu cầu. Vui lòng kiểm tra lại kết nối.');
                                                             btn.prop("disabled", false).html(originalContent);
                                                         }
-                                                    },
-                                                    error: function () {
-                                                        alert('Không thể thực hiện yêu cầu. Vui lòng kiểm tra lại kết nối.');
-                                                        btn.prop("disabled", false).html(originalContent);
-                                                    }
+                                                    });
                                                 });
                                             });
-                                        });
-                                    </script>
-                                }
+                                        </script>
+                                    }

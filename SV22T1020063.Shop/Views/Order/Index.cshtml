@@ -1,10 +1,17 @@
-@model SV22T1020063.Models.Sales.OrderSearchInput
+@model OrderSearchInput
 @{
     ViewBag.Title = "Lịch sử mua hàng | Digital Atelier";
 }
 
-<div class="bg-surface text-on-surface min-h-screen pt-20 pb-24">
+<div class="bg-surface text-on-surface min-h-screen pt-12 pb-24">
     <div class="max-w-7xl mx-auto px-6 md:px-12 w-full">
+        @{
+            var breadcrumbs = new List<BreadcrumbItem>
+            {
+                new BreadcrumbItem { Text = "Lịch sử đơn hàng", IsActive = true }
+            };
+        }
+        <partial name="_Breadcrumbs" model="breadcrumbs" />
         <!-- Header Section -->
         <header class="mb-16">
             <h1 class="text-4xl md:text-5xl font-black tracking-tight text-on-surface mb-3 uppercase">LỊCH SỬ ĐƠN HÀNG

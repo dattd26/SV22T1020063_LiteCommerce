@@ -130,6 +130,41 @@ namespace SV22T1020063.Shop.Controllers
             return PartialView("_OrderList", result);
         }
 
+        public IActionResult Success()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var order = await SalesDataService.GetOrderAsync(id);
+            if (order == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            int customerId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
+            if (order.CustomerID != customerId)
+            {
+                return RedirectToAction("Index");
+            }
+
+            order.Details = await SalesDataService.ListDetailsAsync(id);
+            return View(order);
+        }
+
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var order = await SalesDataService.GetOrderAsync(id);
+            if (order == null) return RedirectToAction("Index");
+
+            int customerId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
+            if (order.CustomerID != customerId) return RedirectToAction("Index");
+
+            await SalesDataService.CancelOrderAsync(id);
+            return RedirectToAction("Details", new { id = id });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Init(string deliveryProvince, string deliveryAddress)
         {

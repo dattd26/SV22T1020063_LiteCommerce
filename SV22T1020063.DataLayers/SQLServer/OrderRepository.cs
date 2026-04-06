@@ -96,7 +96,9 @@ namespace SV22T1020063.DataLayers.SQLServer
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string sql = @"SELECT * FROM Orders WHERE OrderID=@OrderID";
+                string sql = @"SELECT * FROM Orders
+                                        JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+                                        WHERE OrderID=@OrderID";
 
                 await conn.OpenAsync();
                 SqlCommand cmd = new SqlCommand(sql, conn);
@@ -112,7 +114,9 @@ namespace SV22T1020063.DataLayers.SQLServer
                         OrderTime = Convert.ToDateTime(reader["OrderTime"]),
                         DeliveryProvince = reader["DeliveryProvince"]?.ToString(),
                         DeliveryAddress = reader["DeliveryAddress"]?.ToString(),
-                        Status = (OrderStatusEnum)Convert.ToInt32(reader["Status"])
+                        Status = (OrderStatusEnum)Convert.ToInt32(reader["Status"]),
+                        CustomerName = reader["CustomerName"]?.ToString(),
+                        CustomerPhone = reader["Phone"]?.ToString()
                     };
                 }
             }

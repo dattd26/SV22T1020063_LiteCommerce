@@ -1,18 +1,18 @@
-@model SV22T1020063.Shop.Models.ProductDetailViewModel
+@model ProductDetailViewModel
 @{
     ViewData["Title"] = Model.Product.ProductName;
 }
 
 <main class="max-w-screen-2xl mx-auto px-8 pt-12 pb-24">
     <!-- Breadcrumbs -->
-    <nav class="mb-12 flex items-center gap-2 text-xs uppercase tracking-widest text-on-surface-variant font-semibold">
-        <a class="hover:text-primary transition-colors" href="~/">Trang chủ</a>
-        <span class="material-symbols-outlined text-[10px]">chevron_right</span>
-        <a class="hover:text-primary transition-colors"
-           href="~/Product?categoryID=@Model.Product.CategoryID">@ViewBag.CategoryName</a>
-        <span class="material-symbols-outlined text-[10px]">chevron_right</span>
-        <span class="text-on-surface">@Model.Product.ProductName</span>
-    </nav>
+    @{
+        var breadcrumbs = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem { Text = ViewBag.CategoryName, Url = $"/Product?categoryID={Model.Product.CategoryID}" },
+            new BreadcrumbItem { Text = Model.Product.ProductName, IsActive = true }
+        };
+    }
+    <partial name="_Breadcrumbs" model="breadcrumbs" />
 
     <div class="flex flex-col lg:flex-row gap-16 items-start">
         <!-- Left: Gallery Section (60%) -->
@@ -158,11 +158,12 @@
                                                                     </li>
                                                                 </ul>
                                                             </div>
-                                                            <div class="bg-white aspect-video rounded-2xl overflow-hidden border border-outline-variant/10 flex items-center justify-center p-12">
+                                                            <div
+                                                                class="bg-white aspect-video rounded-2xl overflow-hidden border border-outline-variant/10 flex items-center justify-center p-12">
                                                                 <img class="w-full h-full object-contain"
                                                                      src="~/images/products/@(string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo)"
                                                                      alt="Feature image">
-                                                            </div>
+                                                                </div>
                                                             </div>
                                                         </div>
             

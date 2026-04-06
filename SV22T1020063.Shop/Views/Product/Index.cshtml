@@ -2,8 +2,17 @@
     ViewData["Title"] = "Sản phẩm";
 }
 
-<div class="bg-white py-24">
+<div class="bg-white py-12 md:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        @{
+            var breadcrumbs = new List<SV22T1020063.Models.Common.BreadcrumbItem>
+            {
+                new SV22T1020063.Models.Common.BreadcrumbItem { Text = "Sản phẩm", IsActive = true }
+            };
+        }
+        <div class="mb-12">
+            <partial name="_Breadcrumbs" model="breadcrumbs" />
+        </div>
         <div class="flex flex-col md:flex-row gap-6 lg:gap-8">
 
             @await Html.PartialAsync("_CategorySidebar")

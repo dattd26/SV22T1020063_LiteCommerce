@@ -1,6 +1,6 @@
-@model List<SV22T1020063.Models.Sales.OrderDetailViewInfo>
+@model IEnumerable<OrderDetailViewInfo>
 @{
-    var isEmpty = Model.Count == 0;
+    var isEmpty = !Model.Any();
     var subtotal = Model.Sum(x => x.Quantity * x.SalePrice);
 }
 
@@ -123,11 +123,16 @@
                     <span class="text-slate-800 dark:text-slate-100 font-bold">Miễn phí</span>
                 </div>
             </div>
-            <div class="pt-2">
-                <a href="/Order/Checkout"
-                       class="block text-center w-full bg-gradient-to-br from-indigo-600 to-indigo-800 text-white py-5 rounded-lg font-bold tracking-tight shadow-[0_10px_20px_-5px_rgba(79,70,229,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(79,70,229,0.6)] hover:scale-[0.99] transition-all duration-300 active:scale-95">
-                    Đặt hàng ngay
-                </a>
+            <div class="pt-4">
+                <div class="btn-premium-glow-wrapper group">
+                    <div class="btn-premium-glow-effect"></div>
+                    <a href="/Order/Checkout"
+                           class="btn-premium btn-premium-shine btn-premium-glow flex items-center justify-center gap-3 w-full bg-slate-900 dark:bg-indigo-600 text-white py-5 rounded-2xl font-bold tracking-tight group">
+                        <span>Tiếp tục thanh toán</span>
+                        <span
+                        class="material-symbols-outlined transition-transform duration-500 group-hover:translate-x-1.5">arrow_right_alt</span>
+                    </a>
+                </div>
             </div>
         </footer>
     }
