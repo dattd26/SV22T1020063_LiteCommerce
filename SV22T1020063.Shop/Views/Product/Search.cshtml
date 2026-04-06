@@ -1,4 +1,4 @@
-@model SV22T1020063.Models.Common.PagedResult<SV22T1020063.Models.Catalog.Product>
+@model PagedResult<Product>
 @{
     Layout = null;
 }
@@ -35,7 +35,7 @@
             else
             {
                 <span>Không tìm thấy sản phẩm nào của @(string.IsNullOrEmpty(ViewBag.CategoryName) ? "toàn bộ cửa hàng" :
-                                                                                                                                                                                                                                                                                                                                                                                                                                 ViewBag.CategoryName)</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                     ViewBag.CategoryName)</span>
                 }
             </h2>
             <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-widest">

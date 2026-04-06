@@ -114,7 +114,7 @@
                         if (res.success) {
                             this.updateBadge(res.itemsCount);
                             @* this.toggleCart(); *@
-                            } else {
+                                            } else {
                             alert(res.message);
                         }
                     });
@@ -157,6 +157,7 @@
 
             $(document).ready(() => {
                 cartApp.init();
+               
             });
     </script>
     @await RenderSectionAsync("Scripts", required: false)

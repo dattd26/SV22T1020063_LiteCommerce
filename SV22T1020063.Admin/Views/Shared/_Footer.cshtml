@@ -1,8 +1,11 @@
-﻿<!--begin::Footer-->
+﻿@{
+    var userData = User.GetUserData();
+}
+<!--begin::Footer-->
 <footer class="app-footer bg-body-secondary">
     <strong>
         Bản quyền &copy; 2026&nbsp;
-        <a href="/" class="text-decoration-none">Trần Đức Đạt</a>.
+        <a href="/" class="text-decoration-none">@userData.DisplayName</a>.
     </strong>
 </footer>
 <!--end::Footer-->

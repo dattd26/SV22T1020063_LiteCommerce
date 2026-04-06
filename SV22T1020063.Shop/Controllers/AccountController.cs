@@ -108,6 +108,8 @@ namespace SV22T1020063.Shop.Controllers
             var model = await PartnerDataService.GetCustomerAsync(customerId);
             if (model == null) return RedirectToAction("Logout");
 
+            ViewBag.TotalOrders = await SalesDataService.CountOrdersAsync(customerId);
+            ViewBag.TotalShipping = await SalesDataService.CountShippingAsync(customerId);
             ViewBag.Provinces = await DictionaryDataService.ListProvincesAsync();
             return View(model);
         }
@@ -136,11 +138,11 @@ namespace SV22T1020063.Shop.Controllers
             return View(data);
         }
 
-        [HttpGet]
-        public IActionResult ChangePassword()
-        {
-            return View();
-        }
+        // [HttpGet]
+        // public IActionResult ChangePassword()
+        // {
+        //     return View();
+        // }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -148,35 +150,28 @@ namespace SV22T1020063.Shop.Controllers
         {
             if (string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(newPassword))
             {
-                ModelState.AddModelError("", "Vui lòng nhập đầy đủ thông tin");
-                return View();
+                return Json(new { success = false, message = "Vui lòng nhập đầy đủ thông tin" });
             }
 
             if (newPassword != confirmPassword)
             {
-                ModelState.AddModelError("confirmPassword", "Mật khẩu xác nhận không khớp");
-                return View();
+                return Json(new { success = false, message = "Mật khẩu xác nhận không khớp" });
+            }
+
+            if (oldPassword == newPassword)
+            {
+                return Json(new { success = false, message = "Mật khẩu cũ không được trùng với mật khẩu mới" });
             }
 
             string username = User.FindFirst("UserName")?.Value ?? "";
             var userAccount = await UserAccountService.AuthorizeAsync(AccountTypes.Customer, username, CryptHelper.HashMD5(oldPassword));
             if (userAccount == null)
             {
-                ModelState.AddModelError("oldPassword", "Mật khẩu cũ không chính xác");
-                return View();
+                return Json(new { success = false, message = "Mật khẩu cũ không chính xác" });
             }
 
             bool result = await UserAccountService.ChangePasswordAsync(AccountTypes.Customer, username, CryptHelper.HashMD5(newPassword));
-            if (result)
-            {
-                ViewBag.Message = "Đổi mật khẩu thành công";
-            }
-            else
-            {
-                ModelState.AddModelError("", "Đổi mật khẩu thất bại. Vui lòng thử lại");
-            }
-
-            return View();
+            return Json(new { success = result, message = result ? "Đổi mật khẩu thành công" : "Đổi mật khẩu thất bại. Vui lòng thử lại" });
         }
 
         [AllowAnonymous]

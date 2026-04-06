@@ -15,7 +15,8 @@
                 <a asp-controller="Product" asp-action="Index"
                        class="text-sm font-medium @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "text-indigo-600" : "text-slate-500") hover:text-indigo-600 transition-colors">Sản
                     phẩm</a>
-                    <a href="~/Order/" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">Đơn
+                    <a asp-controller="Order" asp-action="Index"
+                           class="text-sm font-medium @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "text-indigo-600" : "text-slate-500") hover:text-indigo-600 transition-colors">Đơn
                         hàng</a>
                         <a href="#" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">Liên hệ</a>
                         <a href="#" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">Tin tức</a>
@@ -84,25 +85,25 @@
                                                         .then(data => {
                                                             if (data.length > 0) {
                                                                 suggestionsContent.innerHTML = data.map((item, index) => `
-                                                                                                                                                                            <a href="/Product/Index?searchValue=${encodeURIComponent(item.productName)}" 
-                                                                                                                                                                                class="suggestion-item group flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors">
-                                                                                                                                                                                <div class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-sm bg-gray-100">
-                                                                                                                                                                                    <img src="/images/products/${item.photo}" class="h-full w-full object-cover">
-                                                                                                                                                                                </div>
-                                                                                                                                                                                <div class="flex flex-col">
-                                                                                                                                                                                    <span class="text-xs font-bold text-slate-800 uppercase tracking-tight line-clamp-1">${item.productName}</span>
-                                                                                                                                                                                    <span class="text-[10px] font-black text-indigo-600">${item.price.toLocaleString()} VNĐ</span>
-                                                                                                                                                                                </div>
-                                                                                                                                                                            </a>
-                                                                                                                                                                        `).join('');
+                                                                                                                                                                                                                                                    <a href="/Product/Index?searchValue=${encodeURIComponent(item.productName)}" 
+                                                                                                                                                                                                                                                        class="suggestion-item group flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors">
+                                                                                                                                                                                                                                                        <div class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-sm bg-gray-100">
+                                                                                                                                                                                                                                                            <img src="/images/products/${item.photo}" class="h-full w-full object-cover">
+                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                        <div class="flex flex-col">
+                                                                                                                                                                                                                                                            <span class="text-xs font-bold text-slate-800 uppercase tracking-tight line-clamp-1">${item.productName}</span>
+                                                                                                                                                                                                                                                            <span class="text-[10px] font-black text-indigo-600">${item.price.toLocaleString()} VNĐ</span>
+                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                    </a>
+                                                                                                                                                                                                                                                `).join('');
 
                                                                 // Add "View all" link
                                                                 suggestionsContent.innerHTML += `
-                                                                                                                                                                            <a href="/Product/Index?searchValue=${encodeURIComponent(query)}" 
-                                                                                                                                                                                class="block p-3 text-center text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-gray-50 hover:bg-indigo-50 transition-all">
-                                                                                                                                                                                Xem tất cả kết quả
-                                                                                                                                                                            </a>
-                                                                                                                                                                        `;
+                                                                                                                                                                                                                                                    <a href="/Product/Index?searchValue=${encodeURIComponent(query)}" 
+                                                                                                                                                                                                                                                        class="block p-3 text-center text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-gray-50 hover:bg-indigo-50 transition-all">
+                                                                                                                                                                                                                                                        Xem tất cả kết quả
+                                                                                                                                                                                                                                                    </a>
+                                                                                                                                                                                                                                                `;
 
                                                                 openSuggestions();
                                                                 selectedIndex = -1;
