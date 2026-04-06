@@ -18,9 +18,51 @@
     <link rel="stylesheet" href="~/lib/flowbite/flowbite.min.css" asp-append-version="true" />
     
     <style>
-            body {
-                font-family: 'Inter', sans-serif;
-            }
+        /* Premium Animations */
+        @@keyframes premium-fade-in {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal-up {
+            animation: premium-fade-in 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        /* Toast Styling Redesign */
+        @@keyframes toast-premium-in {
+            0% { transform: translateX(100%) skewX(-10deg); opacity: 0; }
+            60% { transform: translateX(-15px) skewX(2deg); opacity: 1; }
+            100% { transform: translateX(0) skewX(0); opacity: 1; }
+        }
+
+        @@keyframes toast-premium-out {
+            0% { transform: translateX(0) skewX(0); opacity: 1; }
+            100% { transform: translateX(120%) skewX(5deg); opacity: 0; }
+        }
+
+        .animate-toast-premium {
+            animation: toast-premium-in 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        .animate-toast-premium-out {
+            animation: toast-premium-out 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        .toast-progress-premium {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background-color: #4f46e5; /* indigo-600 */
+            width: 100%;
+            transform-origin: left;
+            animation: toast-progress-line 5s linear forwards;
+        }
+
+        @@keyframes toast-progress-line {
+            from { transform: scaleX(1); }
+            to { transform: scaleX(0); }
+        }
     </style>
 </head>
 
@@ -38,6 +80,9 @@
             class="fixed bottom-8 right-8 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-2xl transition-all duration-300 opacity-0 translate-y-10 hover:bg-indigo-700 hover:scale-110 active:scale-95 invisible">
         <span class="material-symbols-outlined text-2xl">arrow_upward</span>
     </button>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-24 right-8 z-[100] flex flex-col gap-4 pointer-events-none"></div>
 
     <!-- Cart Container -->
     <div id="cart-container"></div>
@@ -113,9 +158,9 @@
                     $.post('/Order/AddToCart', { productId, quantity, salePrice: price }, (res) => {
                         if (res.success) {
                             this.updateBadge(res.itemsCount);
-                            @* this.toggleCart(); *@
-                                            } else {
-                            alert(res.message);
+                            this.showToast('Thành công', 'Sản phẩm đã được thêm vào giỏ hàng');
+                        } else {
+                            this.showToast('Thông báo', res.message || 'Không thể thêm vào giỏ hàng');
                         }
                     });
                 },
@@ -152,6 +197,31 @@
                             badge.innerText = res.itemsCount || 0;
                         });
                     }
+                },
+                showToast: function (title, message) {
+                    const container = document.getElementById('toast-container');
+                    const toast = document.createElement('div');
+                    toast.className = 'animate-toast-premium pointer-events-auto relative overflow-hidden bg-white/95 backdrop-blur-xl border-l-[4px] border-indigo-600 shadow-2xl shadow-indigo-100/30 p-5 rounded-r-2xl flex items-center gap-4 min-w-[340px]';
+                    
+                    toast.innerHTML = `
+                        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm">
+                            <span class="material-symbols-outlined font-black text-[20px]">shopping_cart_checkout</span>
+                        </div>
+                        <div class="flex-grow pr-4">
+                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-0.5">${title}</h4>
+                            <p class="text-sm font-bold text-slate-800 leading-tight">${message}</p>
+                        </div>
+                        <div class="toast-progress-premium"></div>
+                    `;
+
+                    container.appendChild(toast);
+
+                    // Auto-exit animation
+                    setTimeout(() => {
+                        toast.classList.remove('animate-toast-premium');
+                        toast.classList.add('animate-toast-premium-out');
+                        setTimeout(() => toast.remove(), 800);
+                    }, 4200);
                 }
             };
 

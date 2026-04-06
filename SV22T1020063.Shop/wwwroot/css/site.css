@@ -1150,6 +1150,10 @@ input:checked + .toggle-bg {
   pointer-events: none;
 }
 
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
 .visible {
   visibility: visible;
 }
@@ -1729,6 +1733,10 @@ input:checked + .toggle-bg {
   min-width: 0px;
 }
 
+.min-w-\[320px\] {
+  min-width: 320px;
+}
+
 .max-w-2xl {
   max-width: 42rem;
 }
@@ -2151,6 +2159,10 @@ input:checked + .toggle-bg {
 
 .rounded-\[1\.25rem\] {
   border-radius: 1.25rem;
+}
+
+.rounded-\[1\.5rem\] {
+  border-radius: 1.5rem;
 }
 
 .rounded-\[2\.5rem\] {

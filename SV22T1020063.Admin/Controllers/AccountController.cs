@@ -1,4 +1,4 @@
-﻿using SV22T1020063.Admin;
+using SV22T1020063.Admin;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -67,7 +67,56 @@ namespace SV22T1020063.Admin.Controllers
 
         public IActionResult ChangePassword()
         {
+            ViewBag.Title = "Đổi mật khẩu";
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword, string confirmPassword)
+        {
+            if (string.IsNullOrWhiteSpace(oldPassword) || string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                ModelState.AddModelError("", "Vui lòng nhập đầy đủ thông tin");
+                return View();
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                ModelState.AddModelError("", "Xác nhận mật khẩu không khớp");
+                return View();
+            }
+            if (newPassword == oldPassword)
+            {
+                ModelState.AddModelError("", "Mật khẩu mới không được trùng với mật khẩu cũ");
+                return View();
+            }
+            var userData = User.GetUserData();
+            if (userData == null)
+                return RedirectToAction("Login");
+
+            // Kiểm tra mật khẩu cũ
+            string hashedOldPassword = CryptHelper.HashMD5(oldPassword);
+            var user = await UserAccountService.AuthorizeAsync(AccountTypes.Employee, userData.UserName!, hashedOldPassword);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Mật khẩu cũ không chính xác");
+                return View();
+            }
+
+            // Đổi mật khẩu
+            string hashedNewPassword = CryptHelper.HashMD5(newPassword);
+            bool result = await UserAccountService.ChangePasswordAsync(AccountTypes.Employee, userData.UserName!, hashedNewPassword);
+
+            if (result)
+            {
+                ViewBag.Success = "Đổi mật khẩu thành công";
+                return View();
+            }
+            else
+            {
+                ModelState.AddModelError("", "Đổi mật khẩu thất bại. Vui lòng thử lại sau.");
+                return View();
+            }
         }
         public IActionResult AccessDenied()
         {
