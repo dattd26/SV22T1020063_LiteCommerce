@@ -1,0 +1,128 @@
+@model SV22T1020063.Models.Sales.OrderSearchInput
+@{
+    ViewBag.Title = "Lịch sử mua hàng | Digital Atelier";
+}
+
+<div class="bg-surface text-on-surface min-h-screen pt-20 pb-24">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 w-full">
+        <!-- Header Section -->
+        <header class="mb-16">
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight text-on-surface mb-3 uppercase">LỊCH SỬ ĐƠN HÀNG
+            </h1>
+            <p class="text-on-surface-variant font-medium tracking-wide">Danh sách các đơn hàng đã đặt của bạn.</p>
+        </header>
+
+        <!-- Search & Filter Section -->
+        <div class="space-y-8 mb-16">
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap gap-3" id="status-filters">
+                <button onclick="changeStatus(0)" data-status="0"
+                        class="status-btn px-6 py-2.5 text-sm font-bold tracking-tight rounded-lg transition-all active:scale-95 @(Model.Status == 0 ? "bg-primary text-white shadow-md shadow-indigo-100" : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high")">
+                    Tất cả
+                </button>
+                <button onclick="changeStatus(1)" data-status="1"
+                        class="status-btn px-6 py-2.5 text-sm font-semibold tracking-tight rounded-lg transition-all active:scale-95 @(Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New ? "bg-primary text-white shadow-md shadow-indigo-100" : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high")">
+                    Chờ duyệt
+                </button>
+                <button onclick="changeStatus(2)" data-status="2"
+                        class="status-btn px-6 py-2.5 text-sm font-semibold tracking-tight rounded-lg transition-all active:scale-95 @(Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Accepted ? "bg-primary text-white shadow-md shadow-indigo-100" : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high")">
+                    Đã duyệt
+                </button>
+                <button onclick="changeStatus(3)" data-status="3"
+                        class="status-btn px-6 py-2.5 text-sm font-semibold tracking-tight rounded-lg transition-all active:scale-95 @(Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Shipping ? "bg-primary text-white shadow-md shadow-indigo-100" : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high")">
+                    Đang giao
+                </button>
+                <button onclick="changeStatus(4)" data-status="4"
+                        class="status-btn px-6 py-2.5 text-sm font-semibold tracking-tight rounded-lg transition-all active:scale-95 @(Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Completed ? "bg-primary text-white shadow-md shadow-indigo-100" : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high")">
+                    Đã hoàn tất
+                </button>
+                <button onclick="changeStatus(-1)" data-status="-1"
+                        class="status-btn px-6 py-2.5 text-sm font-semibold tracking-tight rounded-lg transition-all active:scale-95 @(Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Cancelled ? "bg-primary text-white shadow-md shadow-indigo-100" : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high")">
+                    Đã hủy
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <form id="frmSearch" action="/Order/Search" method="get" class="max-w-2xl">
+                <input type="hidden" name="PageSize" value="@Model.PageSize" />
+                <input type="hidden" name="Status" id="current-status" value="@((int)Model.Status)" />
+                <div class="relative group">
+                    <span
+                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-all duration-300">search</span>
+                    <input style="padding-left: 3.5rem !important;" type="text" name="SearchValue"
+                           value="@Model.SearchValue" placeholder="Tìm kiếm mã đơn hàng hoặc sản phẩm..."
+                           class="w-full bg-white dark:bg-slate-800 border-none rounded-2xl pl-18 pr-6 py-4 text-sm font-medium shadow-sm ring-1 ring-slate-100 dark:ring-slate-700/50 focus:ring-2 focus:ring-indigo-600/20 transition-all placeholder:text-slate-400" />
+                </div>
+            </form>
+        </div>
+
+        <!-- Order List Container -->
+        <div id="searchResult" class="space-y-12">
+            <!-- Content loaded via AJAX -->
+            <div class="flex justify-center py-20">
+                <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        /**
+         * Thực hiện tìm kiếm/phân trang
+         * @@param {number} page - Trang cần hiển thị
+         */
+        function doSearch(page) {
+            var searchData = $("#frmSearch").serializeArray();
+            searchData.push({ name: "Page", value: page });
+
+            $.ajax({
+                url: $("#frmSearch").attr("action"),
+                type: "GET",
+                data: searchData,
+                success: function (data) {
+                    $("#searchResult").html(data);
+                }
+            });
+        }
+
+        /**
+         * Thay đổi trạng thái lọc và làm mới danh sách
+         * @@param {number} status - Trạng thái đơn hàng
+         */
+        function changeStatus(status) {
+            $("#current-status").val(status);
+                
+            // Cập nhật UI nút bấm
+            $(".status-btn").each(function () {
+                if ($(this).data("status") == status) {
+                    $(this).removeClass("bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high")
+                        .addClass("bg-primary text-white shadow-md shadow-indigo-100");
+                } else {
+                    $(this).addClass("bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high")
+                        .removeClass("bg-primary text-white shadow-md shadow-indigo-100");
+                }
+            });
+                
+            doSearch(1);
+        }
+
+        $(document).ready(function () {
+            // Khởi tạo tìm kiếm ban đầu
+            doSearch(@Model.Page);
+            
+            // Xử lý sự kiện submit form
+            $("#frmSearch").submit(function (e) {
+                e.preventDefault();
+                doSearch(1);
+            });
+
+            // Xử lý tìm kiếm tức thì với debounce
+            let timer;
+            $("input[name='SearchValue']").on("input", function () {
+                clearTimeout(timer);
+                timer = setTimeout(() => doSearch(1), 500);
+            });
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿using SV22T1020063.Models.Common;
+using SV22T1020063.Models.Common;
 
 namespace SV22T1020063.Models.Sales
 {
@@ -11,6 +11,10 @@ namespace SV22T1020063.Models.Sales
         /// Trạng thái đơn hàng
         /// </summary>
         public OrderStatusEnum Status { get; set; }
+        /// <summary>
+        /// Mã khách hàng (dùng cho tìm kiếm lịch sử đơn hàng của cá nhân)
+        /// </summary>
+        public int? CustomerID { get; set; }
         /// <summary>
         /// Từ ngày (ngày lập đơn hàng)
         /// </summary>

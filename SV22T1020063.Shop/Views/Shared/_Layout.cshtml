@@ -66,7 +66,7 @@
                     const sidebar = document.getElementById('cart-sidebar');
                     const wasOpen = sidebar && !sidebar.classList.contains('translate-x-full');
                 
-                    fetch('/Cart/GetCartSidebar')
+                    fetch('/Order/GetCartSidebar')
                         .then(res => res.text())
                         .then(html => {
                             document.getElementById('cart-container').innerHTML = html;
@@ -110,29 +110,17 @@
                     }
                 },
                 addToCart: function (productId, quantity = 1, price = 0) {
-                    $.post('/Cart/AddToCart', { productId, quantity, salePrice: price }, (res) => {
+                    $.post('/Order/AddToCart', { productId, quantity, salePrice: price }, (res) => {
                         if (res.success) {
                             this.updateBadge(res.itemsCount);
-                            this.toggleCart();
-                        } else {
+                            @* this.toggleCart(); *@
+                            } else {
                             alert(res.message);
                         }
                     });
                 },
                 removeFromCart: function (productId) {
-                    $.post('/Cart/RemoveFromCart', { productId }, (res) => {
-                        if (res.success) {
-                            this.updateBadge(res.itemsCount);
-                            this.toggleCart();
-                        }
-                    });
-                },
-                updateQuantity: function (productId, quantity) {
-                    if (quantity < 1) { // khi giam so luong xuong duoi 1 thi tu dong xoa khoi gio
-                        this.removeFromCart(productId);
-                        return;
-                    }
-                    $.post('/Cart/UpdateQuantity', { productId, quantity }, (res) => {
+                    $.post('/Order/RemoveFromCart', { productId }, (res) => {
                         if (res.success) {
                             this.updateBadge(res.itemsCount);
                             this.toggleCart();
@@ -144,7 +132,7 @@
                         this.removeFromCart(productId);
                         return;
                     }
-                    $.post('/Cart/UpdateQuantity', { productId, quantity }, (res) => {
+                    $.post('/Order/UpdateQuantity', { productId, quantity }, (res) => {
                         if (res.success) {
                             this.updateBadge(res.itemsCount);
                             this.toggleCart();
@@ -160,7 +148,7 @@
                         badge.classList.add('scale-125');
                         setTimeout(() => badge.classList.remove('scale-125'), 300);
                     } else {
-                        $.get('/Cart/GetCartInfo', (res) => {
+                        $.get('/Order/GetCartInfo', (res) => {
                             badge.innerText = res.itemsCount || 0;
                         });
                     }

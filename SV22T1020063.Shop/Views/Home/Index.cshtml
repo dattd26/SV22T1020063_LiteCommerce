@@ -89,8 +89,8 @@
                         <!-- Quick Add Button -->
                         <div
                             class="absolute bottom-4 left-4 right-4 translate-y-10 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                            <button
-                                class="w-full bg-white py-3 text-[10px] font-bold uppercase tracking-widest text-slate-900 shadow-xl hover:bg-indigo-600 hover:text-white transition-colors">
+                            <button onclick="cartApp.addToCart(@item.ProductID, 1, @item.Price)"
+                                    class="w-full bg-white py-3 text-[10px] font-bold uppercase tracking-widest text-slate-900 shadow-xl hover:bg-indigo-600 hover:text-white transition-colors">
                                 Thêm vào giỏ
                             </button>
                         </div>
