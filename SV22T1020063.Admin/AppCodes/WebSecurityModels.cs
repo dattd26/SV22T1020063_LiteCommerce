@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
 namespace SV22T1020063.Admin
@@ -12,7 +12,7 @@ namespace SV22T1020063.Admin
         public string? UserName { get; set; }
         public string? DisplayName { get; set; }
         public string? Email { get; set; }
-        public string? Photo { get; set; }        
+        public string? Photo { get; set; }
         public List<string>? Roles { get; set; }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace SV22T1020063.Admin
                     new Claim(nameof(UserName), UserName ?? ""),
                     new Claim(nameof(DisplayName), DisplayName ?? ""),
                     new Claim(nameof(Email), Email ?? ""),
-                    new Claim(nameof(Photo), Photo ?? "")                    
+                    new Claim(nameof(Photo), Photo ?? "")
                 };
                 if (Roles != null)
                     foreach (var role in Roles)
@@ -54,15 +54,27 @@ namespace SV22T1020063.Admin
     /// Định nghĩa tên của các role sử dụng trong phân quyền chức năng cho nhân viên
     /// </summary>
     public class WebUserRoles
-    {        
+    {
+        /// <summary>
+        /// Khách hàng
+        /// </summary>
+        public const string Customer = "customer";
+        /// <summary>
+        /// Nhân viên
+        /// </summary>
+        public const string Employee = "employee";
         /// <summary>
         /// Quản trị
         /// </summary>
-        public const string Administrator = "admin";  
+        public const string Administrator = "admin";
         /// <summary>
         /// Quản lý dữ liệu
         /// </summary>
         public const string DataManager = "datamanager";
+        /// <summary>
+        /// Quản lý mặt hàng
+        /// </summary>
+        public const string ProductManager = "productmanager";
         /// <summary>
         /// Quản lý bán hàng
         /// </summary>

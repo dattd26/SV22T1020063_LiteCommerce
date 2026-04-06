@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SV22T1020063.Models.Security;
+using SV22T1020063.BusinessLayers;
 
 namespace SV22T1020063.Admin.Controllers
 {
@@ -30,18 +31,8 @@ namespace SV22T1020063.Admin.Controllers
             string hashedPassword = CryptHelper.HashMD5(password);
 
             // TODO: Lấy thông tin tài khoản dựa vào tên đăng nhập và mật khẩu
-            //var userAccount = await SecurityDataService.AuthenticateEmployeeAsync(username, hashedPassword);
+            var userAccount = await UserAccountService.AuthorizeAsync(AccountTypes.Employee, username, hashedPassword);
 
-            // Giả lập tạm
-            var userAccount = new UserAccount()
-            {
-                UserId = "1",
-                UserName = username,
-                DisplayName = "Dat",
-                Email = username,
-                Photo = "nophoto.png",
-                RoleNames = $"{WebUserRoles.Administrator},{WebUserRoles.DataManager}" // admin,datamanager
-            };
             if (userAccount == null)
             {
                 ModelState.AddModelError("Error", "Đăng nhập thất bại");
@@ -51,9 +42,10 @@ namespace SV22T1020063.Admin.Controllers
             // Thông tin đăng nhập hpjw lệ:
             // Chuẩn bị thông tin mà sẽ ghi lên "giấy chứng nhận"
             var userData = new WebUserData()
-            { 
+            {
                 UserId = userAccount.UserId,
                 UserName = userAccount.UserName,
+                DisplayName = userAccount.DisplayName,
                 Email = userAccount.Email,
                 Photo = userAccount.Photo,
                 Roles = userAccount.RoleNames.Split(',').ToList()
@@ -61,7 +53,7 @@ namespace SV22T1020063.Admin.Controllers
 
             //Tạo ra giấy chứng nhận (ClaimPrincipal)
             var principal = userData.CreatePrincipal();
-            
+
             // Trao chứng nhận cho phía client ,..,
             await HttpContext.SignInAsync(principal);
             return RedirectToAction("Index", "Home");

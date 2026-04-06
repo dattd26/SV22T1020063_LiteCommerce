@@ -118,7 +118,7 @@ namespace SV22T1020063.Admin.Controllers
                     await HRDataService.DeleteEmployeeAsync(id);
                     return RedirectToAction("Index");
                 }
-                
+
                 // GET
                 var model = await HRDataService.GetEmployeeAsync(id);
                 if (model == null)
@@ -127,7 +127,7 @@ namespace SV22T1020063.Admin.Controllers
                 }
                 ViewBag.CanDelete = !await HRDataService.IsUsedEmployeeAsync(id);
 
-               return View(model);
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -141,9 +141,27 @@ namespace SV22T1020063.Admin.Controllers
         {
             return View();
         }
-        public IActionResult ChangeRole(int id)
+        [Authorize(Roles = WebUserRoles.Administrator)]
+        public async Task<IActionResult> ChangeRole(int id)
         {
-            return View();
+            ViewBag.Title = "Thay đổi quyền";
+            var model = await HRDataService.GetEmployeeAsync(id);
+            Console.WriteLine(model.RoleNames);
+            if (model == null)
+                return RedirectToAction("Index");
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = WebUserRoles.Administrator)]
+        public async Task<IActionResult> ChangeRole(int id, List<string> roles)
+        {
+            var model = await HRDataService.GetEmployeeAsync(id);
+            if (model == null)
+                return RedirectToAction("Index");
+            model.RoleNames = string.Join(",", roles);
+            await HRDataService.UpdateEmployeeAsync(model);
+            return RedirectToAction("Index");
         }
     }
 }

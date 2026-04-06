@@ -1,4 +1,5 @@
-﻿@{
+@model Employee
+@{
     ViewBag.Title = "Phân quyền nhân viên";
 }
 
@@ -34,15 +35,14 @@
 
                         <dl class="row mb-0">
                             <dt class="col-sm-3">Họ và tên</dt>
-                            <dd class="col-sm-9">Nguyễn Văn C</dd>
+                            <dd class="col-sm-9">@Model.FullName</dd>
 
                             <dt class="col-sm-3">Email</dt>
-                            <dd class="col-sm-9">nguyenvanc@company.com</dd>
+                            <dd class="col-sm-9">@Model.Email</dd>
 
                             <dt class="col-sm-3">Trạng thái</dt>
                             <dd class="col-sm-9">
-                                <span class="badge bg-success">Đang làm việc</span>
-                                <!-- <span class="badge bg-secondary">Đã nghỉ việc</span> -->
+                                <span class="@Model.StatusClass">@Model.Status</span>
                             </dd>
                         </dl>
                     </fieldset>
@@ -63,33 +63,46 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @{
+                                        var currentRoles = Model.RoleNames.Split(',',
+                                    StringSplitOptions.RemoveEmptyEntries);
+                                    }
                                     <tr>
                                         <td class="text-center">
-                                            <input class="form-check-input" type="checkbox" checked />
+                                            <input class="form-check-input" type="checkbox" name="roles"
+                                                   value="@WebUserRoles.Administrator"
+                                            @(currentRoles.Contains(WebUserRoles.Administrator) ? "checked" : "") />
+                                        </td>
+                                        <td>Quản trị hệ thống</td>
+                                        <td>Quản lý người dùng, phân quyền, cấu hình hệ thống</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">
+                                            <input class="form-check-input" type="checkbox" name="roles"
+                                                   value="@WebUserRoles.DataManager"
+                                            @(currentRoles.Contains(WebUserRoles.DataManager) ? "checked" : "") />
                                         </td>
                                         <td>Quản lý khách hàng</td>
                                         <td>Thêm, sửa, xóa và xem danh sách khách hàng</td>
                                     </tr>
                                     <tr>
                                         <td class="text-center">
-                                            <input class="form-check-input" type="checkbox" />
+                                            <input class="form-check-input" type="checkbox" name="roles"
+                                                   value="@WebUserRoles.ProductManager"
+                                            @(currentRoles.Contains(WebUserRoles.ProductManager) ? "checked" :
+                                                                                                                                            "") />
                                         </td>
                                         <td>Quản lý mặt hàng</td>
                                         <td>Quản lý thông tin sản phẩm, giá bán, trạng thái</td>
                                     </tr>
                                     <tr>
                                         <td class="text-center">
-                                            <input class="form-check-input" type="checkbox" />
+                                            <input class="form-check-input" type="checkbox" name="roles"
+                                                   value="@WebUserRoles.Sales" @(currentRoles.Contains(WebUserRoles.Sales)
+                                                                                                                                                                                                                                                                                                                                                                                                                              ? "checked" : "") />
                                         </td>
                                         <td>Quản lý đơn hàng</td>
                                         <td>Tạo, xử lý và theo dõi đơn hàng</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">
-                                            <input class="form-check-input" type="checkbox" />
-                                        </td>
-                                        <td>Quản trị hệ thống</td>
-                                        <td>Quản lý người dùng, phân quyền, cấu hình hệ thống</td>
                                     </tr>
                                 </tbody>
                             </table>
