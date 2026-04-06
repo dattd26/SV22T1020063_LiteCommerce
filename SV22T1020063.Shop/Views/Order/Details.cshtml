@@ -1,0 +1,278 @@
+@model OrderViewInfo
+@{
+    ViewBag.Title = $"Chi tiết đơn hàng #{Model.OrderID:D6} | TDD Shop";
+    
+    var breadcrumbs = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem { Text = "Lịch sử đơn hàng", Url = "/Order" },
+        new BreadcrumbItem { Text = "Chi tiết đơn hàng", IsActive = true }
+    };
+
+    var subtotal = Model.Details.Sum(x => x.Quantity * x.SalePrice);
+}
+
+<div class="bg-surface text-on-surface min-h-screen pb-40">
+    <main class="max-w-7xl mx-auto px-6 pt-12">
+        <!-- Breadcrumbs -->
+        <partial name="_Breadcrumbs" model="breadcrumbs" />
+
+        <!-- Page Header -->
+        <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div class="animate-fade-in">
+                <h1 class="text-4xl font-extrabold tracking-tighter mb-2 uppercase">HỒ SƠ ĐƠN HÀNG</h1>
+                <div class="flex items-center gap-4">
+                    <span class="text-xl font-medium text-on-surface-variant font-mono">ID
+                        #@Model.OrderID.ToString("D6")</span>
+                        @{
+                            var statusColor = Model.Status switch
+                            {
+                                OrderStatusEnum.New => "bg-indigo-50 text-indigo-600",
+                                OrderStatusEnum.Accepted => "bg-blue-50 text-blue-600",
+                                OrderStatusEnum.Shipping => "bg-amber-50 text-amber-600",
+                                OrderStatusEnum.Completed => "bg-emerald-50 text-emerald-600",
+                                _ => "bg-rose-50 text-rose-600"
+                            };
+                        }
+                        <span
+                            class="@statusColor px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+                            @Model.Status.GetDescription()
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Editorial Timeline -->
+            <section class="mb-16">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Step 1 -->
+                    <div
+                        class="p-6 rounded-2xl relative overflow-hidden transition-all duration-500 @(Model.Status >= OrderStatusEnum.New ? "bg-indigo-600 text-white shadow-xl shadow-indigo-100" : "bg-surface-container-high opacity-40")">
+                        <span
+                            class="block text-[10px] font-black uppercase tracking-widest mb-2 @(Model.Status >= OrderStatusEnum.New ? "text-indigo-100" : "text-on-surface-variant")">Bước
+                            01</span>
+                            <p class="font-bold tracking-tight">Vừa khởi tạo</p>
+                            <span
+                            class="material-symbols-outlined absolute -bottom-2 -right-2 text-6xl opacity-10 @(Model.Status >= OrderStatusEnum.New ? "text-white" : "")"
+                            style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+                        </div>
+                
+                        <!-- Step 2 -->
+                        <div
+                            class="p-6 rounded-2xl relative overflow-hidden transition-all duration-500 @(Model.Status >= OrderStatusEnum.Accepted ? "bg-indigo-600 text-white shadow-xl shadow-indigo-100" : "bg-surface-container-high" + (Model.Status < OrderStatusEnum.Accepted ? " opacity-40" : ""))">
+                            <span
+                                class="block text-[10px] font-black uppercase tracking-widest mb-2 @(Model.Status >= OrderStatusEnum.Accepted ? "text-indigo-100" : "text-on-surface-variant")">Bước
+                                02</span>
+                                <p class="font-bold tracking-tight">Đã xác nhận</p>
+                                <span
+                                class="material-symbols-outlined absolute -bottom-2 -right-2 text-6xl opacity-10 @(Model.Status >= OrderStatusEnum.Accepted ? "text-white" : "")"
+                                style="font-variation-settings: 'FILL' 1;">task_alt</span>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div
+                                class="p-6 rounded-2xl relative overflow-hidden transition-all duration-500 @(Model.Status >= OrderStatusEnum.Shipping ? "bg-indigo-600 text-white shadow-xl shadow-indigo-100" : "bg-surface-container-high" + (Model.Status < OrderStatusEnum.Shipping ? " opacity-40" : ""))">
+                                <span
+                                    class="block text-[10px] font-black uppercase tracking-widest mb-2 @(Model.Status >= OrderStatusEnum.Shipping ? "text-indigo-100" : "text-on-surface-variant")">Bước
+                                    03</span>
+                                    <p class="font-bold tracking-tight">Đang giao hàng</p>
+                                    <span
+                                    class="material-symbols-outlined absolute -bottom-2 -right-2 text-6xl opacity-20 @(Model.Status >= OrderStatusEnum.Shipping ? "text-white" : "")"
+                                    style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+                                </div>
+
+                                <!-- Step 4 -->
+                                <div
+                                    class="p-6 rounded-2xl relative overflow-hidden transition-all duration-500 @(Model.Status >= OrderStatusEnum.Completed ? "bg-indigo-600 text-white shadow-xl shadow-indigo-100" : "bg-surface-container-high" + (Model.Status < OrderStatusEnum.Completed ? " opacity-40" : ""))">
+                                    <span
+                                        class="block text-[10px] font-black uppercase tracking-widest mb-2 @(Model.Status >= OrderStatusEnum.Completed ? "text-indigo-100" : "text-on-surface-variant")">Bước
+                                        04</span>
+                                        <p class="font-bold tracking-tight">Đã hoàn thành</p>
+                                        <span
+                                        class="material-symbols-outlined absolute -bottom-2 -right-2 text-6xl opacity-5 @(Model.Status >= OrderStatusEnum.Completed ? "text-white" : "")"
+                                        style="font-variation-settings: 'FILL' 1;">verified</span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="flex flex-col lg:grid lg:grid-cols-12 gap-12">
+                                <!-- Main Content: Product List -->
+                                <div class="lg:col-span-8 space-y-8">
+                                    <h2 class="text-2xl font-black tracking-tighter uppercase">Danh sách sản phẩm</h2>
+                                    <div class="space-y-4">
+                                        @foreach (var detail in Model.Details)
+                                        {
+                                            <div
+                                                class="group bg-surface-container-lowest hover:bg-surface-container-low transition-all duration-500 p-6 rounded-2xl flex items-center gap-8 border border-white/50 shadow-sm hover:shadow-md">
+                                                <div class="w-24 h-32 bg-surface-container rounded-xl overflow-hidden flex-shrink-0 relative">
+                                                    <img src="/images/products/@detail.Photo" onerror="this.src='/images/products/noPhoto.png'"
+                                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                         alt="@detail.ProductName" />
+                                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                                                </div>
+                                                <div class="flex-grow min-w-0">
+                                                    <h3 class="font-black text-lg text-on-surface mb-2 truncate uppercase tracking-tight"
+                                                        title="@detail.ProductName">@detail.ProductName</h3>
+                                                    <p class="text-on-surface-variant text-xs font-bold uppercase tracking-widest truncate">
+                                                        @detail.Unit</p>
+                                                    </div>
+                                                    <div class="text-right flex-shrink-0">
+                                                        <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Số
+                                                            lượng: @detail.Quantity.ToString("D2")</p>
+                                                            <p class="font-black text-primary text-xl tracking-tighter">@detail.SalePrice.ToString("N0")
+                                                                <span class="text-xs">VNĐ</span></p>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+
+                                                <!-- Shipping Note -->
+                                                <div
+                                                    class="mt-12 p-8 bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/30 flex items-start gap-6">
+                                                    <span class="material-symbols-outlined text-indigo-600 bg-white p-3 rounded-xl shadow-sm"
+                                                          style="font-variation-settings: 'FILL' 1;">info</span>
+                                                    <div>
+                                                        <h4 class="font-black text-sm uppercase tracking-widest mb-3">Thông tin bổ sung</h4>
+                                                        <p class="text-on-surface-variant text-sm leading-relaxed font-medium">
+                                                            Đơn hàng được khởi tạo vào ngày @Model.OrderTime.ToString("dd/MM/yyyy HH:mm").
+                                                            @if (Model.AcceptTime.HasValue)
+                                                            {
+                                                                <text>Đã được duyệt lúc
+                                                                    @Model.AcceptTime.Value.ToString("dd/MM/yyyy HH:mm").</text>
+                                                                }
+                                                                Mọi thắc mắc vui lòng liên hệ hotline để được hỗ trợ nhanh nhất.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Sidebar: Details -->
+                                                <aside class="lg:col-span-4 space-y-8">
+                                                    <!-- Shipping Info -->
+                                                    <div
+                                                        class="bg-surface-container-lowest p-8 rounded-3xl border border-white/50 shadow-sm relative overflow-hidden group">
+                                                        <div
+                                                            class="absolute -top-12 -right-12 w-40 h-40 bg-indigo-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-3xl">
+                                                        </div>
+                                                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-8">Thông tin
+                                                            nhận hàng</h3>
+                                                            <div class="space-y-6 relative">
+                                                                <div class="flex items-center gap-4">
+                                                                    <div class="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                                                                        <span class="material-symbols-outlined text-indigo-600 text-sm"
+                                                                              style="font-variation-settings: 'FILL' 1;">person</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p
+                                                                            class="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mb-0.5">
+                                                                            Người nhận</p>
+                                                                            <p class="font-black text-sm uppercase tracking-tight">@Model.CustomerName</p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="flex items-start gap-4">
+                                                                        <div
+                                                                            class="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                                            <span class="material-symbols-outlined text-indigo-600 text-sm"
+                                                                                  style="font-variation-settings: 'FILL' 1;">location_on</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p
+                                                                                class="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mb-0.5">
+                                                                                Địa chỉ giao hàng</p>
+                                                                                <p class="text-sm font-bold text-on-surface-variant leading-relaxed">
+                                                                                    @Model.DeliveryAddress, @Model.DeliveryProvince</p>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="flex items-center gap-4">
+                                                                                <div class="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                                                                                    <span class="material-symbols-outlined text-indigo-600 text-sm"
+                                                                                          style="font-variation-settings: 'FILL' 1;">phone_iphone</span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p
+                                                                                        class="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mb-0.5">
+                                                                                        Số điện thoại</p>
+                                                                                        <p class="font-black text-sm tracking-widest">@Model.CustomerPhone</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Payment Summary -->
+                                                                        <div
+                                                                            class="bg-indigo-600 p-8 rounded-3xl shadow-xl shadow-indigo-100 text-white relative overflow-hidden">
+                                                                            <div class="absolute -top-12 -left-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+                                                                            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-200 mb-8 relative">Tóm tắt
+                                                                                thanh toán</h3>
+                    
+                                                                                <div class="space-y-4 mb-8 transition-all duration-300 relative">
+                                                                                    <div class="flex justify-between text-indigo-100 text-sm font-medium">
+                                                                                        <span>Tạm tính</span>
+                                                                                        <span>@subtotal.ToString("N0")đ</span>
+                                                                                    </div>
+                                                                                    <div class="flex justify-between text-indigo-100 text-sm font-medium">
+                                                                                        <span>Phí vận chuyển</span>
+                                                                                        <span class="font-black uppercase tracking-tighter">Freeship</span>
+                                                                                    </div>
+                                                                                    <div class="flex justify-between text-indigo-100 text-sm font-medium">
+                                                                                        <span>Giảm giá</span>
+                                                                                        <span>0đ</span>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="pt-6 border-t border-white/10 relative">
+                                                                                    <div class="flex justify-between items-end mb-2">
+                                                                                        <span class="text-[11px] font-bold uppercase tracking-widest text-indigo-200">Tổng
+                                                                                            cộng</span>
+                                                                                            <span class="text-3xl font-black tracking-tighter">@subtotal.ToString("N0") <span
+                                                                                                class="text-xs">VNĐ</span></span>
+                                                                                            </div>
+                                                                                            <p class="text-[9px] text-right text-indigo-200 font-bold tracking-widest">VAT INCLUDED (10%)
+                                                                                            </p>
+                                                                                        </div>
+
+                                                                                        <div
+                                                                                            class="mt-8 flex items-center gap-3 px-5 py-3 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
+                                                                                            <span class="material-symbols-outlined text-sm"
+                                                                                                  style="font-variation-settings: 'FILL' 1;">payments</span>
+                                                                                            <span class="text-[10px] font-black uppercase tracking-widest">Thanh toán khi nhận hàng</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </aside>
+                                                                            </div>
+                                                                        </main>
+
+                                                                        <!-- Sticky Bottom Bar -->
+                                                                        <footer
+                                                                            class="fixed bottom-0 left-0 w-full z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 px-6 py-6 transition-all duration-500">
+                                                                            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                                                                                <div class="hidden md:block">
+                                                                                    <p class="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] mb-1">Hỗ trợ khách
+                                                                                        hàng</p>
+                                                                                        <p class="text-sm font-black">L-COMMERCE: 1900 6000</p>
+                                                                                    </div>
+            
+                                                                                    <div class="flex flex-wrap justify-center gap-4">
+                                                                                        @if (Model.Status == OrderStatusEnum.New)
+                                                                                        {
+                                                                                            <a href="/Order/Cancel/@Model.OrderID"
+                                                                                                   onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')"
+                                                                                                   class="px-8 py-3 text-[11px] font-black text-on-surface-variant hover:text-rose-600 transition-all uppercase tracking-widest active:scale-95">
+                                                                                                Hủy đơn hàng
+                                                                                            </a>
+                                                                                        }
+                
+                                                                                        <a href="/Order"
+                                                                                               class="px-8 py-3 bg-surface-container-high text-on-surface text-[11px] font-black rounded-xl hover:bg-surface-container-highest transition-all active:scale-95 uppercase tracking-widest shadow-sm">
+                                                                                            Theo dõi lịch sử
+                                                                                        </a>
+                
+                                                                                        <a href="/Product"
+                                                                                               class="px-10 py-3 bg-slate-900 text-white text-[11px] font-black rounded-xl shadow-lg shadow-slate-200 hover:scale-105 transition-all active:scale-95 uppercase tracking-widest">
+                                                                                            Tiếp tục mua sắm
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </footer>
+                                                                        </div>

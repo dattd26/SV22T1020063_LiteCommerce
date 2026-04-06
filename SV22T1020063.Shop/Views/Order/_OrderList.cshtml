@@ -1,0 +1,117 @@
+@model PagedResult<OrderViewInfo>
+@using SV22T1020063.Models.Sales
+
+@{
+    Layout = null;
+}
+
+@if (Model.DataItems.Count == 0)
+{
+    <div class="bg-surface-container-low rounded-2xl p-20 text-center border border-dashed border-outline-variant/30">
+        <span class="material-symbols-outlined text-6xl text-slate-300 mb-6">inventory_2</span>
+        <p class="text-on-surface-variant font-bold tracking-tight">Không tìm thấy đơn hàng nào.</p>
+        <a href="/Product"
+               class="inline-block mt-8 px-8 py-3 bg-primary text-white text-sm font-bold tracking-tight rounded-lg shadow-md hover:bg-primary-container transition-all">
+            Khám phá ngay
+        </a>
+    </div>
+}
+else
+{
+    <div class="space-y-12">
+        @foreach (var item in Model.DataItems)
+        {
+            var statusColor = item.Status switch
+            {
+                OrderStatusEnum.New => "bg-primary-fixed text-on-primary-fixed-variant",
+                OrderStatusEnum.Accepted => "bg-secondary-fixed text-on-secondary-fixed-variant",
+                OrderStatusEnum.Shipping => "bg-primary-container text-on-primary-container",
+                OrderStatusEnum.Completed => "bg-surface-container-highest text-on-surface-variant",
+                _ => "bg-error-container text-on-error-container"
+            };
+
+            <!-- Order Card -->
+            <div
+                class="bg-surface-container-lowest soft-elevation rounded-xl overflow-hidden group transition-all duration-300 hover:bg-surface-container-high @(item.Status < 0 ? "opacity-80 grayscale-[0.5]" : "")">
+                <!-- Order Header (Tonal Row) -->
+                <div
+                    class="bg-surface-container-low px-8 py-4 flex flex-wrap justify-between items-center gap-4 border-b border-white/50">
+                    <div class="flex items-center gap-8">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 font-bold">Mã đơn hàng
+                            </p>
+                            <p class="text-sm font-bold font-mono">#@item.OrderID.ToString("D6")</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1 font-bold">Ngày đặt</p>
+                            <p class="text-sm font-semibold">@item.OrderTime.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                    <span
+                        class="px-4 py-1.5 @statusColor text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm">
+                        @OrderStatusExtensions.GetDescription(item.Status)
+                    </span>
+                </div>
+                
+                <!-- Order Body -->
+                <div class="p-8 flex flex-col md:flex-row justify-between items-end md:items-center gap-8">
+                    <div class="flex flex-wrap gap-4 overflow-hidden">
+                        @foreach (var detail in item.Details.Take(3))
+                        {
+                            <div
+                                class="w-20 aspect-[4/5] bg-surface-container rounded-lg overflow-hidden flex-shrink-0 relative group/thumb">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 @(item.Status < 0 ? "grayscale" : "")"
+                                     src="/images/products/@detail.Photo" onerror="this.src='/images/products/noPhoto.png'"
+                                     alt="@detail.ProductName" />
+                                <div class="absolute inset-0 bg-black/0 group-hover/thumb:bg-black/5 transition-colors"></div>
+                            </div>
+                        }
+                        @if (item.Details.Count > 3)
+                        {
+                            <div
+                                class="w-20 aspect-[4/5] bg-surface-container-low rounded-lg flex items-center justify-center border border-dashed border-outline-variant/30 flex-shrink-0">
+                                <span class="text-[10px] font-black text-on-surface-variant tracking-wider">+@(item.Details.Count -
+                                                                                                3) THÊM</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">Tổng thanh toán
+                            </p>
+                            <p class="text-4xl font-black tracking-tighter text-on-surface">@item.Details.Sum(x => x.Quantity *
+                                                                                    x.SalePrice).ToString("N0") <span class="text-lg font-bold">VNĐ</span></p>
+                            </div>
+                        </div>
+                
+                        <!-- Actions -->
+                        <div class="px-8 pb-8 flex gap-8">
+                            <a href="/Order/Details/@item.OrderID"
+                                   class="text-[11px] font-black tracking-[0.2em] text-primary uppercase hover:opacity-70 transition-opacity flex items-center gap-2 group/link">
+                                XEM CHI TIẾT
+                                <span
+                                class="material-symbols-outlined text-[16px] transition-transform group-hover/link:translate-x-1">arrow_forward</span>
+                            </a>
+                            <a href="/Product"
+                                   class="text-[11px] font-black tracking-[0.2em] text-primary uppercase hover:opacity-70 transition-opacity flex items-center gap-2 group/link">
+                                MUA TIẾP
+                                <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.PageCount > 1)
+            {
+                <div class="mt-20 flex justify-center items-center gap-2">
+                    @for (int p = 1; p <= Model.PageCount; p++)
+                    {
+                        <button onclick="doSearch(@p)"
+                                class="w-10 h-10 flex items-center justify-center text-sm font-bold rounded-lg transition-all @(p == Model.Page ? "bg-primary text-white shadow-lg" : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-highest")">
+                            @p
+                        </button>
+                    }
+                </div>
+            }
+        }

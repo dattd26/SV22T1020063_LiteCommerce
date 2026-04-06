@@ -1,0 +1,24 @@
+@model IEnumerable<SV22T1020063.Models.Common.BreadcrumbItem>
+
+@if (Model != null && Model.Any())
+{
+    <nav class="mb-12 flex items-center flex-wrap gap-2 text-[10px] sm:text-xs uppercase tracking-widest text-on-surface-variant font-bold">
+        <a class="hover:text-primary transition-colors flex items-center gap-1 group" href="~/">
+            <span class="material-symbols-outlined text-[16px] group-hover:scale-110 transition-transform">home</span>
+            Trang chủ
+        </a>
+        
+        @foreach (var item in Model)
+        {
+            <span class="material-symbols-outlined text-[10px] text-slate-300">chevron_right</span>
+            @if (item.IsActive || string.IsNullOrEmpty(item.Url))
+            {
+                <span class="text-on-surface truncate max-w-[150px] sm:max-w-none">@item.Text</span>
+            }
+            else
+            {
+                <a class="hover:text-primary transition-colors" href="@Url.Content(item.Url)">@item.Text</a>
+            }
+        }
+    </nav>
+}

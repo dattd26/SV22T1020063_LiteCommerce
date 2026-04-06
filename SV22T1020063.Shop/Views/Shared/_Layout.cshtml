@@ -8,15 +8,19 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     
     <!-- Tailwind CSS & Flowbite -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/flowbite/flowbite.min.css" asp-append-version="true" />
     
     <style>
-        body { font-family: 'Inter', sans-serif; }
+            body {
+                font-family: 'Inter', sans-serif;
+            }
     </style>
 </head>
 
@@ -30,26 +34,130 @@
     <partial name="_Footer" />
     
     <!-- Back to Top Button -->
-    <button id="back-to-top" 
+    <button id="back-to-top"
             class="fixed bottom-8 right-8 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-2xl transition-all duration-300 opacity-0 translate-y-10 hover:bg-indigo-700 hover:scale-110 active:scale-95 invisible">
         <span class="material-symbols-outlined text-2xl">arrow_upward</span>
     </button>
+
+    <!-- Cart Container -->
+    <div id="cart-container"></div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/flowbite/flowbite.min.js"></script>
     <script>
-        $(window).scroll(function() {
-            if ($(this).scrollTop() > 300) {
-                $('#back-to-top').removeClass('opacity-0 translate-y-10 invisible').addClass('opacity-100 translate-y-0 visible');
-            } else {
-                $('#back-to-top').addClass('opacity-0 translate-y-10 invisible').removeClass('opacity-100 translate-y-0 visible');
-            }
-        });
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 300) {
+                    $('#back-to-top').removeClass('opacity-0 translate-y-10 invisible').addClass('opacity-100 translate-y-0 visible');
+                } else {
+                    $('#back-to-top').addClass('opacity-0 translate-y-10 invisible').removeClass('opacity-100 translate-y-0 visible');
+                }
+            });
 
-        $('#back-to-top').click(function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+            $('#back-to-top').click(function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            const cartApp = {
+                init: function () {
+                    this.updateBadge();
+                },
+                toggleCart: function () {
+                    const sidebar = document.getElementById('cart-sidebar');
+                    const wasOpen = sidebar && !sidebar.classList.contains('translate-x-full');
+                
+                    fetch('/Order/GetCartSidebar')
+                        .then(res => res.text())
+                        .then(html => {
+                            document.getElementById('cart-container').innerHTML = html;
+                            if (wasOpen) {
+                                const newSidebar = document.getElementById('cart-sidebar');
+                                const newOverlay = document.getElementById('cart-overlay');
+                                if (newSidebar && newOverlay) {
+                                    // Apply open classes immediately to avoid animation jump
+                                    newSidebar.classList.remove('translate-x-full', 'duration-500');
+                                    newOverlay.classList.remove('opacity-0', 'pointer-events-none', 'duration-500');
+                                    document.body.classList.add('overflow-hidden');
+                                    // Restore original duration after a frame
+                                    setTimeout(() => {
+                                        newSidebar.classList.add('duration-500');
+                                        newOverlay.classList.add('duration-500');
+                                    }, 50);
+                                }
+                            } else {
+                                this.openCart();
+                            }
+                        });
+                },
+                openCart: function () {
+                    setTimeout(() => {
+                        const overlay = document.getElementById('cart-overlay');
+                        const sidebar = document.getElementById('cart-sidebar');
+                        if (overlay && sidebar) {
+                            overlay.classList.remove('opacity-0', 'pointer-events-none');
+                            sidebar.classList.remove('translate-x-full');
+                            document.body.classList.add('overflow-hidden');
+                        }
+                    }, 50);
+                },
+                closeCart: function () {
+                    const overlay = document.getElementById('cart-overlay');
+                    const sidebar = document.getElementById('cart-sidebar');
+                    if (overlay && sidebar) {
+                        overlay.classList.add('opacity-0', 'pointer-events-none');
+                        sidebar.classList.add('translate-x-full');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                },
+                addToCart: function (productId, quantity = 1, price = 0) {
+                    $.post('/Order/AddToCart', { productId, quantity, salePrice: price }, (res) => {
+                        if (res.success) {
+                            this.updateBadge(res.itemsCount);
+                            @* this.toggleCart(); *@
+                            } else {
+                            alert(res.message);
+                        }
+                    });
+                },
+                removeFromCart: function (productId) {
+                    $.post('/Order/RemoveFromCart', { productId }, (res) => {
+                        if (res.success) {
+                            this.updateBadge(res.itemsCount);
+                            this.toggleCart();
+                        }
+                    });
+                },
+                updateQuantity: function (productId, quantity) {
+                    if (quantity < 1) {
+                        this.removeFromCart(productId);
+                        return;
+                    }
+                    $.post('/Order/UpdateQuantity', { productId, quantity }, (res) => {
+                        if (res.success) {
+                            this.updateBadge(res.itemsCount);
+                            this.toggleCart();
+                        }
+                    });
+                },
+                updateBadge: function (count) {
+                    const badge = document.getElementById('cart-badge-count');
+                    if (!badge) return;
+                
+                    if (count !== undefined) {
+                        badge.innerText = count;
+                        badge.classList.add('scale-125');
+                        setTimeout(() => badge.classList.remove('scale-125'), 300);
+                    } else {
+                        $.get('/Order/GetCartInfo', (res) => {
+                            badge.innerText = res.itemsCount || 0;
+                        });
+                    }
+                }
+            };
+
+            $(document).ready(() => {
+                cartApp.init();
+            });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

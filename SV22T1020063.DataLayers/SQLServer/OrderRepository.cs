@@ -96,7 +96,9 @@ namespace SV22T1020063.DataLayers.SQLServer
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string sql = @"SELECT * FROM Orders WHERE OrderID=@OrderID";
+                string sql = @"SELECT * FROM Orders
+                                        JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+                                        WHERE OrderID=@OrderID";
 
                 await conn.OpenAsync();
                 SqlCommand cmd = new SqlCommand(sql, conn);
@@ -112,7 +114,9 @@ namespace SV22T1020063.DataLayers.SQLServer
                         OrderTime = Convert.ToDateTime(reader["OrderTime"]),
                         DeliveryProvince = reader["DeliveryProvince"]?.ToString(),
                         DeliveryAddress = reader["DeliveryAddress"]?.ToString(),
-                        Status = (OrderStatusEnum)Convert.ToInt32(reader["Status"])
+                        Status = (OrderStatusEnum)Convert.ToInt32(reader["Status"]),
+                        CustomerName = reader["CustomerName"]?.ToString(),
+                        CustomerPhone = reader["Phone"]?.ToString()
                     };
                 }
             }
@@ -137,6 +141,8 @@ namespace SV22T1020063.DataLayers.SQLServer
                 string where = "WHERE (1 = 1)";
                 if (input.Status != 0)
                     where += " AND Status = @Status";
+                if (input.CustomerID.HasValue)
+                    where += " AND o.CustomerID = @CustomerID";
                 if (input.DateFrom.HasValue)
                     where += " AND OrderTime >= @DateFrom";
                 if (input.DateTo.HasValue)
@@ -156,6 +162,7 @@ namespace SV22T1020063.DataLayers.SQLServer
 
                 SqlCommand cmdCount = new SqlCommand(sqlCount, conn);
                 if (input.Status != 0) cmdCount.Parameters.AddWithValue("@Status", (int)input.Status);
+                if (input.CustomerID.HasValue) cmdCount.Parameters.AddWithValue("@CustomerID", input.CustomerID.Value);
                 if (input.DateFrom.HasValue) cmdCount.Parameters.AddWithValue("@DateFrom", input.DateFrom.Value);
                 if (input.DateTo.HasValue) cmdCount.Parameters.AddWithValue("@DateTo", input.DateTo.Value);
                 if (!string.IsNullOrEmpty(input.SearchValue)) cmdCount.Parameters.AddWithValue("@SearchValue", $"%{input.SearchValue}%");
@@ -177,6 +184,7 @@ namespace SV22T1020063.DataLayers.SQLServer
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 if (input.Status != 0) cmd.Parameters.AddWithValue("@Status", (int)input.Status);
+                if (input.CustomerID.HasValue) cmd.Parameters.AddWithValue("@CustomerID", input.CustomerID.Value);
                 if (input.DateFrom.HasValue) cmd.Parameters.AddWithValue("@DateFrom", input.DateFrom.Value);
                 if (input.DateTo.HasValue) cmd.Parameters.AddWithValue("@DateTo", input.DateTo.Value);
                 if (!string.IsNullOrEmpty(input.SearchValue)) cmd.Parameters.AddWithValue("@SearchValue", $"%{input.SearchValue}%");
@@ -222,7 +230,10 @@ namespace SV22T1020063.DataLayers.SQLServer
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string sql = @"SELECT * FROM OrderDetails WHERE OrderID=@OrderID";
+                string sql = @"SELECT od.*, p.ProductName, p.Unit, p.Photo 
+                                FROM OrderDetails AS od
+                                JOIN Products AS p ON od.ProductID = p.ProductID
+                                WHERE od.OrderID=@OrderID";
 
                 await conn.OpenAsync();
                 SqlCommand cmd = new SqlCommand(sql, conn);
@@ -236,7 +247,10 @@ namespace SV22T1020063.DataLayers.SQLServer
                         OrderID = Convert.ToInt32(reader["OrderID"]),
                         ProductID = Convert.ToInt32(reader["ProductID"]),
                         Quantity = Convert.ToInt32(reader["Quantity"]),
-                        SalePrice = Convert.ToDecimal(reader["SalePrice"])
+                        SalePrice = Convert.ToDecimal(reader["SalePrice"]),
+                        ProductName = reader["ProductName"]?.ToString() ?? "",
+                        Unit = reader["Unit"]?.ToString() ?? "",
+                        Photo = reader["Photo"]?.ToString() ?? ""
                     });
                 }
             }
