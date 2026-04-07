@@ -1,0 +1,35 @@
+<div id="confirm-modal" class="fixed inset-0 z-[100] flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity duration-300" onclick="modalApp.close()"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative bg-white dark:bg-slate-900 w-[90%] max-w-md p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] transform scale-95 transition-all duration-300 border border-white/20 dark:border-slate-800">
+        <div class="flex flex-col items-center text-center">
+            <!-- Icon Container with Animated Rings -->
+            <div class="relative mb-8">
+                <div class="absolute inset-0 bg-red-500/20 rounded-full animate-ping"></div>
+                <div class="relative w-20 h-20 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/40 dark:to-red-800/20 rounded-full flex items-center justify-center text-red-500 shadow-inner">
+                    <span class="material-symbols-outlined text-4xl font-bold">warning</span>
+                </div>
+            </div>
+            
+            <header class="mb-8">
+                <h3 id="confirm-title" class="text-2xl font-black text-slate-800 dark:text-white tracking-tight mb-3">Xác nhận hành động</h3>
+                <p id="confirm-message" class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed px-4">
+                    Bạn có chắc chắn muốn thực hiện hành động này không? Thông tin sẽ không thể hoàn tác.
+                </p>
+            </header>
+            
+            <div class="flex flex-col sm:flex-row gap-4 w-full">
+                <button onclick="modalApp.close()" 
+                        class="flex-1 order-2 sm:order-1 py-4 px-6 rounded-2xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-white transition-all transform active:scale-95">
+                    Để sau
+                </button>
+                <button onclick="modalApp.confirm()" 
+                        class="flex-1 order-1 sm:order-2 py-4 px-6 rounded-2xl font-bold bg-slate-900 dark:bg-red-600 text-white hover:bg-black dark:hover:bg-red-500 shadow-xl shadow-red-500/20 transition-all transform active:scale-95">
+                    Xác nhận xóa
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

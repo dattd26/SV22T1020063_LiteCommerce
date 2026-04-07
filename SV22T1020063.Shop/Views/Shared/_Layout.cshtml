@@ -86,6 +86,9 @@
 
     <!-- Cart Container -->
     <div id="cart-container"></div>
+    
+    <!-- Confirm Modal -->
+    <partial name="_ConfirmModal" />
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -102,6 +105,38 @@
             $('#back-to-top').click(function () {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
+
+            const modalApp = {
+                callback: null,
+                show: function (title, message, onConfirm) {
+                    document.getElementById('confirm-title').innerText = title;
+                    document.getElementById('confirm-message').innerText = message;
+                    this.callback = onConfirm;
+
+                    const modal = document.getElementById('confirm-modal');
+                    const content = modal.querySelector('.relative');
+
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                    document.body.classList.add('overflow-hidden');
+                },
+                close: function () {
+                    const modal = document.getElementById('confirm-modal');
+                    const content = modal.querySelector('.relative');
+
+                    modal.classList.add('opacity-0', 'pointer-events-none');
+                    content.classList.remove('scale-100', 'opacity-100');
+                    content.classList.add('scale-95', 'opacity-0');
+                    if (!document.getElementById('cart-sidebar') || document.getElementById('cart-sidebar').classList.contains('translate-x-full')) {
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                },
+                confirm: function () {
+                    if (this.callback) this.callback();
+                    this.close();
+                }
+            };
 
             const cartApp = {
                 init: function () {
@@ -184,6 +219,21 @@
                         }
                     });
                 },
+                clearCart: function () {
+                    modalApp.show(
+                        'Xóa giỏ hàng?', 
+                        'Bạn có chắc chắn muốn xóa toàn bộ sản phẩm trong giỏ hàng? Hành động này không thể hoàn tác.',
+                        () => {
+                            $.post('/Order/ClearCart', {}, (res) => {
+                                if (res.success) {
+                                    this.updateBadge(0);
+                                    this.toggleCart();
+                                    this.showToast('Thành công', 'Giỏ hàng đã được làm trống');
+                                }
+                            });
+                        }
+                    );
+                },
                 updateBadge: function (count) {
                     const badge = document.getElementById('cart-badge-count');
                     if (!badge) return;
@@ -201,7 +251,7 @@
                 showToast: function (title, message) {
                     const container = document.getElementById('toast-container');
                     const toast = document.createElement('div');
-                    toast.className = 'animate-toast-premium pointer-events-auto relative overflow-hidden bg-white/95 backdrop-blur-xl border-l-[4px] border-indigo-600 shadow-2xl shadow-indigo-100/30 p-5 rounded-r-2xl flex items-center gap-4 min-w-[340px]';
+                    toast.className = 'animate-toast-premium pointer-events-auto cursor-pointer relative overflow-hidden bg-white/95 backdrop-blur-xl border-l-[4px] border-indigo-600 shadow-2xl shadow-indigo-100/30 p-5 rounded-r-2xl flex items-center gap-4 min-w-[340px] transition-all hover:scale-[1.02] active:scale-95';
                     
                     toast.innerHTML = `
                         <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm">
@@ -214,14 +264,19 @@
                         <div class="toast-progress-premium"></div>
                     `;
 
-                    container.appendChild(toast);
-
-                    // Auto-exit animation
-                    setTimeout(() => {
+                    const dismissToast = () => {
+                        if (toast.dataset.dismissed) return;
+                        toast.dataset.dismissed = "true";
                         toast.classList.remove('animate-toast-premium');
                         toast.classList.add('animate-toast-premium-out');
                         setTimeout(() => toast.remove(), 800);
-                    }, 4200);
+                    };
+
+                    toast.onclick = dismissToast;
+                    container.appendChild(toast);
+
+                    // Auto-exit animation sau 4.2s
+                    setTimeout(dismissToast, 4200);
                 }
             };
 

@@ -32,8 +32,15 @@
     <header class="p-10 pb-6 flex flex-col gap-1">
         <div class="flex justify-between items-center mb-6">
             <span class="text-xl font-bold text-indigo-900 dark:text-indigo-100 tracking-tight">Giỏ hàng của bạn</span>
-            <button onclick="cartApp.closeCart()"
-                    class="material-symbols-outlined text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">close</button>
+            <div class="flex items-center gap-2">
+                @if (!isEmpty)
+                {
+                    <button onclick="cartApp.clearCart()" title="Xóa toàn bộ giỏ hàng"
+                            class="material-symbols-outlined text-slate-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full">delete_sweep</button>
+                }
+                <button onclick="cartApp.closeCart()"
+                        class="material-symbols-outlined text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">close</button>
+            </div>
         </div>
         <h2 class="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">LỰA CHỌN MUA SẮM</h2>
         <p class="text-sm font-medium text-slate-500">Danh sách sản phẩm đã chọn</p>

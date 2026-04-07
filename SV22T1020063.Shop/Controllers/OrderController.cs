@@ -69,6 +69,14 @@ namespace SV22T1020063.Shop.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost]
+        public IActionResult ClearCart()
+        {
+            ShoppingCartService.ClearCart();
+            return Json(new { success = true, itemsCount = 0 });
+        }
+
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetCartInfo()
         {

@@ -166,20 +166,7 @@
                                                         data: $(this).serialize(),
                                                         success: function (res) {
                                                             if (res.success) {
-                                                                if (window.Swal) {
-                                                                    Swal.fire({
-                                                                        title: 'Đặt hàng thành công!',
-                                                                        text: 'Cảm ơn bạn đã tin tưởng mua sắm. Chúng tôi sẽ liên hệ bạn sớm nhất có thể.',
-                                                                        icon: 'success',
-                                                                        confirmButtonText: 'Xem thông báo',
-                                                                        confirmButtonColor: '#4f46e5'
-                                                                    }).then(() => {
-                                                                        window.location.href = "@Url.Action("Success", "Order")";
-                                                                    });
-                                                                } else {
-                                                                    alert('Đặt hàng thành công! Chúng tôi sẽ liên hệ bạn sớm nhất có thể.');
-                                                                    window.location.href = "@Url.Action("Success", "Order")";
-                                                                }
+                                                                window.location.href = "@Url.Action("Success", "Order")";
                                                             } else {
                                                                 if (window.Swal) {
                                                                     Swal.fire({
