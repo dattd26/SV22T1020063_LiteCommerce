@@ -1,39 +1,40 @@
-@model SV22T1020063.Models.Sales.OrderViewInfo
+@model OrderViewInfo
 @{
     ViewBag.Title = "Chi tiết đơn hàng";
+	var userData = User.GetUserData();
 }
 
 @section PageToolBar {
     <div class="btn-group">
-        @if (Model.Status != SV22T1020063.Models.Sales.OrderStatusEnum.Completed &&
-                           Model.Status != SV22T1020063.Models.Sales.OrderStatusEnum.Cancelled &&
-                           Model.Status != SV22T1020063.Models.Sales.OrderStatusEnum.Rejected)
+        @if (Model.Status != OrderStatusEnum.Completed &&
+                           Model.Status != OrderStatusEnum.Cancelled &&
+                           Model.Status != OrderStatusEnum.Rejected)
         {
             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
                 <i class="bi bi-gear me-1"></i> Xử lý đơn hàng
             </button>
             <ul class="dropdown-menu">
-                @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New)
+                @if (Model.Status == OrderStatusEnum.New)
                 {
                     <li><a class="dropdown-item open-modal" href="~/Order/Accept/@Model.OrderID">Duyệt đơn hàng</a></li>
                 }
-                @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Accepted)
+                @if (Model.Status == OrderStatusEnum.Accepted)
                 {
                     <li><a class="dropdown-item open-modal" href="~/Order/Shipping/@Model.OrderID">Chuyển giao hàng</a></li>
                 }
-                @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Shipping)
+                @if (Model.Status == OrderStatusEnum.Shipping)
                 {
                     <li><a class="dropdown-item open-modal" href="~/Order/Finish/@Model.OrderID">Hoàn tất đơn hàng</a></li>
                 }
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New ||
-                                               Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Accepted)
+                @if (Model.Status == OrderStatusEnum.New ||
+                                               Model.Status == OrderStatusEnum.Accepted)
                 {
                     <li><a class="dropdown-item text-danger open-modal" href="~/Order/Cancel/@Model.OrderID">Hủy đơn hàng</a></li>
                 }
-                @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New)
+                @if (Model.Status == OrderStatusEnum.New)
                 {
                     <li><a class="dropdown-item text-danger open-modal" href="~/Order/Reject/@Model.OrderID">Từ chối đơn hàng</a>
                     </li>
@@ -42,9 +43,9 @@
         }
     </div>
 
-    @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New ||
-               Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Cancelled ||
-               Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.Rejected)
+    @if (Model.Status == OrderStatusEnum.New ||
+               Model.Status == OrderStatusEnum.Cancelled ||
+               Model.Status == OrderStatusEnum.Rejected)
     {
         <a href="~/Order/Delete/@Model.OrderID" class="btn btn-danger ms-1 open-modal">
             <i class="bi bi-trash"></i> Xóa
@@ -64,32 +65,32 @@
 
     switch (Model.Status)
     {
-        case SV22T1020063.Models.Sales.OrderStatusEnum.New:
+        case OrderStatusEnum.New:
             alertClass = "alert-secondary";
             statusText = "Đơn hàng mới - Chờ duyệt";
             statusTime = Model.OrderTime;
             break;
-        case SV22T1020063.Models.Sales.OrderStatusEnum.Accepted:
+        case OrderStatusEnum.Accepted:
             alertClass = "alert-primary";
             statusText = "Đã duyệt - Đang chờ chuyển hàng";
             statusTime = Model.AcceptTime;
             break;
-        case SV22T1020063.Models.Sales.OrderStatusEnum.Shipping:
+        case OrderStatusEnum.Shipping:
             alertClass = "alert-warning";
             statusText = "Đang giao hàng";
             statusTime = Model.ShippedTime;
             break;
-        case SV22T1020063.Models.Sales.OrderStatusEnum.Completed:
+        case OrderStatusEnum.Completed:
             alertClass = "alert-success";
             statusText = "Đã hoàn tất";
             statusTime = Model.FinishedTime;
             break;
-        case SV22T1020063.Models.Sales.OrderStatusEnum.Cancelled:
+        case OrderStatusEnum.Cancelled:
             alertClass = "alert-danger";
             statusText = "Đã hủy";
             statusTime = Model.FinishedTime;
             break;
-        case SV22T1020063.Models.Sales.OrderStatusEnum.Rejected:
+        case OrderStatusEnum.Rejected:
             alertClass = "alert-danger";
             statusText = "Bị từ chối";
             statusTime = Model.FinishedTime;
@@ -124,7 +125,7 @@
 
         <div class="row">
             <div class="col-md-3 fw-bold">Nhân viên phụ trách</div>
-            <div class="col-md-3">@Model.EmployeeName</div>
+            <div class="col-md-3">@userData.DisplayName</div>
 
             <div class="col-md-3 fw-bold">Ngày nhận đơn</div>
             <div class="col-md-3">@(Model.AcceptTime?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa nhận")</div>
@@ -211,7 +212,7 @@
                     <th>Số lượng</th>
                     <th>Giá</th>
                     <th>Thành tiền</th>
-                    @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New)
+                    @if (Model.Status == OrderStatusEnum.New)
                     {
                         <th style="width:90px"></th>
                     }
@@ -233,7 +234,7 @@
                         <td class="text-center">@item.Quantity</td>
                         <td class="text-end">@item.SalePrice.ToString("N0")</td>
                         <td class="text-end">@item.TotalPrice.ToString("N0")</td>
-                        @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New)
+                        @if (Model.Status == OrderStatusEnum.New)
                         {
                             <td class="text-end">
                                 <a href="~/Order/EditCartItem/@Model.OrderID?productId=@item.ProductID"
@@ -253,7 +254,7 @@
                 <tr>
                     <th colspan="5" class="text-end">Tổng cộng</th>
                     <th class="text-end">@total.ToString("N0")</th>
-                    @if (Model.Status == SV22T1020063.Models.Sales.OrderStatusEnum.New)
+                    @if (Model.Status == OrderStatusEnum.New)
                     {
                         <th></th>
                     }

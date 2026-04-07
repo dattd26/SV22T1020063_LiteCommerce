@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SV22T1020063.BusinessLayers;
@@ -156,9 +156,42 @@ namespace SV22T1020063.Admin.Controllers
         }
         */
 
-        public IActionResult ChangePassword(int id)
+        public async Task<IActionResult> ChangePassword(int id)
         {
-            return View();
+            var model = await PartnerDataService.GetCustomerAsync(id);
+            if (model == null)
+                return RedirectToAction("Index");
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(int id, string newPassword, string confirmPassword)
+        {
+            var model = await PartnerDataService.GetCustomerAsync(id);
+            if (model == null)
+                return RedirectToAction("Index");
+
+            if (string.IsNullOrWhiteSpace(newPassword))
+                ModelState.AddModelError("newPassword", "Vui lòng nhập mật khẩu mới");
+            if (newPassword != confirmPassword)
+                ModelState.AddModelError("confirmPassword", "Mật khẩu xác nhận không khớp");
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            bool result = await UserAccountService.ChangePasswordAsync(AccountTypes.Customer, model.Email, newPassword);
+            if (result)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Thay đổi mật khẩu không thành công.");
+                return View(model);
+            }
         }
     }
 }
