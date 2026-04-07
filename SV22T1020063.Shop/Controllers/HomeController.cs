@@ -52,7 +52,10 @@ namespace SV22T1020063.Shop.Controllers
 
             return View(featuredProducts);
         }
-
+        public IActionResult Contact()
+        {
+            return View("Contact");
+        }
         public async Task<IActionResult> Search(ProductSearchInput input)
         {
             int pageSize = 12; // Standard grid size
