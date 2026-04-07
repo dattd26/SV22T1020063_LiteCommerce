@@ -1,287 +1,403 @@
 @model ProductDetailViewModel
 @{
     ViewData["Title"] = Model.Product.ProductName;
+    var mainPhoto = string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo;
 }
 
-<main class="max-w-screen-2xl mx-auto px-8 pt-12 pb-24">
-    <!-- Breadcrumbs -->
-    @{
-        var breadcrumbs = new List<BreadcrumbItem>
-        {
-            new BreadcrumbItem { Text = ViewBag.CategoryName, Url = $"/Product?categoryID={Model.Product.CategoryID}" },
-            new BreadcrumbItem { Text = Model.Product.ProductName, IsActive = true }
-        };
-    }
-    <partial name="_Breadcrumbs" model="breadcrumbs" />
+<main class="bg-white min-h-screen">
+    <!-- Breadcrumbs Section -->
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 pt-8">
+        @{
+            var breadcrumbs = new List<BreadcrumbItem>
+            {
+                new BreadcrumbItem { Text = "Trang chủ", Url = "/" },
+                new BreadcrumbItem { Text = ViewBag.CategoryName, Url = $"/Product?categoryID={Model.Product.CategoryID}" },
+                new BreadcrumbItem { Text = Model.Product.ProductName, IsActive = true }
+            };
+        }
+        <div class="mb-12">
+            <partial name="_Breadcrumbs" model="breadcrumbs" />
+        </div>
+    </div>
 
-    <div class="flex flex-col lg:flex-row gap-16 items-start">
-        <!-- Left: Gallery Section (60%) -->
-        <div class="w-full lg:w-[60%] flex gap-6">
-            <!-- Vertical Thumbnails -->
-            <div class="hidden md:flex flex-col gap-4 w-20 no-scrollbar overflow-y-auto max-h-[600px]">
-                <!-- Main Photo Thumbnail -->
-                <div class="aspect-[4/5] bg-white overflow-hidden cursor-pointer border-l-2 border-primary thumbnail-item active"
-                     onclick="switchMainImage('@Url.Content("~/images/products/" + (string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo))', this)">
-                    <img class="w-full h-full object-contain"
-                         src="~/images/products/@(string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo)"
-                         alt="@Model.Product.ProductName">
-                    </div>
-                    <!-- Additional Photos -->
+    <!-- Main Content Grid -->
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+        
+        <!-- Left: Image Gallery (Lg: 7 columns) -->
+        <div class="lg:col-span-7 flex flex-col-reverse lg:flex-row gap-6">
+            <!-- Thumbnails List -->
+            <div
+                class="flex lg:flex-col gap-4 overflow-x-auto lg:overflow-y-auto no-scrollbar lg:max-h-[700px] lg:w-24 shrink-0">
+                <button onclick="changePhoto('@Url.Content("~/images/products/" + mainPhoto)', this)"
+                        class="thumb-btn active w-20 h-20 lg:w-full aspect-square rounded-2xl border-2 border-indigo-600 overflow-hidden bg-slate-50 relative group transition-all shrink-0">
+                    <img src="~/images/products/@mainPhoto"
+                         class="w-full h-full object-contain p-2 mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
+                         alt="Main">
+                    </button>
                     @foreach (var photo in Model.Photos.Where(p => !p.IsHidden).OrderBy(p => p.DisplayOrder))
                     {
-                        <div class="aspect-[4/5] bg-white overflow-hidden cursor-pointer hover:opacity-80 transition-opacity thumbnail-item"
-                             onclick="switchMainImage('@Url.Content("~/images/products/" + photo.Photo)', this)">
-                            <img class="w-full h-full object-contain" src="~/images/products/@photo.Photo"
+                        <button onclick="changePhoto('@Url.Content("~/images/products/" + photo.Photo)', this)"
+                                class="thumb-btn w-20 h-20 lg:w-full aspect-square rounded-2xl border-2 border-transparent hover:border-indigo-200 overflow-hidden bg-slate-50 relative group transition-all shrink-0">
+                            <img src="~/images/products/@photo.Photo"
+                                 class="w-full h-full object-contain p-2 mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
                                  alt="@photo.Description">
-                            </div>
+                            </button>
                         }
                     </div>
-            
-                    <!-- Main Image -->
-                    <div class="flex-1 bg-white editorial-shadow overflow-hidden group">
-                        <div class="aspect-[4/5] overflow-hidden p-8">
-                            <img id="main-product-image"
-                                 class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-700"
-                                 src="~/images/products/@(string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo)"
+
+                    <!-- Main Focused Image -->
+                    <div class="flex-1 relative group cursor-zoom-in">
+                        <div
+                            class="aspect-[4/5] lg:aspect-square bg-white rounded-[2.5rem] overflow-hidden flex items-center justify-center p-8 lg:p-16 border border-slate-200/50 transition-all duration-500 hover:bg-white">
+                            <img id="active-image" src="~/images/products/@mainPhoto"
+                                 class="max-w-full max-h-full object-contain transition-all duration-700 ease-out"
                                  alt="@Model.Product.ProductName">
+                            </div>
+                            <!-- Badge Overlay -->
+                            <div class="absolute top-8 left-8">
+                                <span
+                                    class="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-600 shadow-sm border border-indigo-50">
+                                    Mới nhất
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right: Product Info Sticky (40%) -->
-                    <div class="w-full lg:w-[40%] lg:sticky lg:top-32">
-                        <div class="space-y-8">
-                            <div>
-                                <p class="text-sm font-bold uppercase tracking-[0.2em] text-primary mb-3">BST Sản phẩm mới</p>
-                                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-on-surface mb-4 leading-tight">
-                                    @Model.Product.ProductName</h1>
-                                    <p class="text-3xl md:text-4xl font-medium tracking-tight text-on-surface">
-                                        @Model.Product.Price.ToString("N0") ₫</p>
-                                    </div>
-                                    
-                                    @if (Model.Attributes.Any())
+                    <!-- Right: Detail Info (Lg: 5 columns) -->
+                    <div class="lg:col-span-5 space-y-10">
+                        <!-- Header Info -->
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span
+                                class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md">@ViewBag.CategoryName</span>
+                                <div class="flex items-center text-amber-400">
+                                    @for (int i = 0; i < 5; i++)
                                     {
-                                        <div class="flex flex-wrap gap-3">
-                                            @foreach (var attr in Model.Attributes.Take(4).OrderBy(a => a.DisplayOrder))
-                                            {
-                                                <div
-                                                    class="px-3 py-1.5 bg-surface-container-low rounded-full border border-outline-variant/10 flex items-center gap-2">
-                                                    <span
-                                                    class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">@attr.AttributeName:</span>
-                                                    <span
-                                                    class="text-[10px] font-bold uppercase tracking-widest text-primary">@attr.AttributeValue</span>
-                                                </div>
+                                        <span class="material-symbols-outlined text-sm">star_rate</span>
+                                    }
+                                    <span class="text-[10px] font-bold text-slate-400 ml-2 uppercase tracking-widest">(124 Đánh
+                                        giá)</span>
+                                    </div>
+                                </div>
+                                <h1 class="text-4xl lg:text-5xl font-black text-slate-800 leading-[1.1] tracking-tight">
+                                    @Model.Product.ProductName</h1>
+                                    <div class="flex items-baseline gap-4">
+                                        <span class="text-3xl font-black text-indigo-600">@Model.Product.Price.ToString("N0") ₫</span>
+                                        @if (Model.Product.Price > 0)
+                                        {
+                                            <span class="text-xl font-bold text-slate-300 line-through">@((Model.Product.Price).ToString("N0"))
+                                                ₫</span>
                                             }
                                         </div>
-                                    }
-                
+                                    </div>
+
+                                    <!-- Description Short -->
                                     @if (!string.IsNullOrEmpty(Model.Product.ProductDescription))
                                     {
-                                        <p class="text-on-surface-variant text-lg leading-relaxed">
-                                            @Model.Product.ProductDescription
-                                        </p>
+                                        <div class="prose prose-slate bg-slate-50/50 p-6 rounded-3xl border border-slate-100">
+                                            <p class="text-slate-500 font-medium leading-relaxed italic">"@Model.Product.ProductDescription"</p>
+                                        </div>
                                     }
 
-                                    @if (Model.Product.IsSelling)
+                                    <!-- Attributes / Variants Selection -->
+                                    @if (Model.Attributes.Any())
                                     {
-                                        <!-- Add to Cart Cluster -->
-                                        <div class="flex gap-4">
-                                            <div class="w-32 flex items-center justify-between px-4 bg-surface-container-low rounded-lg">
-                                                <button class="p-2 hover:text-primary" onclick="updateQty(-1)"><span
-                                                    class="material-symbols-outlined text-sm">remove</span></button>
-                                                    <span id="quantity-display" class="font-bold text-sm">1</span>
-                                                    <button class="p-2 hover:text-primary" onclick="updateQty(1)"><span
-                                                        class="material-symbols-outlined text-sm">add</span></button>
-                                                    </div>
-                                                    <button
-                                                        class="flex-1 py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold tracking-tight rounded-lg shadow-lg hover:shadow-indigo-500/20 transition-all active:scale-[0.98]">
-                                                        Thêm vào giỏ hàng
-                                                    </button>
-                                                </div>
-                                            }
-                else
+                                        <div class="space-y-6">
+                                            @foreach (var attrGroup in Model.Attributes.GroupBy(a => a.AttributeName))
                                             {
-                                                <div class="p-4 bg-error-container text-on-error-container rounded-lg font-bold text-center">
-                                                    Sản phẩm hiện đang ngừng kinh doanh
-                                                </div>
-                                            }
-
-                                            <!-- Trust Icons -->
-                                            <div class="pt-8 grid grid-cols-3 gap-4 border-t border-outline-variant/10">
-                                                <div class="text-center space-y-2">
-                                                    <span class="material-symbols-outlined text-on-surface-variant">local_shipping</span>
-                                                    <p class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Giao hàng
-                                                        nhanh</p>
-                                                    </div>
-                                                    <div class="text-center space-y-2">
-                                                        <span class="material-symbols-outlined text-on-surface-variant">verified_user</span>
-                                                        <p class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Bảo hành 12
-                                                            tháng</p>
+                                                <div class="space-y-3">
+                                                    <label class="text-[11px] font-black text-slate-800 uppercase tracking-widest">Chọn
+                                                        @attrGroup.Key</label>
+                                                        <div class="flex flex-wrap gap-2">
+                                                            @foreach (var val in attrGroup)
+                                                            {
+                                                                <button
+                                                                    class="px-5 py-2.5 rounded-xl border-2 border-slate-100 font-bold text-sm tracking-tight hover:border-indigo-500 transition-all cursor-pointer @(val == attrGroup.First() ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-600")">
+                                                                    @val.AttributeValue
+                                                                </button>
+                                                            }
                                                         </div>
-                                                        <div class="text-center space-y-2">
-                                                            <span class="material-symbols-outlined text-on-surface-variant">lock</span>
-                                                            <p class="text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant">Thanh toán
-                                                                bảo mật</p>
-                                                            </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+
+                                        <!-- Action Area -->
+                                        <div class="space-y-6 pt-4">
+                                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
+                                                <div
+                                                    class="flex items-center bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200/50 h-[60px]">
+                                                    <button onclick="tweakQty(-1)"
+                                                            class="w-12 h-12 flex items-center justify-center hover:bg-white rounded-xl transition-all"><span
+                                                        class="material-symbols-outlined text-lg">remove</span></button>
+                                                        <input id="qty-input" type="number" value="1" min="1"
+                                                               class="w-14 bg-transparent border-none text-center font-black text-slate-800 focus:ring-0">
+                                                        <button onclick="tweakQty(1)"
+                                                                class="w-12 h-12 flex items-center justify-center hover:bg-white rounded-xl transition-all"><span
+                                                            class="material-symbols-outlined text-lg">add</span></button>
+                                                        </div>
+                                                        @if (Model.Product.IsSelling)
+                                                        {
+                                                            <button
+                                                                onclick="cartApp.addToCart(@Model.Product.ProductID, parseInt(document.getElementById('qty-input').value), @Model.Product.Price)"
+                                                                class="flex-1 h-[60px] bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-indigo-100 transition-all transform active:scale-[0.98] flex items-center justify-center gap-3">
+                                                                <span class="material-symbols-outlined">shopping_basket</span>
+                                                                Thêm vào giỏ
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button disabled
+                                                                    class="flex-1 h-[60px] bg-slate-200 text-slate-400 font-black uppercase tracking-widest text-xs rounded-2xl cursor-not-allowed">
+                                                                Liên hệ
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    @* @if (Model.Product.IsSelling)
+                                                    {
+                                                        <button
+                                                            class="w-full h-[60px] border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-black uppercase tracking-widest text-xs rounded-2xl transition-all transform active:scale-[0.98]">
+                                                            Mua ngay
+                                                        </button>
+                                                    } *@
+                                                </div>
+
+                                                <!-- Highlights / Features -->
+                                                <div class="grid grid-cols-2 gap-4 pt-4">
+                                                    <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                                        <span class="material-symbols-outlined text-indigo-500">local_shipping</span>
+                                                        <div>
+                                                            <h5 class="text-[10px] font-black uppercase tracking-widest text-slate-800">Giao hàng</h5>
+                                                            <p class="text-[10px] font-bold text-slate-400">Hỏa tốc nội thành</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                                        <span class="material-symbols-outlined text-indigo-500">verified_user</span>
+                                                        <div>
+                                                            <h5 class="text-[10px] font-black uppercase tracking-widest text-slate-800">Bảo mật</h5>
+                                                            <p class="text-[10px] font-bold text-slate-400">100% chính hãng</p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <!-- Details/Specs Section -->
-                                            <section class="mt-32">
-                                                <div class="border-b border-outline-variant/20 flex gap-12">
-                                                    <button
-                                                    class="pb-6 text-sm font-bold uppercase tracking-[0.2em] border-b-2 border-primary text-primary active-tab"
-                                                    onclick="switchTab(this, 'description')">Mô tả</button>
-                                                    <button
-                                                    class="pb-6 text-sm font-bold uppercase tracking-[0.2em] border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors"
-                                                    onclick="switchTab(this, 'specs')">Chi tiết sản phẩm</button>
-                                                    <button
-                                                    class="pb-6 text-sm font-bold uppercase tracking-[0.2em] border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors"
-                                                    onclick="switchTab(this, 'reviews')">Đánh giá (124)</button>
-                                                </div>
+                                        <!-- Details Section (Tabs/Accordion) -->
+                                        <section class="bg-slate-50/50 py-24 border-y border-slate-100">
+                                            <div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex flex-col lg:flex-row gap-20">
+                                                <div class="lg:w-1/3">
+                                                    <h2 class="text-4xl font-black text-slate-800 tracking-tight leading-[1.1]">Thông tin sản phẩm</h2>
+                                                    <p class="mt-4 text-slate-500 font-medium">@ViewBag.CategoryName - @Model.Product.ProductName.</p>
+                                                    </div>
+                                                    <div class="lg:w-2/3">
+                                                        <div class="border-b border-slate-200 flex gap-10 mb-12 overflow-x-auto no-scrollbar scroll-smooth">
+                                                            <button onclick="toggleTab('info-desc', this)"
+                                                                    class="tab-h active shrink-0 pb-6 text-xs font-black uppercase tracking-[0.2em] text-indigo-600 border-b-2 border-indigo-600 transition-all">Mô tả sản phẩm</button>
+                                                                <button onclick="toggleTab('info-specs', this)"
+                                                                        class="tab-h shrink-0 pb-6 text-xs font-black uppercase tracking-[0.2em] text-slate-400 border-b-2 border-transparent transition-all">Thông tin chi tiết</button>
+                                                                    <button onclick="toggleTab('info-ship', this)"
+                                                                            class="tab-h shrink-0 pb-6 text-xs font-black uppercase tracking-[0.2em] text-slate-400 border-b-2 border-transparent transition-all">Đổi
+                                                                        trả & Bảo hành</button>
+                                                                    </div>
+                
+                                                                    <div id="info-desc" class="tab-c animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                                                        <div class="prose prose-slate max-w-none">
+                                                                            <p class="text-slate-600 leading-relaxed text-lg">@Model.Product.ProductDescription</p>
+                                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+                                                                                <div
+                                                                                    class="p-8 bg-white rounded-[2rem] border border-slate-100 relative group overflow-hidden">
+                                                                                    <div
+                                                                                        class="absolute -top-10 -right-10 w-24 h-24 bg-indigo-50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                                    </div>
+                                                                                    <span class="material-symbols-outlined text-indigo-600 text-3xl mb-4 block">eco</span>
+                                                                                    <h5 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-3">Vật liệu
+                                                                                        sinh thái</h5>
+                                                                                        <p class="text-xs text-slate-400 font-medium leading-relaxed">Cam kết sử dụng các vật
+                                                                                            liệu thân thiện với môi trường và bền bỉ theo thời gian.</p>
+                                                                                        </div>
+                                                                                        <div
+                                                                                            class="p-8 bg-white rounded-[2rem] border border-slate-100 relative group overflow-hidden">
+                                                                                            <div
+                                                                                                class="absolute -top-10 -right-10 w-24 h-24 bg-indigo-50 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                                            </div>
+                                                                                            <span
+                                                                                            class="material-symbols-outlined text-indigo-600 text-3xl mb-4 block">diamond</span>
+                                                                                            <h5 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-3">Độ hoàn
+                                                                                                thiện cao</h5>
+                                                                                                <p class="text-xs text-slate-400 font-medium leading-relaxed">Từng chi tiết được gia
+                                                                                                    công tỉ mỉ, mang lại vẻ đẹp không tỳ vết cho sản phẩm.</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
 
-                                                <div id="tab-content" class="py-16">
-                                                    <!-- Description -->
-                                                    <div id="description-content" class="tab-pane">
-                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
-                                                            <div class="space-y-6">
-                                                                <h2 class="text-3xl font-extrabold tracking-tight">Về @Model.Product.ProductName</h2>
-                                                                @* <p class="text-on-surface-variant leading-relaxed text-lg">
-                                                                    @Model.Product.ProductDescription
-                                                                </p> *@
-                                                                <ul class="space-y-4">
-                                                                    <li class="flex items-center gap-3">
-                                                                        <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                                                        <span class="text-sm font-medium">@Model.Product.ProductDescription</span>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                            <div
-                                                                class="bg-white aspect-video rounded-2xl overflow-hidden border border-outline-variant/10 flex items-center justify-center p-12">
-                                                                <img class="w-full h-full object-contain"
-                                                                     src="~/images/products/@(string.IsNullOrEmpty(Model.Product.Photo) ? "nophoto.png" : Model.Product.Photo)"
-                                                                     alt="Feature image">
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                                                    <div id="info-specs" class="tab-c hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                                                                        <div class="bg-white rounded-[2.5rem] p-8 sm:p-12 border border-slate-100 shadow-sm">
+                                                                                            <table class="w-full">
+                                                                                                <tbody>
+                                                                                                    @foreach (var attr in Model.Attributes)
+                                                                                                    {
+                                                                                                        <tr class="border-b border-slate-50 last:border-none">
+                                                                                                            <td class="py-5 text-xs font-black uppercase text-slate-400 tracking-widest w-1/3">
+                                                                                                                @attr.AttributeName</td>
+                                                                                                                <td class="py-5 text-sm font-black text-slate-800 text-right">@attr.AttributeValue
+                                                                                                                </td>
+                                                                                                            </tr>
+                                                                                                        }
+                                                                                                        <tr class="border-b border-slate-50 last:border-none">
+                                                                                                            <td class="py-5 text-xs font-black uppercase text-slate-400 tracking-widest w-1/3">
+                                                                                                                Đơn vị tính</td>
+                                                                                                                <td class="py-5 text-sm font-black text-slate-800 text-right">@Model.Product.Unit
+                                                                                                                </td>
+                                                                                                            </tr>
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </div>
+                                                                                            </div>
+                
+                                                                                            <div id="info-ship" class="tab-c hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                                                                                <div class="bg-indigo-600 p-10 sm:p-16 rounded-[2.5rem] text-white overflow-hidden relative">
+                                                                                                    <!-- Decorative Blur -->
+                                                                                                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32">
+                                                                                                    </div>
+                        
+                                                                                                    <h4 class="text-2xl font-black mb-6 relative">Chính sách đặc quyền</h4>
+                                                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 relative">
+                                                                                                        <div class="space-y-3">
+                                                                                                            <h5 class="text-[10px] font-black uppercase tracking-widest text-indigo-200">Đổi trả 7
+                                                                                                                ngày</h5>
+                                                                                                                <p class="text-sm text-indigo-50 font-medium leading-relaxed">Hỗ trợ đổi trả miễn phí
+                                                                                                                    nếu sản phẩm có lỗi từ nhà sản xuất trong vòng 1 tuần đầu.</p>
+                                                                                                                </div>
+                                                                                                                <div class="space-y-3">
+                                                                                                                    <h5 class="text-[10px] font-black uppercase tracking-widest text-indigo-200">Bảo hành 1
+                                                                                                                        năm</h5>
+                                                                                                                        <p class="text-sm text-indigo-50 font-medium leading-relaxed">Dịch vụ bảo hành tận nhà
+                                                                                                                            cho các đơn hàng.</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </section>
+
+                                                                                                <!-- Related Products -->
+                                                                                                @if (Model.SimilarProducts.Any())
+                                                                                                {
+                                                                                                    <section class="max-w-[1440px] mx-auto px-6 lg:px-12 py-32">
+                                                                                                        <div class="flex justify-between items-end mb-16 px-2">
+                                                                                                            <div>
+                                                                                                                <h2 class="text-4xl font-black text-slate-800 tracking-tight">Thêm vào bộ sưu tập</h2>
+                                                                                                                <p class="mt-2 text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em]">Cùng danh mục:
+                                                                                                                    @ViewBag.CategoryName</p>
+                                                                                                                </div>
+                                                                                                                <div class="hidden sm:flex gap-4">
+                                                                                                                    <button
+                                                                                                                        class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all"><span
+                                                                                                                        class="material-symbols-outlined">west</span></button>
+                                                                                                                        <button
+                                                                                                                            class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all"><span
+                                                                                                                            class="material-symbols-outlined">east</span></button>
+                                                                                                                        </div>
+                                                                                                                    </div>
             
-                                                        <!-- Specs -->
-                                                        <div id="specs-content" class="tab-pane hidden">
-                                                            <div class="max-w-4xl">
-                                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                                                                    <!-- Basic Info Group -->
-                                                                    <div class="col-span-full border-b border-outline-variant/20 pb-2 mb-4">
-                                                                        <h3 class="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Thông tin cơ bản
-                                                                        </h3>
-                                                                    </div>
-                                                                    
-                                                                    <div class="flex items-center justify-between py-3 border-b border-outline-variant/5">
-                                                                        <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Đơn vị
-                                                                            tính</span>
-                                                                            <span class="text-sm font-semibold text-on-surface">@Model.Product.Unit</span>
-                                                                        </div>
-                                                                        <div class="flex items-center justify-between py-3 border-b border-outline-variant/5">
-                                                                            <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Phân
-                                                                                loại</span>
-                                                                                <span class="text-sm font-semibold text-on-surface">@ViewBag.CategoryName</span>
-                                                                            </div>
+                                                                                                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 sm:gap-x-10">
+                                                                                                                        @foreach (var prod in Model.SimilarProducts)
+                                                                                                                        {
+                                                                                                                            <div class="group cursor-pointer"
+                                                                                                                                 onclick="location.href='@Url.Action("Detail", "Product", new { id = prod.ProductID })'">
+                                                                                                                                <div
+                                                                                                                                    class="aspect-[4/5] bg-slate-50 rounded-[2.5rem] overflow-hidden mb-6 relative border border-slate-100 transition-all group-hover:bg-white group-hover:shadow-2xl group-hover:shadow-slate-200/50">
+                                                                                                                                    <img class="w-full h-full object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                                                                                                                                         src="~/images/products/@(string.IsNullOrEmpty(prod.Photo) ? "nophoto.png" : prod.Photo)"
+                                                                                                                                         alt="@prod.ProductName">
+                                                                                                                                        <div
+                                                                                                                                            class="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 w-2/3">
+                                                                                                                                            <button
+                                                                                                                                                class="w-full py-3 bg-white text-slate-800 font-extrabold text-[10px] uppercase tracking-widest rounded-xl shadow-xl hover:bg-indigo-600 hover:text-white transition-all">Chi
+                                                                                                                                                tiết</button>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                        <h3
+                                                                                                                                            class="text-sm font-black text-slate-800 tracking-tight group-hover:text-indigo-600 transition-colors px-2 uppercase">
+                                                                                                                                            @prod.ProductName</h3>
+                                                                                                                                            <p class="text-xs font-bold text-slate-400 mt-1 px-2">@prod.Price.ToString("N0") ₫</p>
+                                                                                                                                        </div>
+                                                                                                                                    }
+                                                                                                                                </div>
+                                                                                                                            </section>
+                                                                                                                        }
 
-                                                                            <!-- Custom Attributes Group -->
-                                                                            @if (Model.Attributes.Any())
-                                                                            {
-                                                                                <div class="col-span-full border-b border-outline-variant/20 pb-2 mt-8 mb-4">
-                                                                                    <h3 class="text-[11px] font-black uppercase tracking-[0.3em] text-primary">Các thuộc tính
-                                                                                        của sản phẩm
-                                                                                    </h3>
-                                                                                </div>
-                                                                        
-                                                                                @foreach (var attr in Model.Attributes.OrderBy(a => a.DisplayOrder))
-                                                                                {
-                                                                                    <div class="flex items-center justify-between py-3 border-b border-outline-variant/5">
-                                                                                        <span
-                                                                                        class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">@attr.AttributeName</span>
-                                                                                        <span class="text-sm font-semibold text-on-surface">@attr.AttributeValue</span>
-                                                                                    </div>
-                                                                                }
-                                                                            }
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                                                                                        <!-- Sticky Mobile Action Bar -->
+                                                                                                                        <div
+                                                                                                                            class="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-6 bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-[0_-10px_50px_rgba(0,0,0,0.08)] animate-in slide-in-from-bottom duration-500">
+                                                                                                                            <div class="flex gap-4 items-center max-w-md mx-auto">
+                                                                                                                                @if (Model.Product.IsSelling)
+                                                                                                                                {
+                                                                                                                                    <div class="flex items-center bg-slate-100 rounded-xl px-2 h-14">
+                                                                                                                                        <button onclick="tweakQty(-1)" class="w-10 h-10 flex items-center justify-center"><span
+                                                                                                                                            class="material-symbols-outlined text-sm">remove</span></button>
+                                                                                                                                            <span id="qty-mobile" class="w-8 text-center font-black text-slate-800">1</span>
+                                                                                                                                            <button onclick="tweakQty(1)" class="w-10 h-10 flex items-center justify-center"><span
+                                                                                                                                                class="material-symbols-outlined text-sm">add</span></button>
+                                                                                                                                            </div>
+                                                                                                                                            <button
+                                                                                                                                                onclick="cartApp.addToCart(@Model.Product.ProductID, parseInt(document.getElementById('qty-mobile').innerText), @Model.Product.Price)"
+                                                                                                                                                class="flex-1 h-14 bg-indigo-600 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-indigo-100 active:scale-[0.97] transition-all">
+                                                                                                                                                Thêm vào giỏ
+                                                                                                                                            </button>
+                                                                                                                                        }
+            else
+                                                                                                                                        {
+                                                                                                                                            <button disabled
+                                                                                                                                                    class="flex-1 h-14 bg-slate-200 text-slate-400 font-black uppercase tracking-widest text-[10px] rounded-xl">Ngừng
+                                                                                                                                                bán</button>
+                                                                                                                                            }
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </main>
 
-                                                                <!-- Reviews placeholder -->
-                                                                <div id="reviews-content" class="tab-pane hidden">
-                                                                    <div class="text-center py-12">
-                                                                        <p class="text-on-surface-variant">Hiện chưa có đánh giá nào cho sản phẩm này.</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </section>
-
-                                                        <!-- Recommended Section -->
-                                                        @if (Model.SimilarProducts.Any())
-                                                        {
-                                                            <section class="mt-32">
-                                                                <div class="flex justify-between items-end mb-12">
-                                                                    <div>
-                                                                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">Đề xuất cho bạn</p>
-                                                                        <h2 class="text-4xl font-extrabold tracking-tighter">Sản phẩm liên quan</h2>
-                                                                    </div>
-                                                                    <a href="~/Product?categoryID=@Model.Product.CategoryID"
-                                                                           class="text-sm font-bold uppercase tracking-widest border-b border-on-surface pb-1 hover:text-primary hover:border-primary transition-all">Xem
-                                                                        tất cả</a>
-                                                                    </div>
-                                                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                                                        @foreach (var prod in Model.SimilarProducts)
-                                                                        {
-                                                                            <div class="group cursor-pointer"
-                                                                                 onclick="location.href='@Url.Action("Detail", "Product", new { id = prod.ProductID })'">
-                                                                                <div class="aspect-[4/5] bg-surface-container-low overflow-hidden mb-6">
-                                                                                    <img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                                                                                         src="~/images/products/@(string.IsNullOrEmpty(prod.Photo) ? "nophoto.png" : prod.Photo)"
-                                                                                         alt="@prod.ProductName">
-                                                                                    </div>
-                                                                                    <div class="space-y-1">
-                                                                                        <h3 class="text-base font-bold tracking-tight">@prod.ProductName</h3>
-                                                                                        <p class="text-sm font-medium text-on-surface">@prod.Price.ToString("N0") ₫</p>
-                                                                                    </div>
-                                                                                </div>
-                                                                            }
-                                                                        </div>
-                                                                    </section>
-                                                                }
-                                                            </main>
-
-                                                            @section Scripts {
-                                                                <script>
-                                                                    function switchMainImage(src, thumbElement) {
-                                                                        document.getElementById('main-product-image').src = src;
-                                                                        document.querySelectorAll('.thumbnail-item').forEach(el => el.classList.remove('border-primary', 'active'));
-                                                                        document.querySelectorAll('.thumbnail-item').forEach(el => el.classList.add('hover:opacity-80'));
+                                                                                                                                @section Scripts {
+                                                                                                                                    <script>
+                                                                                                                                        function changePhoto(src, btn) {
+                                                                                                                                            const activeImg = document.getElementById('active-image');
+                                                                                                                                            activeImg.style.opacity = '0';
+                                                                                                                                            activeImg.style.transform = 'scale(0.95)';
             
-                                                                        thumbElement.classList.add('border-primary', 'active');
-                                                                        thumbElement.classList.remove('hover:opacity-80');
-                                                                    }
+                                                                                                                                            setTimeout(() => {
+                                                                                                                                                activeImg.src = src;
+                                                                                                                                                activeImg.style.opacity = '1';
+                                                                                                                                                activeImg.style.transform = 'scale(1)';
+                                                                                                                                            }, 300);
 
-                                                                    let currentQty = 1;
-                                                                    function updateQty(delta) {
-                                                                        currentQty = Math.max(1, currentQty + delta);
-                                                                        document.getElementById('quantity-display').innerText = currentQty;
-                                                                    }
+                                                                                                                                            document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('border-indigo-600', 'active'));
+                                                                                                                                            btn.classList.add('border-indigo-600', 'active');
+                                                                                                                                        }
 
-                                                                    function switchTab(btn, tabId) {
-                                                                        // Update buttons
-                                                                        btn.parentElement.querySelectorAll('button').forEach(el => {
-                                                                            el.classList.remove('border-primary', 'text-primary');
-                                                                            el.classList.add('border-transparent', 'text-on-surface-variant');
-                                                                        });
-                                                                        btn.classList.add('border-primary', 'text-primary');
-                                                                        btn.classList.remove('border-transparent', 'text-on-surface-variant');
+                                                                                                                                        function tweakQty(delta) {
+                                                                                                                                            const input = document.getElementById('qty-input');
+                                                                                                                                            const mobileDisplay = document.getElementById('qty-mobile');
+            
+                                                                                                                                            let val = parseInt(input.value);
+                                                                                                                                            let newVal = Math.max(1, val + delta);
+            
+                                                                                                                                            input.value = newVal;
+                                                                                                                                            if (mobileDisplay) mobileDisplay.innerText = newVal;
+                                                                                                                                        }
 
-                                                                        // Update content
-                                                                        document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
-                                                                        document.getElementById(tabId + '-content').classList.remove('hidden');
-                                                                    }
-                                                                </script>
-                                                            }
+                                                                                                                                        function toggleTab(tabId, btn) {
+                                                                                                                                            document.querySelectorAll('.tab-c').forEach(c => c.classList.add('hidden'));
+                                                                                                                                            document.getElementById(tabId).classList.remove('hidden');
+
+                                                                                                                                            document.querySelectorAll('.tab-h').forEach(h => {
+                                                                                                                                                h.classList.remove('text-indigo-600', 'border-indigo-600');
+                                                                                                                                                h.classList.add('text-slate-400', 'border-transparent');
+                                                                                                                                            });
+                                                                                                                                            btn.classList.add('text-indigo-600', 'border-indigo-600');
+                                                                                                                                            btn.classList.remove('text-slate-400', 'border-transparent');
+                                                                                                                                        }
+
+                                                                                                                                        // Initialize thumbnails on hover if desired, currently on click
+                                                                                                                                    </script>
+                                                                                                                                }
