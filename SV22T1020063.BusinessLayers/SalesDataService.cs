@@ -58,10 +58,17 @@ namespace SV22T1020063.BusinessLayers
         /// <summary>
         /// Tạo đơn hàng mới
         /// </summary>
-        public static async Task<int> AddOrderAsync(Order data)
+        public static async Task<int> AddOrderAsync(int customerID, string deliveryProvince, string deliveryAddress, int employeeID = 0)
         {
-            data.Status = OrderStatusEnum.New;
-            data.OrderTime = DateTime.Now;
+            Order data = new Order()
+            {
+                CustomerID = customerID,
+                DeliveryProvince = deliveryProvince,
+                DeliveryAddress = deliveryAddress,
+                EmployeeID = (employeeID > 0) ? employeeID : null,
+                Status = OrderStatusEnum.New,
+                OrderTime = DateTime.Now,
+            };
 
             return await orderDB.AddAsync(data);
         }

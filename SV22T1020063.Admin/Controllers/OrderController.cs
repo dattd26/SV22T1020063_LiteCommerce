@@ -162,7 +162,7 @@ namespace SV22T1020063.Admin.Controllers
                 Status = OrderStatusEnum.New
             };
 
-            int orderID = await SalesDataService.AddOrderAsync(order);
+            int orderID = await SalesDataService.AddOrderAsync(customerID, deliveryProvince, deliveryAddress, employeeID);
 
             foreach (var item in cart)
             {

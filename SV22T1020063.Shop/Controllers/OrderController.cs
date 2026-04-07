@@ -184,17 +184,8 @@ namespace SV22T1020063.Shop.Controllers
                 return Json(new { success = false, message = "Vui lòng nhập đầy đủ thông tin giao hàng" });
 
             int customerId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
-
-            Order data = new Order()
-            {
-                CustomerID = customerId,
-                DeliveryProvince = deliveryProvince,
-                DeliveryAddress = deliveryAddress,
-                EmployeeID = null, // Shop orders don't have employee initially
-                Status = OrderStatusEnum.New
-            };
-
-            int orderId = await SalesDataService.AddOrderAsync(data);
+            
+            int orderId = await SalesDataService.AddOrderAsync(customerId, deliveryProvince, deliveryAddress);
             if (orderId > 0)
             {
                 foreach (var item in cart)
