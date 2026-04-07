@@ -12,9 +12,9 @@ builder.Services.AddControllersWithViews()
                 {
                     option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
                 });
-
 builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "DataProtection-Keys")));
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "DataProtection-Keys")))
+    .SetApplicationName("SV22T1020063.Shop");
 
 // Configure Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
