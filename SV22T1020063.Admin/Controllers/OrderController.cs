@@ -150,8 +150,25 @@ namespace SV22T1020063.Admin.Controllers
             if (customerID <= 0 || string.IsNullOrEmpty(deliveryProvince) || string.IsNullOrEmpty(deliveryAddress))
                 return Json(new ApiResult(0, "Vui lòng nhập đầy đủ thông tin khách hàng và nơi giao hàng"));
 
-            // TODO: Lấy ID nhân viên đang đăng nhập. Tạm thời lấy ID = 1
-            int employeeID = 1;
+            var userData = User.GetUserData();
+            if (userData == null) {
+                return Json(new ApiResult(0, "Không xác định được thông tin nhan vien"));
+            }
+
+            int employeeID = 0;
+            
+            try
+            {
+                employeeID = int.Parse(userData.UserId);
+                if (employeeID <= 0)
+                {
+                    return Json(new ApiResult(0, "Không xác định được thông tin nhan vien"));
+                }
+            }
+            catch (Exception ex) {
+                return Json(new ApiResult(0, "Ma nhân viên không hợp lệ"));
+            }
+
 
             Order order = new Order()
             {
