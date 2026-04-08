@@ -17,6 +17,3 @@ jobs:
       - name: Deploy to Render (Admin & Shop)
         run: |
           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_SHOP }}
-
-      - name: Show Production URL
-        run: echo "Production: https://sv22t1020063-litecommerce.onrender.com"
