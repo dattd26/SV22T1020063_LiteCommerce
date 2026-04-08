@@ -1,4 +1,4 @@
-# LiteCommerce - SV22T1020063
+# LiteCommerce - TDD Shop
 
 Dự án LiteCommerce là một ứng dụng thương mại điện tử được xây dựng bằng ASP.NET Core MVC , bao gồm hai cổng thông tin chính: **Admin** (Quản trị) và **Shop** (Cửa hàng cho khách hàng).
 
@@ -13,6 +13,23 @@ Xử lý các quy tắc như: tính giá, kiểm tra tồn kho, xử lý đơn h
 3. Data Access Layer (Tầng truy xuất dữ liệu)
 Tầng này chịu trách nhiệm làm việc trực tiếp với cơ sở dữ liệu. Thực hiện các thao tác CRUD (Create, Read, Update, Delete)
 
+## 🌐 Production (Live Demo)
+Bạn có thể truy cập hệ thống đã deploy tại:
+* **Admin Portal:**
+  [https://sv22t1020063-litecommerce-admin.onrender.com/](https://sv22t1020063-litecommerce-admin.onrender.com/)
+* **Shop Portal:**
+  [https://sv22t1020063-litecommerce.onrender.com/](https://sv22t1020063-litecommerce.onrender.com/)
+
+## 🔑 Tài khoản demo
+Bạn có thể sử dụng các tài khoản sau để trải nghiệm hệ thống:
+* **Admin**
+  * Email: `leducdung@mycompany.com`
+  * Password: `123456`
+
+* **Shop (Customer)**
+  * Email: `tranducdat24@outlook.com`
+  * Password: `123456`
+  
 ## 🚀 Tính năng chính
 - Quản lý danh mục, sản phẩm, khách hàng, nhân viên và đối tác.
 - Hệ thống đặt hàng và quản lý đơn hàng.
