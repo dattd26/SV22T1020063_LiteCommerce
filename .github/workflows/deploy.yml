@@ -1,98 +1,58 @@
-name: CI/CD LiteCommerce
+name: CI/CD LiteCommerce Docker
 
 on:
   push:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          dotnet-version: '8.0.x'
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build Docker (CI check)
-      - name: Build Admin Docker Image
-        run: docker build -f Dockerfile.admin -t admin-app:test .
-
-      - name: Build Shop Docker Image
-        run: docker build -f Dockerfile.shop -t shop-app:test .
-
-      # Publish artifacts
-      - name: Publish Admin
-        run: dotnet publish SV22T1020063.Admin/SV22T1020063.Admin.csproj -c Release -o ./publish-admin
-
-      - name: Publish Shop
-        run: dotnet publish SV22T1020063.Shop/SV22T1020063.Shop.csproj -c Release -o ./publish-shop
-
-      # Upload artifacts để job khác dùng lại
-      - name: Upload Admin Artifact
-        uses: actions/upload-artifact@v4
+      # Build và Push Admin Image
+      - name: Build and Push Admin
+        uses: docker/build-push-action@v5
         with:
-          name: admin-package
-          path: ./publish-admin
+          context: .
+          file: ./Dockerfile.admin
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/litecommerce-admin:latest
 
-      - name: Upload Shop Artifact
-        uses: actions/upload-artifact@v4
+      # Build và Push Shop Image
+      - name: Build and Push Shop
+        uses: docker/build-push-action@v5
         with:
-          name: shop-package
-          path: ./publish-shop
+          context: .
+          file: ./Dockerfile.shop
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/litecommerce-shop:latest
 
   deploy-admin:
     runs-on: ubuntu-latest
-    needs: build
-
-    environment:
-      name: production-admin
-      url: https://sv22t1020063-litecommerce-admin-f8azgnb7fnhegna7.japaneast-01.azurewebsites.net
-
+    needs: build-and-push
     steps:
-      - name: Download Admin Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: admin-package
-          path: ./publish-admin
-      - name: Zip Admin package
-        run: |
-          cd publish-admin
-          zip -r ../admin.zip .
-          cd ..
       - name: Deploy Admin to Azure
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'sv22t1020063-litecommerce-admin'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_ADMIN }}
-          package: ./admin.zip
+          images: '${{ secrets.DOCKER_USERNAME }}/litecommerce-admin:latest'
 
   deploy-shop:
     runs-on: ubuntu-latest
-    needs: build
-
-    environment:
-      name: production-shop
-      url: https://sv22t1020063-litecommerce-shop-fwezc2aua3btc8gw.japaneast-01.azurewebsites.net
-
+    needs: build-and-push
     steps:
-      - name: Download Shop Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: shop-package
-          path: ./publish-shop
-      - name: Zip Shop package
-        run: |
-          cd publish-shop
-          zip -r ../shop.zip .
-          cd ..
-
       - name: Deploy Shop to Azure
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'sv22t1020063-litecommerce-shop'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_SHOP }}
-          package: ./shop.zip
+          images: '${{ secrets.DOCKER_USERNAME }}/litecommerce-shop:latest'
