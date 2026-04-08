@@ -1,11 +1,12 @@
-name: CI/CD LiteCommerce
+name: CI/CD LiteCommerce Docker
 
 on:
   push:
     branches: [ "master" ]
+    branches: [ "master" ]
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     environment:
