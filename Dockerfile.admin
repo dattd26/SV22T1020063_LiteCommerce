@@ -1,0 +1,31 @@
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy các file dự án vào để restore dependencies
+COPY ["SV22T1020063.Admin/SV22T1020063.Admin.csproj", "SV22T1020063.Admin/"]
+COPY ["SV22T1020063.BusinessLayers/SV22T1020063.BusinessLayers.csproj", "SV22T1020063.BusinessLayers/"]
+COPY ["SV22T1020063.DataLayers/SV22T1020063.DataLayers.csproj", "SV22T1020063.DataLayers/"]
+COPY ["SV22T1020063.Models/SV22T1020063.Models.csproj", "SV22T1020063.Models/"]
+
+RUN dotnet restore "SV22T1020063.Admin/SV22T1020063.Admin.csproj"
+
+# Copy toàn bộ code và build
+COPY . .
+WORKDIR "/src/SV22T1020063.Admin"
+RUN dotnet build "SV22T1020063.Admin.csproj" -c Release -o /app/build
+
+# Stage 2: Publish
+FROM build AS publish
+RUN dotnet publish "SV22T1020063.Admin.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Stage 3: Final Image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+# cấu hình port
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "SV22T1020063.Admin.dll"]

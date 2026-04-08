@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using SV22T1020063.Shop;
 using System.Globalization;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
+Env.Load();
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
@@ -70,9 +73,13 @@ ApplicationContext.Configure
 );
 
 //Get Connection String from appsettings.json
-string connectionString = builder.Configuration.GetConnectionString("LiteCommerceDB")
-    ?? throw new InvalidOperationException("ConnectionString 'LiteCommerceDB' not found.");
-
+// string connectionString = builder.Configuration.GetConnectionString("LiteCommerceDB")
+//     ?? throw new InvalidOperationException("ConnectionString 'LiteCommerceDB' not found.");
+string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("DB_CONNECTION environment variable is not set.");
+}
 // Initialize Business Layer Configuration
 SV22T1020063.BusinessLayers.Configuration.Initialize(connectionString);
 
