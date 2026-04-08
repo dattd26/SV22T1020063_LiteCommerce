@@ -6,7 +6,10 @@ using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
-Env.Load();
+
+string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "..");
+string envPath = Path.Combine(rootPath, ".env");
+Env.Load(envPath);
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();

@@ -25,6 +25,13 @@
 
             <div class="card-body">
                 <form id="formEdit" method="post" action="~/Product/Save" enctype="multipart/form-data">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
                     <input type="hidden" asp-for="ProductID" />
 
                     <div class="row mb-3">

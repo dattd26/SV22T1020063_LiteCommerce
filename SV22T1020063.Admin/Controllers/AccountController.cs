@@ -30,7 +30,6 @@ namespace SV22T1020063.Admin.Controllers
             }
             string hashedPassword = CryptHelper.HashMD5(password);
 
-            // TODO: Lấy thông tin tài khoản dựa vào tên đăng nhập và mật khẩu
             var userAccount = await UserAccountService.AuthorizeAsync(AccountTypes.Employee, username, hashedPassword);
 
             if (userAccount == null)

@@ -87,8 +87,14 @@ namespace SV22T1020063.Admin.Controllers
 
                 if (!ModelState.IsValid)
                 {
+                    if (data.ProductID != 0)
+                    {
+                        ViewBag.Photos = await CatalogDataService.ListPhotosAsync(data.ProductID);
+                        ViewBag.Attributes = await CatalogDataService.ListAttributesAsync(data.ProductID);
+                    }
                     ViewBag.Title = data.ProductID == 0 ? "Bổ sung mặt hàng" : "Chỉnh sửa mặt hàng";
                     await LoadDataForView();
+
                     return View("Edit", data);
                 }
 
@@ -124,11 +130,13 @@ namespace SV22T1020063.Admin.Controllers
                 if (data.ProductID == 0)
                 {
                     int id = await CatalogDataService.AddProductAsync(data);
+                    TempData["SuccessMessage"] = "Thêm sản phẩm mới thành công!";
                     return RedirectToAction("Edit", new { id });
                 }
                 else
                 {
                     await CatalogDataService.UpdateProductAsync(data);
+                    TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
                     return RedirectToAction("Index");
                 }
             }

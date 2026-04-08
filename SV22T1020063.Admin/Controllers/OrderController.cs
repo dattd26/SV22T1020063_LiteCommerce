@@ -219,7 +219,7 @@ namespace SV22T1020063.Admin.Controllers
         {
             if (Request.Method == "POST")
             {
-                await SalesDataService.RejectOrderAsync(id, 1); // Tạm thời ID nhân viên = 1
+                await SalesDataService.RejectOrderAsync(id, 1); 
                 return RedirectToAction("Detail", new { id });
             }
             return View(id);
@@ -235,7 +235,7 @@ namespace SV22T1020063.Admin.Controllers
                 await SalesDataService.CancelOrderAsync(id);
                 return RedirectToAction("Detail", new { id });
             }
-            return View();
+            return View(id);
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace SV22T1020063.Admin.Controllers
                 await SalesDataService.CompleteOrderAsync(id);
                 return RedirectToAction("Detail", new { id });
             }
-            return View();
+            return View(id);
         }
 
         /// <summary>
