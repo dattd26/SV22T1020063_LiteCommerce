@@ -2,38 +2,20 @@ name: CI/CD LiteCommerce
 
 on:
   push:
-    branches: [ "master" ] # tự chạy mỗi khi bạn push code lên branch
+    branches: [ "master" ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    environment:
+      name: production
+      url: https://sv22t1020063-litecommerce.onrender.com
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # KIỂM TRA BUILD DOCKER (CI)
-      - name: Build Admin Docker Image
-        run: docker build -f Dockerfile.admin -t admin-app:test .
-
-      - name: Build Shop Docker Image
-        run: docker build -f Dockerfile.shop -t shop-app:test .
-
-      # RENDER
-      #   curl -X GET ${{ secrets.RENDER_DEPLOY_HOOK_ADMIN }}
       - name: Deploy to Render (Admin & Shop)
         run: |
-          curl -X GET ${{ secrets.RENDER_DEPLOY_HOOK_SHOP }}
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_SHOP }}
 
-      # DEPLOY LÊN AZURE (CD)
-      - name: Deploy Admin to Azure
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'sv22t1020063-litecommerce-admin'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_ADMIN }}
-
-      - name: Deploy Shop to Azure
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'sv22t1020063-litecommerce-shop'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_SHOP }}
+      - name: Show Production URL
+        run: echo "Production: https://sv22t1020063-litecommerce.onrender.com"
