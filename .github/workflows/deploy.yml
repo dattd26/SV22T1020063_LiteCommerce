@@ -2,7 +2,7 @@ name: CI/CD LiteCommerce
 
 on:
   push:
-    branches: [ "master" ] # tự chạy mỗi khi bạn push code lên branch
+    branches: [ "master" ]
 
 jobs:
   build-and-deploy:
@@ -12,28 +12,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # KIỂM TRA BUILD DOCKER (CI)
-      - name: Build Admin Docker Image
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # KIỂM TRA BUILD
+      - name: Build Admin Docker Image (Check)
         run: docker build -f Dockerfile.admin -t admin-app:test .
 
-      - name: Build Shop Docker Image
+      - name: Build Shop Docker Image (Check)
         run: docker build -f Dockerfile.shop -t shop-app:test .
 
-      # RENDER
-      #   curl -X GET ${{ secrets.RENDER_DEPLOY_HOOK_ADMIN }}
-      - name: Deploy to Render (Admin & Shop)
+      # PUBLISH ĐỂ DEPLOY LÊN AZURE
+      # cần đóng gói ra file chạy (.dll) thì Azure mới hiểu
+      - name: Publish Admin
+        run: dotnet publish SV22T1020063.Admin/SV22T1020063.Admin.csproj -c Release -o ./publish-admin
+
+      - name: Publish Shop
+        run: dotnet publish SV22T1020063.Shop/SV22T1020063.Shop.csproj -c Release -o ./publish-shop
+
+      - name: Deploy to Render
         run: |
           curl -X GET ${{ secrets.RENDER_DEPLOY_HOOK_SHOP }}
+          curl -X GET ${{ secrets.RENDER_DEPLOY_HOOK_ADMIN }}
 
-      # DEPLOY LÊN AZURE (CD)
       - name: Deploy Admin to Azure
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'sv22t1020063-litecommerce-admin'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_ADMIN }}
+          package: ./publish-admin 
 
       - name: Deploy Shop to Azure
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'sv22t1020063-litecommerce-shop'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_SHOP }}
+          package: ./publish-shop
