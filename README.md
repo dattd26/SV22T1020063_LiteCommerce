@@ -38,13 +38,15 @@ cd SV22T1020063_LiteCommerce
 1. Mở **SQL Server Management Studio (SSMS)**.
 2. Tạo một cơ bả dữ liệu mới tên là `LiteCommerceDB`.
 3. Mở file `LiteCommerceDB_Update2026.sql` (ở thư mục gốc của dự án) và chạy script này trên DB vừa tạo.
-4. Kiểm tra chuỗi kết nối trong file `appsettings.json` của cả 2 dự án `SV22T1020063.Admin` và `SV22T1020063.Shop`:
-   ```json
-   "ConnectionStrings": {
-     "LiteCommerceDB": "Server=.;Database=LiteCommerceDB;Trusted_Connection=True;TrustServerCertificate=True;"
-   }
+4. Thiết lập file `.env` chứa biến môi trường. Bạn hãy copy nội dung từ file `.env.example` vào file `.env` mới ở thư mục gốc của dự án:
+   ```bash
+   cp .env.example .env
    ```
-   *(Lưu ý: Thay đổi `Server=.` nếu SQL Server của bạn có instance name khác).*
+5. Kiểm tra và cập nhật biến `DB_CONNECTION` trong file `.env`:
+   ```env
+   DB_CONNECTION=Server=.;Database=LiteCommerceDB;Trusted_Connection=True;TrustServerCertificate=True;
+   ```
+   *(Lưu ý: Thay đổi `Server=.` nếu SQL Server của máy tính bạn có instance name khác).*
 
 ### 3. Cài đặt các gói NPM (Chỉ dành cho Shop)
 Phần giao diện Shop sử dụng Tailwind CSS và Flowbite. Bạn cần cài đặt các dependency này:
@@ -61,6 +63,8 @@ npm run build:css
 ## 🏗️ Build và Chạy ứng dụng
 
 ### Chạy bằng Terminal
+**Lưu ý:** Đảm bảo bạn đã tạo và cấu hình file `.env` như bước trên trước khi chạy.
+
 Ở thư mục dự án tương ứng, chạy lệnh:
 ```bash
 # Để chạy cổng Admin
@@ -73,9 +77,30 @@ dotnet run
 ```
 
 ### Chạy bằng Visual Studio
+**Lưu ý:** Bạn phải giữ nguyên cấu hình file `.env` ở thư mục gốc thì Visual Studio mới nhận được được cấu hình DB.
+
 1. Mở file `SV22T1020063.sln` bằng Visual Studio.
 2. Chuột phải vào dự án (`Admin` hoặc `Shop`) và chọn **Set as Startup Project**.
 3. Nhấn **F5** hoặc nút **Start**.
+
+### Chạy bằng Docker Compose (Được khuyến nghị)
+Dự án đã được cung cấp sẵn `Dockerfile` và `docker-compose.yml` để dễ dàng triển khai.
+
+1. Đảm bảo máy tính đã cài đặt [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+2. Đảm bảo bạn đã tạo file `.env` (copy từ `.env.example`).
+3. Cập nhật chuỗi kết nối `DB_CONNECTION` trong file `.env`. **LƯU Ý:** Khi khởi chạy từ môi trường Docker, thay vì kết nối kiểu Windows Authentication (`Trusted_Connection=True;`), bạn cần kích hoạt SQL Server Authentication, tạo một tài khoản (vd: `sa`), và chỉ định IP máy chủ thành `host.docker.internal`.
+   ```env
+   DB_CONNECTION=Server=host.docker.internal;Database=LiteCommerceDB;User Id=sa;Password=MatKhauCuaBan;TrustServerCertificate=True;
+   ```
+4. Build và chạy các container:
+   ```bash
+   docker-compose up --build -d
+   ```
+5. Khi Docker chạy thành công, mở trình duyệt để truy cập:
+   - **Admin:** http://localhost:8081
+   - **Shop:** http://localhost:8082
+
+Để dừng toàn bộ, bạn chạy: `docker-compose down`.
 
 ## 📝 Cấu trúc dự án
 - `SV22T1020063.Admin`: Dự án Web quản trị.
